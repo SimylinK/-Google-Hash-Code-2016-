@@ -5,10 +5,11 @@
     Module de définition des structures de données de Poly#.
 """
 
-__all__ = ['useless'] # ajouter dans cette liste tous les symboles 'importables'
+# ajouter dans cette liste tous les symboles 'importables'
+__all__ = ['Useless']
 
 
-class useless:
+class Useless:
     """
         Une classe vraiment inutile.
     """
@@ -17,5 +18,5 @@ class useless:
 
 
 if __name__ == "__main__":
-    inutile = useless()
+    inutile = Useless()
     print('J\'ai créé un {}.'.format(inutile))
