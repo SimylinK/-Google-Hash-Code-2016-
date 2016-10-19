@@ -1,13 +1,13 @@
 ## Partagez vos astuces !
 
+git diff ## montre les changements dans le répertoire de travail qui ne sont pas encore assemblés pour le prochain commit
 git add
 git commit
 git pull
-git diff
 git push
 
 
 autres :
 git status 
 git checkout [nom_branche] ##Change la branche courante
-git checkout [fic1] [fic2] ... ##Remets les fichiers Ã  la version gitlab
+git checkout [fic1] [fic2] ... ##Remets les fichiers a la version gitlab
