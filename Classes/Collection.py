@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 """
     Imports servant à :
     - à réutiliser les classes définies dans les autres fichiers :
@@ -9,7 +8,6 @@
 """
 
 from Photo import Photo
-
 
 class Collection:
     """
