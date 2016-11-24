@@ -4,13 +4,14 @@
 
 class Satellite:
     def __init__(self, latitude_depart, longitude_depart, vitesse, vitesse_camera,
-                 max_deplacement_camera):
+                 max_deplacement_camera, nombre_tours):
         self.latitude_depart = latitude_depart
         self.longitude_depart = longitude_depart
         self.vitesse = vitesse
         self.vitesse_camera = vitesse_camera
         self.max_deplacement_camera = max_deplacement_camera
         self.position = []  # positions[x][y] -> x=tour; y=0(latitude) ou 1(longitude)
+        self.__calcul_positions(nombre_tours)
 
     def get_position(self, tour):
         """ Retourne la position du satellite a
@@ -19,7 +20,7 @@ class Satellite:
         """
         return self.position[tour]
 
-    def calcul_positions(self, tour):
+    def __calcul_positions(self, tour):
         """ Calcul la position du satellites pour les X premiers tour
         :param tour: le nombre de tour a calculer, entier positif
         """
