@@ -12,7 +12,7 @@ class ActionCamera:
     """
 
     def __init__(self, tour, mouvement_latitude = None,
-                 mouvement_longitude = None, photo):
+                 mouvement_longitude = None):
         self.tour = tour
         self.mouvement_latitude = mouvement_latitude
         self.mouvement_longitude = mouvement_longitude
