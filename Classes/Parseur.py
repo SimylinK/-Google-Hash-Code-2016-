@@ -55,13 +55,33 @@ class Parseur:
 
         # On transforme les lignes suivantes en instances des classes Photo et Collection
 
-
+        nb_collections = int(fichier_input.readline().rstrip())
+        liste_collections = []  # Liste qui contiendra les collections
+        for i in range (nb_collections):
+            chaine_collection = int(fichier_input.readline().rstrip())
+            collection = self.collection_par_chaine(chaine_collection)
+                                                                        # TODO : finir ça
 
 
 
         fichier_input.close()
 
         return nb_tours, nb_satellites, liste_satellites
+    def collection_par_chaine(self,caracteres): # TODO : vérifier que ça fonctionne bien
+        """Transforme une ligne du fichier input en une instance de la classe Collection"""
+        liste_arguments=[1,2,3]
+        num_liste = 0
+        argument = ""
+        for i in range(len(caracteres)):
+            if caracteres[i] != " ":
+                argument += caracteres[i]
+            else:  # Ici, l'argument est ajouté à liste_arguments
+                liste_arguments[num_liste] = int(argument) #On doit transformer chaque information en entier
+                num_liste += 1
+                argument = ""
+        liste_arguments[num_liste] = argument  # Comme la ligne ne se termine pas par un espace, on rajoute le dernier
+
+        return Collection(liste_arguments[0],liste_arguments[1],liste_arguments[2])
 
     def satellite_par_chaine(self, caracteres, nb_tours):
         """"Transforme une ligne du fichier input en une instance de la classe Satellite"""
