@@ -16,7 +16,7 @@ class Collection:
         points qui lui sont associés. 
     """
 
-    def __init__(self, nb_points, nb_photos, ratio_rentabilite):
+    def __init__(self, nb_points, nb_photos):
         self.nb_points = nb_points
         self.nb_photos = nb_photos
         self.ratio_rentabilité = self.donner_ratio()
