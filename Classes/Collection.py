@@ -9,6 +9,7 @@
 
 from Photo import Photo
 
+
 class Collection:
     """
         Classe composée de :
@@ -16,28 +17,25 @@ class Collection:
         points qui lui sont associés. 
     """
 
-    def __init__(self, nb_points, nb_photos,nb_intervalles,):
+    def __init__(self, nb_points, nb_photos, nb_intervalles, ):
         self.nb_points = nb_points
         self.nb_photos = nb_photos
         self.nb_intervalles = nb_intervalles
         self.liste_photos = []  # Liste d'instances de la classe Photo, qu'on initialise vide et remplit ensuite
-        self.ratio_rentabilité = self.donner_ratio(nb_points,nb_photos)
+        self.ratio_rentabilité = self.donner_ratio(nb_points, nb_photos)
 
-    def donner_ratio(self,nb_points,nb_photos):
+    def donner_ratio(self, nb_points, nb_photos):
         """
             Méthode chargée de :
             Calculer le ratio de rentabilité.
         """
-        ratio = nb_points/nb_photos
+        ratio = nb_points / nb_photos
         return ratio
 
-    def ajouter_photo(self,latitude,longitude):
+    def ajouter_photo(self, photo):
         """
-        :param latitude:
-        :param longitude:
+        :param photo:instance de la classe Photo
 
-            Méthode qui crée une instance de la classe Photo et l'ajoute à la collection.
+            Méthode ajoute une instance de la classe Photo à la collection.
         """
-        photo = Photo(latitude,longitude)
         self.liste_photos.append(photo)
-
