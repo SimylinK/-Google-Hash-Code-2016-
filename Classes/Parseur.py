@@ -9,6 +9,7 @@
 """
 
 from Photo import Photo
+from Collection import Collection
 from Satellite import Satellite
 
 
@@ -22,8 +23,7 @@ class Parseur:
         renvoie le chemin du fichier output.
     """
 
-    def __init__(
-            self, chemin_input=None, chemin_output=None):
+    def __init__(self):
         self.chemin_input = self.demander_input()
         self.chemin_output = self.demander_output()
 
@@ -44,7 +44,7 @@ class Parseur:
         """
 
         fichier_input = open(self.chemin_input, 'r')
-        nb_tours = int(fichier_input.readline().rstrip()) # rstrip est utilisé pour ne pas prendre "\n" en compte.
+        nb_tours = int(fichier_input.readline().rstrip())  # rstrip est utilisé pour ne pas prendre "\n" en compte.
         nb_satellites = int(fichier_input.readline().rstrip())
 
         liste_satellites = []  # On transforme chaque ligne en une instance de la classe Satellite
@@ -57,31 +57,50 @@ class Parseur:
 
         nb_collections = int(fichier_input.readline().rstrip())
         liste_collections = []  # Liste qui contiendra les collections
-        for i in range (nb_collections):
-            chaine_collection = int(fichier_input.readline().rstrip())
+        for i in range(nb_collections):  # On fait l'opération sur toutes les collections
+            chaine_collection = fichier_input.readline().rstrip()
             collection = self.collection_par_chaine(chaine_collection)
-                                                                        # TODO : finir ça
-
-
-
+            for j in range(collection.nb_photos):  # À chaque collection, on ajoute ses photos
+                chaine_photo = (fichier_input.readline().rstrip())
+                photo = self.photo_par_chaine(chaine_photo)
+                collection.ajouter_photo(photo)
+            liste_collections.append(collection)
+            fichier_input.readline()  # TODO : Ici, récupérer les intervalles
         fichier_input.close()
 
-        return nb_tours, nb_satellites, liste_satellites
-    def collection_par_chaine(self,caracteres): # TODO : vérifier que ça fonctionne bien
-        """Transforme une ligne du fichier input en une instance de la classe Collection"""
-        liste_arguments=[1,2,3]
+        return nb_tours, nb_satellites, liste_satellites, liste_collections
+
+    def photo_par_chaine(self, caracteres):
+        """Transforme une ligne du fichier input en une instance de la classe Photo"""
+        liste_arguments = [1, 2]
         num_liste = 0
         argument = ""
         for i in range(len(caracteres)):
             if caracteres[i] != " ":
                 argument += caracteres[i]
             else:  # Ici, l'argument est ajouté à liste_arguments
-                liste_arguments[num_liste] = int(argument) #On doit transformer chaque information en entier
+                liste_arguments[num_liste] = int(argument)  # On doit transformer chaque information en entier
                 num_liste += 1
                 argument = ""
-        liste_arguments[num_liste] = argument  # Comme la ligne ne se termine pas par un espace, on rajoute le dernier
+        liste_arguments[num_liste] = int(argument)  # On ajoute le dernier
 
-        return Collection(liste_arguments[0],liste_arguments[1],liste_arguments[2])
+        return Photo(liste_arguments[0], liste_arguments[1])
+
+    def collection_par_chaine(self, caracteres):
+        """Transforme une ligne du fichier input en une instance de la classe Collection"""
+        liste_arguments = [1, 2, 3]
+        num_liste = 0
+        argument = ""
+        for i in range(len(caracteres)):
+            if caracteres[i] != " ":
+                argument += caracteres[i]
+            else:  # Ici, l'argument est ajouté à liste_arguments
+                liste_arguments[num_liste] = int(argument)  # On doit transformer chaque information en entier
+                num_liste += 1
+                argument = ""
+        liste_arguments[num_liste] = int(argument)  # On ajoute le dernier
+
+        return Collection(liste_arguments[0], liste_arguments[1], liste_arguments[2])
 
     def satellite_par_chaine(self, caracteres, nb_tours):
         """"Transforme une ligne du fichier input en une instance de la classe Satellite"""
@@ -93,14 +112,14 @@ class Parseur:
             if caracteres[j] != " ":
                 argument += caracteres[j]
             else:  # Ici, l'argument est ajouté à liste_arguments
-                liste_arguments[num_liste] = int(argument) #On doit transformer chaque information en entier
+                liste_arguments[num_liste] = int(argument)  # On doit transformer chaque information en entier
                 num_liste += 1
                 argument = ""
-        liste_arguments[num_liste] = argument  # Comme la ligne ne se termine pas par un espace, on rajoute le dernier
+        liste_arguments[num_liste] = int(argument)  # On ajoute le dernier
 
         return Satellite(liste_arguments[0], liste_arguments[1], liste_arguments[2], liste_arguments[3],
                          liste_arguments[4], liste_arguments[5])
 
 
 parseur = Parseur()
-nombre_tours, nombre_satellites, liste_satellites = parseur.recup()
+nombre_tours, nombre_satellites, liste_satellites, liste_collections = parseur.recup()
