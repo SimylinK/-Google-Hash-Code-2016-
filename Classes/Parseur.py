@@ -64,8 +64,11 @@ class Parseur:
                 chaine_photo = (fichier_input.readline().rstrip())
                 photo = self.photo_par_chaine(chaine_photo)
                 collection.ajouter_photo(photo)
+            for k in range(collection.nb_intervalles):  # À chaque collection, on ajoute ses intervalles
+                chaine_intervalle = (fichier_input.readline().rstrip())
+                intervalle = self.intervalle_par_chaine(chaine_intervalle)
+                collection.ajouter_intervalle(intervalle)
             liste_collections.append(collection)
-            fichier_input.readline()  # TODO : Ici, récupérer les intervalles
         fichier_input.close()
 
         return nb_tours, nb_satellites, liste_satellites, liste_collections
@@ -101,6 +104,22 @@ class Parseur:
         liste_arguments[num_liste] = int(argument)  # On ajoute le dernier
 
         return Collection(liste_arguments[0], liste_arguments[1], liste_arguments[2])
+
+    def intervalle_par_chaine(self, caracteres):
+        """Transforme une ligne du fichier input en un intervalle"""
+        liste_arguments = [1, 2]
+        num_liste = 0
+        argument = ""
+        for i in range(len(caracteres)):
+            if caracteres[i] != " ":
+                argument += caracteres[i]
+            else:  # Ici, l'argument est ajouté à liste_arguments
+                liste_arguments[num_liste] = int(argument)  # On doit transformer chaque information en entier
+                num_liste += 1
+                argument = ""
+        liste_arguments[num_liste] = int(argument)  # On ajoute le dernier
+
+        return [liste_arguments[0], liste_arguments[1]]
 
     def satellite_par_chaine(self, caracteres, nb_tours):
         """"Transforme une ligne du fichier input en une instance de la classe Satellite"""
