@@ -17,10 +17,11 @@ class Collection:
         points qui lui sont associés. 
     """
 
-    def __init__(self, nb_points, nb_photos, nb_intervalles, ):
+    def __init__(self, nb_points, nb_photos, nb_intervalles):
         self.nb_points = nb_points
         self.nb_photos = nb_photos
         self.nb_intervalles = nb_intervalles
+        self.liste_intervalles = []
         self.liste_photos = []  # Liste d'instances de la classe Photo, qu'on initialise vide et remplit ensuite
         self.ratio_rentabilité = self.donner_ratio(nb_points, nb_photos)
 
@@ -39,3 +40,9 @@ class Collection:
             Méthode ajoute une instance de la classe Photo à la collection.
         """
         self.liste_photos.append(photo)
+
+    def ajouter_intervalle(self, intervalle):
+        """
+            Méthode ajoute un intervalle à la collection.
+        """
+        self.liste_intervalles.append(intervalle)
