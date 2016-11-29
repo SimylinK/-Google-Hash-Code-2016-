@@ -7,11 +7,15 @@ class Satellite:
                  max_deplacement_camera, nombre_tours):
         self.latitude_depart = latitude_depart
         self.longitude_depart = longitude_depart
+        self.latitude_camera = [latitude_depart, latitude_depart]  # intervalle de latitude de la camera au départ
+        self.longitude_camera = [longitude_depart, longitude_depart]  # intervalle de longitude de la caméra au départ
         self.vitesse = vitesse
         self.vitesse_camera = vitesse_camera
         self.max_deplacement_camera = max_deplacement_camera
-        self.position = []  # positions[x][y] -> x=tour; y=0(latitude) ou 1(longitude)
+        self.position = []  # position[x][y] -> x=tour; y=0(latitude) ou 1(longitude)
         self.__calcul_positions(nombre_tours)
+        self.position_camera = []  # position_camera[x][y] -> x=tour; y=0(latitude) ou 1(longitude)
+        self.__calcul_positions_camera(nombre_tours)
 
     def get_position(self, tour):
         """ Retourne la position du satellite a
@@ -21,7 +25,7 @@ class Satellite:
         return self.position[tour]
 
     def __calcul_positions(self, tour):
-        """ Calcul la position du satellites pour les X premiers tour
+        """ Calcul la position du satellite pour les X premiers tour
         :param tour: le nombre de tour a calculer, entier positif
         """
         self.position.append([])
@@ -48,3 +52,75 @@ class Satellite:
                 long = 648000 - (-long - 648000)
             self.position[i].append(lat)
             self.position[i].append(long)
+
+    def get_position_camera(self, tour):
+        """ Retourne la position de la caméra
+        :param tour: entier positif
+        :return: un tableau avec l'intervalle possible de la latitude(0) et l'intervalle possible de la longitude 1
+        """
+        return self.position_camera[tour]
+
+    def __calcul_positions_camera(self, tour):
+        """ Calcul la position de la caméra pour les X premiers tour
+        :param tour: le nombre de tour à calculer, entier positif
+        """
+        self.position_camera.append([])
+        self.position_camera[0].append(self.latitude_camera)
+        self.position_camera[0].append(self.longitude_camera)
+        vitesse_camera = self.vitesse_camera
+
+        for i in range(1, tour):
+            self.position_camera.append([])
+
+            lat_a = self.position[i][0] + vitesse_camera
+            lat_b = self.position[i][0] - vitesse_camera
+            long_a = self.position[i][1] + vitesse_camera
+            long_b = self.position[i][1] - vitesse_camera
+
+            # latitude borne A
+            # Passage au-dessus du pôle nord
+            if lat_a > 324000:
+                lat_a = 324000 - (lat_a - 324000)
+            # Passage au-dessus du pôle sud
+            elif lat_a < -324000:
+                lat_a = -324000 + (abs(lat_a) - 324000)
+
+            # latitude borne B
+            # Passage au-dessus du pôle nord
+            if lat_b > 324000:
+                lat_b = 324000 - (lat_b - 324000)
+                long -= 648000
+            # Passage au-dessus du pôle sud
+            elif lat_b < -324000:
+                lat_b = -324000 + (abs(lat_b) - 324000)
+
+            # long_a est compris entre -648000 et 647999
+            if long_a < -648000:
+                long_a = 648000 - (-long_a - 648000)
+            # long_b est compris entre -648000 et 647999
+            if long_b < -648000:
+                long_b = 648000 - (-long_b - 648000)
+
+            self.position_camera[i].append([lat_a, lat_b])
+            self.position_camera[i].append([long_a, long_b])
+
+            # on élargie la zone de déplacement possible, jusqu'a atteindre le déplacement maximal
+            vitesse_camera += vitesse_camera
+            if vitesse_camera > self.max_deplacement_camera:
+                vitesse_camera = self.max_deplacement_camera
+
+            """
+            partie d'affichage des tests
+            """
+            print("tour ", i)
+            print("latitude satellite : ", self.position[i][0])
+            print("intervalle latitude : ", self.position_camera[i][0])
+            print("longitude satellite : ", self.position[i][1])
+            print("intervalle longitude : ", self.position_camera[i][1])
+            print("vitesse : ", vitesse_camera)
+            print("")
+
+
+sat = Satellite(51833, -283267, 117, 15, 50, 5)
+
+print(sat.get_position_camera(4))
