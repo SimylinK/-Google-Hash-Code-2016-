@@ -7,12 +7,11 @@ class Satellite:
                  max_deplacement_camera):
         self.latitude = latitude_depart
         self.longitude = longitude_depart
-        self.latitude_camera = latitude_depart  # longitude et latitude de la camera au départ sont sa position
+        self.latitude_camera = latitude_depart  # longitude et latitude de camera au départ sont la position satellite
         self.longitude_camera = longitude_depart
         self.vitesse = vitesse
         self.vitesse_camera = vitesse_camera
         self.max_deplacement_camera = max_deplacement_camera
-        self.position_camera = []  # position_camera[x][y] -> x=tour; y=0(latitude) ou 1(longitude)
 
     def tour_suivant(self):
         """ Calcule la position suivante du satellite
@@ -96,7 +95,3 @@ class Satellite:
             print("vitesse : ", vitesse_camera)
             print("")
 
-
-sat = Satellite(51833, -283267, 117, 15, 50, 5)
-
-print(sat.get_position_camera(4))

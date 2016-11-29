@@ -51,7 +51,7 @@ class Parseur:
         liste_satellites = []  # On transforme chaque ligne en une instance de la classe Satellite
         for i in range(0, nb_satellites):
             chaine = fichier_input.readline().rstrip()
-            satellite = self.satellite_par_chaine(chaine, nb_tours)
+            satellite = self.satellite_par_chaine(chaine)
             liste_satellites.append(satellite)
 
         # On transforme les lignes suivantes en instances des classes Photo et Collection
@@ -122,10 +122,10 @@ class Parseur:
 
         return [liste_arguments[0], liste_arguments[1]]
 
-    def satellite_par_chaine(self, caracteres, nb_tours):
+    def satellite_par_chaine(self, caracteres):
         """"Transforme une ligne du fichier input en une instance de la classe Satellite"""
         liste_arguments = [1, 2, 3, 4, 5,
-                           nb_tours]  # On doit donner 5 arguments à Satellite pour la création d'une instance
+                           ]  # On doit donner 5 arguments à Satellite pour la création d'une instance
         num_liste = 0  # ième argument de la liste
         argument = ""
         for j in range(len(caracteres)):
@@ -138,8 +138,9 @@ class Parseur:
         liste_arguments[num_liste] = int(argument)  # On ajoute le dernier
 
         return Satellite(liste_arguments[0], liste_arguments[1], liste_arguments[2], liste_arguments[3],
-                         liste_arguments[4], liste_arguments[5])
+                         liste_arguments[4])
 
 
 parseur = Parseur()
 nombre_tours, nombre_satellites, liste_satellites, liste_collections = parseur.recup()
+
