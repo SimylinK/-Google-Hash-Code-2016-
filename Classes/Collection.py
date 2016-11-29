@@ -23,7 +23,7 @@ class Collection:
         self.nb_intervalles = nb_intervalles
         self.liste_intervalles = []  # Liste des intervalles pour la collection
         self.liste_photos = []  # Liste d'instances de la classe Photo, qu'on initialise vide et remplit ensuite
-        self.ratio_rentabilité = self.donner_ratio(nb_points, nb_photos)
+        self.ratio_rentabilite = self.donner_ratio(nb_points, nb_photos)
 
     def donner_ratio(self, nb_points, nb_photos):
         """
