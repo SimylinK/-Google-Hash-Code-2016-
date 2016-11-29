@@ -33,3 +33,17 @@ class Collection:
         ratio = nb_points / nb_photos
         return ratio
 
+    def ajouter_photo(self, photo):
+        """
+        :param photo:instance de la classe Photo
+
+            Méthode ajoute une instance de la classe Photo à la collection.
+        """
+        self.liste_photos.append(photo)
+
+    def ajouter_intervalle(self, intervalle):
+        """
+            Méthode ajoute un intervalle à la collection.
+        """
+        self.liste_intervalles.append(intervalle)
+
