@@ -14,14 +14,14 @@ class Collection:
     """
         Classe composée de :
         Un certain nombre de photos qu'il faudra prendre pour avoir les
-        points qui lui sont associés. 
+        points qui lui sont associés.
     """
 
     def __init__(self, nb_points, nb_photos, nb_intervalles):
         self.nb_points = nb_points
         self.nb_photos = nb_photos
         self.nb_intervalles = nb_intervalles
-        self.liste_intervalles = []
+        self.liste_intervalles = []  # Liste des intervalles pour la collection
         self.liste_photos = []  # Liste d'instances de la classe Photo, qu'on initialise vide et remplit ensuite
         self.ratio_rentabilité = self.donner_ratio(nb_points, nb_photos)
 

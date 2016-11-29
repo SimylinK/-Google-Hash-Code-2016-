@@ -5,6 +5,7 @@
     Imports servant à :
     - à réutiliser les classes définies dans les autres fichiers :
         import Photo : classe Photo
+        import Collection : classe Collection
         import Satellite : classe Satellite.
 """
 
