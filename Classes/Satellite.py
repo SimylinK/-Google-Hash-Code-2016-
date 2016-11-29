@@ -4,19 +4,18 @@
 
 class Satellite:
     def __init__(self, latitude_depart, longitude_depart, vitesse, vitesse_camera,
-                 max_deplacement_camera, nombre_tours):
+                 max_deplacement_camera):
         self.latitude = latitude_depart
         self.longitude = longitude_depart
-        self.latitude_camera = [latitude_depart, latitude_depart]  # intervalle de latitude de la camera au départ
-        self.longitude_camera = [longitude_depart, longitude_depart]  # intervalle de longitude de la caméra au départ
+        self.latitude_camera = latitude_depart  # longitude et latitude de la camera au départ sont sa position
+        self.longitude_camera = longitude_depart
         self.vitesse = vitesse
         self.vitesse_camera = vitesse_camera
         self.max_deplacement_camera = max_deplacement_camera
         self.position_camera = []  # position_camera[x][y] -> x=tour; y=0(latitude) ou 1(longitude)
-        self.__calcul_positions_camera(nombre_tours)
 
-    def __calcul_positions(self):
-        """ Calcul la position suivante du satellite
+    def tour_suivant(self):
+        """ Calcule la position suivante du satellite
         """
         vitesse = self.vitesse
         lat = self.latitude + vitesse
@@ -36,13 +35,6 @@ class Satellite:
             long = 648000 - (-long - 648000)
         self.latitude = lat
         self.longitude = long
-
-    def get_position_camera(self, tour):
-        """ Retourne la position de la caméra
-        :param tour: entier positif
-        :return: un tableau avec l'intervalle possible de la latitude(0) et l'intervalle possible de la longitude 1
-        """
-        return self.position_camera[tour]
 
     def __calcul_positions_camera(self, tour):
         """ Calcul la position de la caméra pour les X premiers tour
