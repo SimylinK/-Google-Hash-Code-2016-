@@ -22,16 +22,17 @@ class Distributeur:
         self.nb_satellites = nb_satellites
         self.liste_satellites = liste_satellites
         self.liste_collections = liste_collections  # Liste de toutes les collections
-        self.liste_collections_choisies = []  # Liste des collections sélectionnées
+        self.liste_collections_choisies = self.choix_collections()  # Liste des collections sélectionnées
         self.calendrierPossibilite = []
 
     def choix_collections(self):
         """
         Méthode qui permet d'ordonner les collections par importance
+        Importance = ratio_rentabilite le plus fort
         """
-        self.liste_collections_choisies = sorted(self.liste_collections, key=lambda x: x.ratio_rentabilite, reverse=True)
+        liste_collections_choisies = sorted(self.liste_collections, key=lambda x: x.ratio_rentabilite, reverse=True)
 
-        return self.liste_collections_choisies
+        return liste_collections_choisies
 
     def creer_calendrier(self, tour, longitude, latitude, photo):
         """
@@ -55,4 +56,27 @@ class Distributeur:
         Méthode principale du programme
         celle qui va distribuer les photos aux satellites
         """
+
+        # Populer un tableau de satellites/tours
+
+        for collection in self.liste_collections:
+            for intervalle in collection.liste_intervalles:
+                """On ne fait la distribution que sur les tours sur lesquels on peut prendre la collection"""
+                tour = intervalle[0]
+                while tour < intervalle[1]:
+                    # TODO : Quand position_camera sera créé, attribuer une action à chaque satellite
+
+
+
+
+
+
+                    tour += 1
+
+
+
+
+
+
+
         return None
