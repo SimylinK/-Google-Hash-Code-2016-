@@ -35,7 +35,8 @@ class Distributeur:
 
     def ecrire_output(self):
         """
-        Méthode qui permet d'obtenir le calendrier sous forme de chaine de caractères pour l'écrire dans un fichier
+        Méthode qui permet d'obtenir le calendrier sous forme de
+        chaine de caractères pour l'écrire dans un fichier
         """
         return output
 
