@@ -3,8 +3,9 @@
 
 
 class Satellite:
-    def __init__(self, latitude_depart, longitude_depart, vitesse, vitesse_camera,
+    def __init__(self, id, latitude_depart, longitude_depart, vitesse, vitesse_camera,
                  max_deplacement_camera):
+        self.id = id
         self.latitude = latitude_depart
         self.longitude = longitude_depart
         self.latitude_camera = latitude_depart  # longitude et latitude de camera au départ sont la position satellite
@@ -95,3 +96,4 @@ class Satellite:
             print("vitesse : ", vitesse_camera)
             print("")
 
+sat = Satellite(0,1,2,3,4,5)
