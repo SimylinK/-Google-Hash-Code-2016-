@@ -23,7 +23,7 @@ class Distributeur:
         self.liste_satellites = liste_satellites
         self.liste_collections = liste_collections  # Liste de toutes les collections
         self.liste_collections_choisies = self.choix_collections()  # Liste des collections sélectionnées
-        self.calendrierPossibilite = []
+        self.calendrier_possibilite = []
 
     def choix_collections(self):
         """
@@ -47,7 +47,8 @@ class Distributeur:
 
     def ecrire_output(self):
         """
-        Méthode qui permet d'obtenir le calendrier sous forme de chaine de caractères pour l'écrire dans un fichier
+        Méthode qui permet d'obtenir le calendrier sous forme de
+        chaine de caractères pour l'écrire dans un fichier
         """
         return output
 
