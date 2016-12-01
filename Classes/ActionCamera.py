@@ -20,5 +20,6 @@ class ActionCamera:
 
 
     def get_photo(self):
-        return "blop" #je sais pas encore comment faire
+        # TODO : sera pour bouger la camera
+        return None
         
