@@ -198,7 +198,8 @@ class Parseur:
                          liste_arguments[4])
 
     def creer_output(self, liste_zones):
-        fichier_output = open(self.chemin_output, "a")
+        fichier_output = open(self.chemin_output, "w") #le "w" fait qu'on réécrit sur le fichier précedent
+                                                    #on pourra remplacer par "a" pour écrire un nouveau fichier
         for liste in range(len(liste_zones)):
             for zone in range(len(liste_zones[liste])):
                 for photo in range(len(liste_zones[liste][zone].photos_prises)):
