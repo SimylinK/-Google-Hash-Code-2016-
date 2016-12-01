@@ -197,6 +197,16 @@ class Parseur:
         return Satellite(id, liste_arguments[0], liste_arguments[1], liste_arguments[2], liste_arguments[3],
                          liste_arguments[4])
 
+    def creer_output(self, liste_zones):
+        fichier_output = open(self.chemin_output, "a")
+        for liste in range(len(liste_zones)):
+            for zone in range(len(liste_zones[liste])):
+                for photo in range(len(liste_zones[liste][zone].photos_prises)):
+                    fichier_output.write(str(liste_zones[liste][zone].photos_prises[photo].latitude) + " ")
+                    fichier_output.write(str(liste_zones[liste][zone].photos_prises[photo].longitude) + " ")
+                    fichier_output.write(str(liste_zones[liste][zone].photos_prises[photo].prise_tour) + " ")
+                    fichier_output.write(str(liste_zones[liste][zone].photos_prises[photo].prise_par_id) + "\n")
+
 
 parseur = Parseur()
 liste_zones = parseur.creation_zones()
