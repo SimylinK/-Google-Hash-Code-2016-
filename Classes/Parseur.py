@@ -26,6 +26,14 @@ class Parseur:
         renvoie le chemin du fichier output.
     """
 
+    #Constantes :
+    LAT_ZONE = 5000  # Paramètres à changer pour modifier la taille des zones
+    LONG_ZONE = 10000
+    TAILLE_LAT = 648000  # Taille de la Terre en arcsecondes
+    TAILLE_LONG = 1295999
+    NB_ZONES_LAT = math.ceil(TAILLE_LAT / LAT_ZONE)  # On ne compte pas la dernière zone plus petite
+    NB_ZONES_LONG = math.ceil(TAILLE_LONG / LONG_ZONE)
+
     def __init__(self):
         self.chemin_input = self.demander_input()
         self.chemin_output = self.demander_output()
@@ -44,49 +52,44 @@ class Parseur:
 
     def creation_zones(self):
         """Méthode chargée de créer les différentes zones du globe"""
-        # IDEE : lat photo/(lat zone) - nb_zones_lat/2 = numéro lat dans la liste
+        # IDEE : (lat objet-1)/(lat zone) + self.NB_ZONES_LAT//2 = indice i de objet dans la liste
         # On ajoute -1 pour le problème à la borne supérieure
 
-        lat_zone = 648000  # Paramètres à changer pour modifier la taille des zones
-        long_zone = 647998
-        taille_lat = 648000  # Taille de la Terre en arcsecondes
-        taille_long = 1295999
 
-        reste_lat = taille_lat % lat_zone
-        reste_long = taille_long % long_zone
 
-        nb_zones_lat = math.floor(taille_lat / lat_zone)  # On ne compte pas la dernière zone plus petite
-        nb_zones_long = math.floor(taille_long / long_zone)
+        reste_lat = self.TAILLE_LAT % self.LAT_ZONE
+        reste_long = self.TAILLE_LONG % self.LONG_ZONE
+
 
         liste_zones = []  # Liste de listes de zones. Tous les éléments d'une sous-liste possèdent la même latitude
 
-        for i in range(-324000, 324000 - reste_lat, lat_zone):
+        for i in range(-324000, 324000 - reste_lat, self.LAT_ZONE):
             liste_longitude = []
-            for j in range(-648000, 647999 - reste_long, long_zone):
-                liste_longitude.append(ZoneGlobe(i, i + lat_zone, j, j + long_zone))
+            for j in range(-648000, 647999 - reste_long, self.LONG_ZONE):
+                liste_longitude.append(ZoneGlobe(i, i + self.LAT_ZONE, j, j + self.LONG_ZONE))
             liste_zones.append(liste_longitude)
 
         # S'il reste des zones de tailles inférieures, on les ajoute ici
         if reste_lat != 0:
             # On boucle sur la longitude, on ajoute donc une nouvelle sous-liste:
             liste_ajoutee = []
-            for i in range(-648000, 647999, long_zone):
-                if i + long_zone > 647999:
+            for i in range(-648000, 647999, self.LONG_ZONE):
+                if i + self.LONG_ZONE > 647999:
                     liste_ajoutee.append(ZoneGlobe(324000 - reste_lat, 324000, i, 647999))
                 else:
-                    liste_ajoutee.append(ZoneGlobe(324000 - reste_lat, 324000, i, i + long_zone))
+                    liste_ajoutee.append(ZoneGlobe(324000 - reste_lat, 324000, i, i + self.LONG_ZONE))
             liste_zones.append(liste_ajoutee)
 
         if reste_long != 0:
             # On ajoute à la fin de chaque sous-liste la dernière zone
             indice = 0
-            for i in range(-324000, 324000, lat_zone):
+            for i in range(-324000, 324000, self.LAT_ZONE):
                 #  Pour éviter d'ajouter deux fois la case de latitude et longitude maximales:
-                if indice < nb_zones_lat:
-                    if i + lat_zone > 324000:
+                if indice < self.NB_ZONES_LAT:
+                    if i + self.LAT_ZONE > 324000:
                         liste_zones[indice].append(ZoneGlobe(i, 324000, 647999 - reste_long, 647999))
                     else:
-                        liste_zones[indice].append(ZoneGlobe(i, i + lat_zone, 647999 - reste_long, 647999))
+                        liste_zones[indice].append(ZoneGlobe(i, i + self.LAT_ZONE, 647999 - reste_long, 647999))
                     indice += 1
         return liste_zones
 
@@ -94,7 +97,6 @@ class Parseur:
         """Méthode chargée de : Récupérer les informations du fichier d'input et de les transformer en instances
         de classes.
         """
-        # TODO : associer photo à ZoneGlobe à la création
         fichier_input = open(self.chemin_input, 'r')
         nb_tours = int(fichier_input.readline().rstrip())  # rstrip est utilisé pour ne pas prendre "\n" en compte.
         nb_satellites = int(fichier_input.readline().rstrip())
@@ -116,6 +118,9 @@ class Parseur:
             for j in range(collection.nb_photos):  # À chaque collection, on ajoute ses photos
                 chaine_photo = (fichier_input.readline().rstrip())
                 photo = self.photo_par_chaine(chaine_photo, collection)
+                lat = math.floor(((photo.latitude -1) / self.LAT_ZONE)) + self.NB_ZONES_LAT//2
+                long = math.floor(((photo.longitude-1) / self.LONG_ZONE)) + self.NB_ZONES_LONG//2
+                liste_zones[lat][long].ajouter_photo(photo)
                 collection.ajouter_photo(photo)
             for k in range(collection.nb_intervalles):  # À chaque collection, on ajoute ses intervalles
                 chaine_intervalle = (fichier_input.readline().rstrip())
@@ -196,4 +201,3 @@ class Parseur:
 parseur = Parseur()
 liste_zones = parseur.creation_zones()
 nombre_tours, nombre_satellites, liste_satellites, liste_collections = parseur.recup()
-print("coucou")
