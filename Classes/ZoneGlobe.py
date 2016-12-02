@@ -1,5 +1,6 @@
 from Photo import Photo
 
+
 class ZoneGlobe:
     """Classe représentant une zone de la planète.
 
@@ -9,6 +10,7 @@ class ZoneGlobe:
         longitude_min - longitude_max : plage de longitudes converte
         photos_a_prendre : liste de photos se trouvant dans la zone et n'étant pas encore prises
         photos_prises : liste de photos se trouvant dans la zone et étant déjà prises"""
+
     def __init__(self, latitude_min, latitude_max, longitude_min, longitude_max):
         self.latitude_min = latitude_min
         self.latitude_max = latitude_max
@@ -17,5 +19,5 @@ class ZoneGlobe:
         self.photos_a_prendre = []
         self.photos_prises = []
 
-    def ajouter_photo(self,photo):
+    def ajouter_photo(self, photo):
         self.photos_a_prendre.append(photo)

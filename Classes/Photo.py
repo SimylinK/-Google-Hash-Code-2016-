@@ -7,7 +7,7 @@ class Photo:
         La latitude et la longitude de chaque photo.
         La collection à laquelle elle appartient
     """
-    
+
     def __init__(self, latitude, longitude, collection):
         self.latitude = latitude
         self.longitude = longitude

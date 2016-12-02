@@ -17,7 +17,7 @@ class Collection:
         points qui lui sont associés.
     """
 
-    def __init__(self, nb_points, nb_photos,nb_intervalles):
+    def __init__(self, nb_points, nb_photos, nb_intervalles):
         self.nb_points = nb_points
         self.nb_photos = nb_photos
         self.nb_intervalles = nb_intervalles
@@ -46,4 +46,3 @@ class Collection:
             Méthode ajoute un intervalle à la collection.
         """
         self.liste_intervalles.append(intervalle)
-
