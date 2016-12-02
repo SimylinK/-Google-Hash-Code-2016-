@@ -198,9 +198,9 @@ class Parseur:
         return Satellite(id, liste_arguments[0], liste_arguments[1], liste_arguments[2], liste_arguments[3],
                          liste_arguments[4])
 
-    def creer_output(self, liste_zones):
+    def creer_output(self, liste_zones,nb_photos_prises):
         fichier_output = open(self.chemin_output, "w")  # le "w" fait qu'on réécrit sur le fichier précedent
-        # on pourra remplacer par "a" pour écrire un nouveau fichier
+        fichier_output.write(str(nb_photos_prises) + "\n")
         for liste in range(len(liste_zones)):
             for zone in range(len(liste_zones[liste])):
                 for photo in range(len(liste_zones[liste][zone].photos_prises)):
