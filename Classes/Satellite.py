@@ -6,6 +6,7 @@ class Satellite:
     """
 
     """
+
     def __init__(self, id, latitude_depart, longitude_depart, vitesse, vitesse_camera,
                  max_deplacement_camera):
         self.id = id
@@ -17,7 +18,7 @@ class Satellite:
         self.vitesse_camera = vitesse_camera
         self.max_deplacement_camera = max_deplacement_camera
 
-    def tour_suivant(self, latitude_cam = None, longitude_cam = None):
+    def tour_suivant(self, latitude_cam=None, longitude_cam=None):
         """ Calcule la position suivante du satellite
         et la prochaine position de la caméra si besoin ( si les valeurs sont différentes de None)
         """
@@ -43,11 +44,9 @@ class Satellite:
 
         # Déplacement de la caméra
         self.latitude_camera += vitesse
-        if latitude_cam != None:
+        if latitude_cam:
             self.latitude_camera = latitude_cam
 
-        self.latitude_camera -= 15
-        if longitude_camera != None:
+        self.longitude_camera -= 15
+        if longitude_cam:
             self.longitude_camera = longitude_cam
-
-sat = Satellite(0,1,2,3,4,5)
