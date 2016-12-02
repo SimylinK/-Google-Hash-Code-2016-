@@ -37,6 +37,7 @@ class Parseur:
     def __init__(self):
         self.chemin_input = self.demander_input()
         self.chemin_output = self.demander_output()
+        self.liste_zones = self.creation_zones()
 
     def demander_input(self):
         chemin = ' '
@@ -90,6 +91,7 @@ class Parseur:
                     else:
                         liste_zones[indice].append(ZoneGlobe(i, i + self.LAT_ZONE, 647999 - reste_long, 647999))
                     indice += 1
+
         return liste_zones
 
     def recup(self):
@@ -119,7 +121,7 @@ class Parseur:
                 photo = self.photo_par_chaine(chaine_photo, collection)
                 lat = math.floor(((photo.latitude - 1) / self.LAT_ZONE)) + self.NB_ZONES_LAT // 2
                 long = math.floor(((photo.longitude - 1) / self.LONG_ZONE)) + self.NB_ZONES_LONG // 2
-                liste_zones[lat][long].ajouter_photo(photo)
+                self.liste_zones[lat][long].ajouter_photo(photo)
                 collection.ajouter_photo(photo)
             for k in range(collection.nb_intervalles):  # À chaque collection, on ajoute ses intervalles
                 chaine_intervalle = (fichier_input.readline().rstrip())
@@ -208,6 +210,4 @@ class Parseur:
                     fichier_output.write(str(liste_zones[liste][zone].photos_prises[photo].prise_par_id) + "\n")
 
 
-parseur = Parseur()
-liste_zones = parseur.creation_zones()
-nombre_tours, nombre_satellites, liste_satellites, liste_collections = parseur.recup()
+
