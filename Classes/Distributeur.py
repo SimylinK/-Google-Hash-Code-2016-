@@ -53,13 +53,18 @@ class Distributeur:
                                 self.liste_zones[lat][long].photos_a_prendre.remove(photo)
                                 self.liste_zones[lat][long].photos_prises.append(photo)
                                 nb_photos_prises += 1
-                lat_choisie, long_choisie = self.prediction(satellite,tour,lat,long)
+                lat_choisie, long_choisie = self.prediction(satellite, tour, lat, long)
+                if lat_choisie:
+                    satellite.vitesse_camera_relative = satellite.vitesse_camera
+                else:
+                    satellite.vitesse_camera_relative += satellite.vitesse_camera
                 satellite.tour_suivant(lat_choisie, long_choisie)
         return nb_photos_prises
 
-    def prediction(self,satellite,tour,lat,long):
+    def prediction(self, satellite, tour, lat, long):
         # On simule un avancement d'un tour du satellite
-        sat = Satellite(satellite.id, satellite.latitude, satellite.longitude, satellite.vitesse, satellite.vitesse_camera, satellite.max_deplacement_camera)
+        sat = Satellite(satellite.id, satellite.latitude, satellite.longitude, satellite.vitesse,
+                        satellite.vitesse_camera_relative, satellite.max_deplacement_camera)
         sat.latitude_camera = satellite.latitude_camera
         sat.longitude_camera = satellite.longitude_camera
         sat.tour_suivant()
@@ -78,10 +83,8 @@ class Distributeur:
                         photos_prenables.append(photo)
                         choix = True
         if choix:
-            photo_choisie = sorted(photos_prenables, key=lambda k:[k.collection.ratio_rentabilite], reverse=True)[0]
+            photo_choisie = sorted(photos_prenables, key=lambda k: [k.collection.ratio_rentabilite], reverse=True)[0]
             return photo_choisie.latitude, photo_choisie.longitude
 
         else:
             return None, None
-
-

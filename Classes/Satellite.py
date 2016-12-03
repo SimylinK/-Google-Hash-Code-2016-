@@ -16,6 +16,7 @@ class Satellite:
         self.longitude_camera = longitude_depart
         self.vitesse = vitesse
         self.vitesse_camera = vitesse_camera
+        self.vitesse_camera_relative = vitesse_camera
         self.max_deplacement_camera = max_deplacement_camera
 
     def tour_suivant(self, latitude_cam=None, longitude_cam=None):
