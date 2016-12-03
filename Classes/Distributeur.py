@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import math
+from Satellite import Satellite
 
 
 class Distributeur:
@@ -52,5 +53,35 @@ class Distributeur:
                                 self.liste_zones[lat][long].photos_a_prendre.remove(photo)
                                 self.liste_zones[lat][long].photos_prises.append(photo)
                                 nb_photos_prises += 1
-                satellite.tour_suivant()
+                lat_choisie, long_choisie = self.prediction(satellite,tour,lat,long)
+                satellite.tour_suivant(lat_choisie, long_choisie)
         return nb_photos_prises
+
+    def prediction(self,satellite,tour,lat,long):
+        # On simule un avancement d'un tour du satellite
+        sat = Satellite(satellite.id, satellite.latitude, satellite.longitude, satellite.vitesse, satellite.vitesse_camera, satellite.max_deplacement_camera)
+        sat.latitude_camera = satellite.latitude_camera
+        sat.longitude_camera = satellite.longitude_camera
+        sat.tour_suivant()
+        photos_prenables = []
+        choix = False
+        # Mêmes tests que plus haut
+        for photo in self.liste_zones[lat][long].photos_a_prendre:
+            for intervalle in photo.collection.liste_intervalles:
+                if intervalle[0] <= tour + 1 <= intervalle[1]:
+                    # On teste si dans l'intervalle de mouvement qu'on avait, il y a une photo
+                    if (sat.latitude_camera - sat.vitesse_camera <= photo.latitude <= sat.latitude_camera + sat.vitesse_camera
+                        and sat.longitude_camera - sat.vitesse_camera <= photo.longitude <= sat.latitude_camera + sat.vitesse_camera
+                        and sat.latitude - sat.max_deplacement_camera <= photo.latitude <= sat.latitude + sat.max_deplacement_camera
+                        and sat.longitude - sat.max_deplacement_camera <= photo.longitude <= sat.longitude + sat.max_deplacement_camera):
+                        # La photo est bien prenable :
+                        photos_prenables.append(photo)
+                        choix = True
+        if choix:
+            photo_choisie = sorted(photos_prenables, key=lambda k:[k.collection.ratio_rentabilite], reverse=True)[0]
+            return photo_choisie.latitude, photo_choisie.longitude
+
+        else:
+            return None, None
+
+
