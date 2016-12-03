@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -6,8 +6,6 @@
     - à réutiliser les classes définies dans les autres fichiers :
         import Photo : classe Photo
 """
-
-from Photo import Photo
 
 
 class Collection:

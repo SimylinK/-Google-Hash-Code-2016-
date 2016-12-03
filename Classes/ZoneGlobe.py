@@ -1,4 +1,5 @@
-from Photo import Photo
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 
 class ZoneGlobe:

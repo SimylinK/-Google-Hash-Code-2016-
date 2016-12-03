@@ -12,8 +12,8 @@
 from Photo import Photo
 from Collection import Collection
 from Satellite import Satellite
-import math
 from ZoneGlobe import ZoneGlobe
+import math
 
 
 class Parseur:
@@ -55,8 +55,6 @@ class Parseur:
         """Méthode chargée de créer les différentes zones du globe"""
         # IDEE : (lat objet-1)/(lat zone) + self.NB_ZONES_LAT//2 = indice i de objet dans la liste
         # On ajoute -1 pour le problème à la borne supérieure
-
-
 
         reste_lat = self.TAILLE_LAT % self.LAT_ZONE
         reste_long = self.TAILLE_LONG % self.LONG_ZONE
@@ -198,7 +196,7 @@ class Parseur:
         return Satellite(id, liste_arguments[0], liste_arguments[1], liste_arguments[2], liste_arguments[3],
                          liste_arguments[4])
 
-    def creer_output(self, liste_zones,nb_photos_prises):
+    def creer_output(self, liste_zones, nb_photos_prises):
         fichier_output = open(self.chemin_output, "w")  # le "w" fait qu'on réécrit sur le fichier précedent
         fichier_output.write(str(nb_photos_prises) + "\n")
         for liste in range(len(liste_zones)):
@@ -208,6 +206,3 @@ class Parseur:
                     fichier_output.write(str(liste_zones[liste][zone].photos_prises[photo].longitude) + " ")
                     fichier_output.write(str(liste_zones[liste][zone].photos_prises[photo].prise_tour) + " ")
                     fichier_output.write(str(liste_zones[liste][zone].photos_prises[photo].prise_par_id) + "\n")
-
-
-

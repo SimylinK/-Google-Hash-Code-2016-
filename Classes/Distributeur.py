@@ -8,11 +8,8 @@
         import Satellite : classe Satellite.
 """
 
-from Collection import Collection
-from Satellite import Satellite
-from Parseur import Parseur
-from ZoneGlobe import ZoneGlobe
 import math
+
 
 class Distributeur:
     """Classe chargée de :
@@ -30,15 +27,8 @@ class Distributeur:
         self.nb_tours = nb_tours
         self.nb_satellites = nb_satellites
         self.liste_satellites = liste_satellites
-        self.liste_collections = liste_collections # Liste de toutes les collections
+        self.liste_collections = liste_collections  # Liste de toutes les collections
         self.liste_zones = liste_zones
-
-    def ecrire_output(self):
-        """
-        Méthode qui permet d'obtenir le calendrier sous forme de
-        chaine de caractères pour l'écrire dans un fichier
-        """
-        return output
 
     def algo_opti(self):
         """
@@ -61,8 +51,8 @@ class Distributeur:
                         if intervalle[0] <= tour <= intervalle[1]:
                             """On teste ensuite si la photo est là où est la caméra
                             Pour le moment : position caméra = position satellite"""
-                            if (satellite.latitude_camera == photo.latitude
-                                and satellite.longitude_camera == photo.longitude):
+                            if (satellite.latitude_camera == photo.latitude and
+                                    satellite.longitude_camera == photo.longitude):
                                 photo.prise_par_id = satellite.id
                                 photo.prise_tour = tour
                                 self.liste_zones[lat][long].photos_a_prendre.remove(photo)
@@ -71,5 +61,3 @@ class Distributeur:
                 satellite.tour_suivant()
 
         return nb_photos_prises
-
-
