@@ -46,8 +46,8 @@ class Distributeur:
                         if intervalle[0] <= tour <= intervalle[1]:
                             """On teste ensuite si la photo est là où est la caméra
                             Pour le moment : position caméra = position satellite"""
-                            if (satellite.latitude_camera == photo.latitude and
-                                    satellite.longitude_camera == photo.longitude):
+                            if (
+                                            satellite.latitude_camera == photo.latitude and satellite.longitude_camera == photo.longitude):
                                 photo.prise_par_id = satellite.id
                                 photo.prise_tour = tour
                                 self.liste_zones[lat][long].photos_a_prendre.remove(photo)
@@ -57,16 +57,22 @@ class Distributeur:
                 if lat_choisie:
                     satellite.vitesse_camera_relative = satellite.vitesse_camera
                 else:
-                    satellite.vitesse_camera_relative += satellite.vitesse_camera
+                    if satellite.vitesse_camera_relative + satellite.vitesse_camera > satellite.max_deplacement_camera:
+                        satellite.vitesse_camera_relative = satellite.max_deplacement_camera
+                    else:
+                        satellite.vitesse_camera_relative += satellite.vitesse_camera
                 satellite.tour_suivant(lat_choisie, long_choisie)
         return nb_photos_prises
 
     def prediction(self, satellite, tour, lat, long):
-        # On simule un avancement d'un tour du satellite
+        """Méthode qui retourne la liste des photos atteignables au tour suivant pour un satellite et un tour donnés
+        lat et long sont les indices de la zone dans laquelle se trouve le satellite"""
+        # On crée un satellite intermédiaire
         sat = Satellite(satellite.id, satellite.latitude, satellite.longitude, satellite.vitesse,
                         satellite.vitesse_camera_relative, satellite.max_deplacement_camera)
         sat.latitude_camera = satellite.latitude_camera
         sat.longitude_camera = satellite.longitude_camera
+        # On simule un avancement d'un tour de ce satellite
         sat.tour_suivant()
         photos_prenables = []
         choix = False
@@ -75,10 +81,7 @@ class Distributeur:
             for intervalle in photo.collection.liste_intervalles:
                 if intervalle[0] <= tour + 1 <= intervalle[1]:
                     # On teste si dans l'intervalle de mouvement qu'on avait, il y a une photo
-                    if (sat.latitude_camera - sat.vitesse_camera <= photo.latitude <= sat.latitude_camera + sat.vitesse_camera
-                        and sat.longitude_camera - sat.vitesse_camera <= photo.longitude <= sat.latitude_camera + sat.vitesse_camera
-                        and sat.latitude - sat.max_deplacement_camera <= photo.latitude <= sat.latitude + sat.max_deplacement_camera
-                        and sat.longitude - sat.max_deplacement_camera <= photo.longitude <= sat.longitude + sat.max_deplacement_camera):
+                    if (sat.latitude_camera - sat.vitesse_camera <= photo.latitude <= sat.latitude_camera + sat.vitesse_camera and sat.longitude_camera - sat.vitesse_camera <= photo.longitude <= sat.latitude_camera + sat.vitesse_camera and sat.latitude - sat.max_deplacement_camera <= photo.latitude <= sat.latitude + sat.max_deplacement_camera and sat.longitude - sat.max_deplacement_camera <= photo.longitude <= sat.longitude + sat.max_deplacement_camera):
                         # La photo est bien prenable :
                         photos_prenables.append(photo)
                         choix = True
