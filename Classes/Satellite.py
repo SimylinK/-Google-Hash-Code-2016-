@@ -3,12 +3,20 @@
 
 
 class Satellite:
-    """
-
+    """Classe chargée de :
+    Représenter un satellite
     """
 
     def __init__(self, id, latitude_depart, longitude_depart, vitesse, vitesse_camera,
                  max_deplacement_camera):
+        """
+        :param id: un entier unique à chaque satellite
+        :param latitude_depart: un entier dans [-324000;324000]
+        :param longitude_depart: un entier dans [-648000;647999]
+        :param vitesse: un entier représentant une vitesse en arcseconds par tour
+        :param vitesse_camera: un entier représentant une vitesse en arcseconds par tour
+        :param max_deplacement_camera: un entier positif représentant une distance en arcseconds
+        """
         self.id = id
         self.latitude = latitude_depart
         self.longitude = longitude_depart
