@@ -62,16 +62,16 @@ class Distributeur:
                     # On attribue directement au satellite le déplacement qu'il pourra faire pendant ces 10°
                     deplacement_max = 36000 / satellite.vitesse * satellite.vitesse_camera
                     if deplacement_max > satellite.max_deplacement_camera:
-                        satellite.vitesse_camera_relative = satellite.max_deplacement_camera
+                        satellite.deplacement_camera_relatif = satellite.max_deplacement_camera
                     else:
                         satellite.vitesse_camera = deplacement_max
                     satellite.tour_suivant()
 
                 else:
                     if lat_choisie:
-                        satellite.vitesse_camera_relative = satellite.vitesse_camera
+                        satellite.deplacement_camera_relatif = satellite.vitesse_camera
                     else:
-                        satellite.vitesse_camera_relative += satellite.vitesse_camera
+                        satellite.deplacement_camera_relatif += satellite.vitesse_camera
                     satellite.tour_suivant(lat_choisie, long_choisie)
         return nb_photos_prises
 
@@ -80,7 +80,7 @@ class Distributeur:
         lat et long sont les indices de la zone dans laquelle se trouve le satellite"""
         # On crée un satellite intermédiaire
         sat = Satellite(satellite.id, satellite.latitude, satellite.longitude, satellite.vitesse,
-                        satellite.vitesse_camera_relative, satellite.max_deplacement_camera)
+                        satellite.deplacement_camera_relatif, satellite.max_deplacement_camera)
         sat.latitude_camera = satellite.latitude_camera
         sat.longitude_camera = satellite.longitude_camera
         # On simule un avancement d'un tour de ce satellite

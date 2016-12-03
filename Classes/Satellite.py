@@ -24,7 +24,7 @@ class Satellite:
         self.longitude_camera = longitude_depart
         self.vitesse = vitesse
         self.vitesse_camera = vitesse_camera
-        self.vitesse_camera_relative = vitesse_camera
+        self.deplacement_camera_relatif = vitesse_camera
         self.max_deplacement_camera = max_deplacement_camera
 
     def tour_suivant(self, latitude_cam=None, longitude_cam=None):
@@ -89,9 +89,9 @@ class Satellite:
             dist_long = abs(self.longitude - self.longitude_camera)
 
         """Calcul de la distance en latitude"""
-        distance_lat = abs(self.latitude - self.latitude_camera)
+        dist_lat = abs(self.latitude - self.latitude_camera)
 
-        return distance_lat, dist_long
+        return dist_lat, dist_long
 
 
 if(__name__ == "__main__"):
