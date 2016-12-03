@@ -1,13 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-    Imports servant à :
-    - à réutiliser les classes définies dans les autres fichiers :
-        import Collection : classe Collection
-        import Satellite : classe Satellite.
-"""
-
 import math
 
 
@@ -60,5 +53,4 @@ class Distributeur:
                                 self.liste_zones[lat][long].photos_prises.append(photo)
                                 nb_photos_prises += 1
                 satellite.tour_suivant()
-
         return nb_photos_prises

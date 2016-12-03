@@ -6,7 +6,8 @@
     - à réutiliser les classes définies dans les autres fichiers :
         import Photo : classe Photo
         import Collection : classe Collection
-        import Satellite : classe Satellite.
+        import Satellite : classe Satellite
+        import ZoneGlobe : classe ZoneGlobe.
 """
 
 from Photo import Photo

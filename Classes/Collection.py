@@ -1,12 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-    Imports servant à :
-    - à réutiliser les classes définies dans les autres fichiers :
-        import Photo : classe Photo
-"""
-
 
 class Collection:
     """
