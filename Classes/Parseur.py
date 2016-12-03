@@ -36,7 +36,7 @@ class Parseur:
 
     def __init__(self):
         self.chemin_input = self.demander_input()
-        self.chemin_output = self.demander_output()
+        self.chemin_output = self.demander_output() + '.out'
         self.liste_zones = self.creation_zones()
 
     def demander_input(self):
