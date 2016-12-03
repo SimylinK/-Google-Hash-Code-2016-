@@ -35,6 +35,7 @@ class Distributeur:
         Méthode principale du programme
         celle qui va distribuer les photos aux satellites
         """
+        print("Lancement de la simulation")
         nb_photos_prises = 0
         for tour in range(self.nb_tours):
             for satellite in self.liste_satellites:

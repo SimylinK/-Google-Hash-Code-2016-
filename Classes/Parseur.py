@@ -55,7 +55,7 @@ class Parseur:
         """Méthode chargée de créer les différentes zones du globe"""
         # IDEE : (lat objet-1)/(lat zone) + self.NB_ZONES_LAT//2 = indice i de objet dans la liste
         # On ajoute -1 pour le problème à la borne supérieure
-
+        print("Création des zones")
         reste_lat = self.TAILLE_LAT % self.LAT_ZONE
         reste_long = self.TAILLE_LONG % self.LONG_ZONE
 
@@ -96,6 +96,7 @@ class Parseur:
         """Méthode chargée de : Récupérer les informations du fichier d'input et de les transformer en instances
         de classes.
         """
+        print("Lecture du fichier d'input")
         fichier_input = open(self.chemin_input, 'r')
         nb_tours = int(fichier_input.readline().rstrip())  # rstrip est utilisé pour ne pas prendre "\n" en compte.
         nb_satellites = int(fichier_input.readline().rstrip())
