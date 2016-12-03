@@ -53,15 +53,26 @@ class Distributeur:
                                 self.liste_zones[lat][long].photos_a_prendre.remove(photo)
                                 self.liste_zones[lat][long].photos_prises.append(photo)
                                 nb_photos_prises += 1
+
                 lat_choisie, long_choisie = self.prediction(satellite, tour, lat, long)
-                if lat_choisie:
-                    satellite.vitesse_camera_relative = satellite.vitesse_camera
-                else:
-                    if satellite.vitesse_camera_relative + satellite.vitesse_camera > satellite.max_deplacement_camera:
+
+                #  Pas de photo prise à plus de 85° Nord ou Sud = 36000 arcsecondes pour 10°
+                #  On se contente de lui attribuer la distance maximale et de le faire avancer
+                if satellite.latitude > 306000 or satellite.latitude < -306000:
+                    # On attribue directement au satellite le déplacement qu'il pourra faire pendant ces 10°
+                    deplacement_max = 36000 / satellite.vitesse * satellite.vitesse_camera
+                    if deplacement_max > satellite.max_deplacement_camera:
                         satellite.vitesse_camera_relative = satellite.max_deplacement_camera
                     else:
+                        satellite.vitesse_camera = deplacement_max
+                    satellite.tour_suivant()
+
+                else:
+                    if lat_choisie:
+                        satellite.vitesse_camera_relative = satellite.vitesse_camera
+                    else:
                         satellite.vitesse_camera_relative += satellite.vitesse_camera
-                satellite.tour_suivant(lat_choisie, long_choisie)
+                    satellite.tour_suivant(lat_choisie, long_choisie)
         return nb_photos_prises
 
     def prediction(self, satellite, tour, lat, long):
