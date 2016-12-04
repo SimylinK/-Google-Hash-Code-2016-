@@ -59,26 +59,18 @@ class Distributeur:
 
                 #  Pas de photo prise à plus de 85° Nord ou Sud = 36000 arcsecondes pour 10°
                 #  On se contente de lui attribuer la distance maximale et de le faire avancer
-                if satellite.latitude > 306000 or satellite.latitude < -306000:
-                    # On attribue directement au satellite le déplacement qu'il pourra faire pendant ces 10°
-                    deplacement_max = 36000 / satellite.vitesse * satellite.vitesse_camera
-                    if deplacement_max > satellite.max_deplacement_camera:
-                        satellite.range_deplacement_camera = [
-                            [satellite.max_deplacement_camera, satellite.max_deplacement_camera],
-                            [satellite.max_deplacement_camera, satellite.max_deplacement_camera]]
-                    else:
-                        satellite.range_deplacement_camera = [[deplacement_max, deplacement_max],
-                                                              [deplacement_max, deplacement_max]]
-                    satellite.tour_suivant()
+                if tour == 0:
+                    print("Latitude satellite :" + str(satellite.latitude) + ", longitude satellite :" + str(satellite.longitude))
+                    print("Latitude camera :" + str(satellite.latitude_camera) + ", longitude camera :" + str(
+                        satellite.longitude_camera))
+
+                if lat_choisie:
+                    satellite.reset_camera()
 
                 else:
-                    if lat_choisie:
-                        satellite.reset_camera()
-
-                    else:
-                        # Mise à jour de range_déplacement_camera
-                        satellite.update_camera()
-                    satellite.tour_suivant(lat_choisie, long_choisie)
+                    # Mise à jour de range_déplacement_camera
+                    satellite.update_camera()
+                satellite.tour_suivant(lat_choisie, long_choisie)
 
         return nb_photos_prises
 
@@ -89,6 +81,8 @@ class Distributeur:
         # On crée un satellite intermédiaire
         sat = Satellite(satellite.id, satellite.latitude, satellite.longitude, satellite.vitesse, satellite.vitesse_camera, satellite.max_deplacement_camera)
         sat.range_deplacement_camera = satellite.range_deplacement_camera
+        sat.latitude_camera = satellite.latitude_camera
+        sat.longitude_camera = satellite.longitude_camera
 
         # On simule un avancement d'un tour de ce satellite
         sat.tour_suivant()
@@ -105,6 +99,9 @@ class Distributeur:
                         # La photo est bien prenable :
                         photos_prenables.append(photo)
                         choix = True
+                        if tour == 603:
+                            print("Latitude photo " + str(photo.latitude) + " Longitude photo " + str(photo.longitude))
+
         if choix:
             photo_choisie = sorted(photos_prenables, key=lambda k: [k.collection.ratio_rentabilite], reverse=True)[0]
             return photo_choisie.latitude, photo_choisie.longitude
