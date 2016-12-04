@@ -173,7 +173,7 @@ class Satellite:
             self.range_deplacement_camera[1][0] += vitesse
 
         if self.range_deplacement_camera[1][1] + vitesse > long_max:
-            self.range_deplacement_camera[1][1] = lat_min
+            self.range_deplacement_camera[1][1] = long_max
         else:
             self.range_deplacement_camera[1][1] += vitesse
 
@@ -201,3 +201,16 @@ if __name__ == "__main__":
     print(str(s2.range_deplacement_camera))
     s2.update_camera()  # Ici, ne va pas augmenter car il dépasserait le max
     print(str(s2.range_deplacement_camera))
+
+    #Test update_camera avec tour_suivant
+    print("-----------------------")
+    s3 = Satellite(0, 0, 0, 100, 10, 50)
+    s3.longitude_camera = 30
+    s3.latitude_camera = 40
+    print(str(s3.range_deplacement_camera))
+    s3.update_camera()
+    print(str(s3.range_deplacement_camera))
+    s3.update_camera()
+    print(str(s3.range_deplacement_camera))
+    s3.update_camera()
+    print(str(s3.range_deplacement_camera))
