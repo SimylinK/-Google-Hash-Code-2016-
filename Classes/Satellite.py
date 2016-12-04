@@ -25,9 +25,9 @@ class Satellite:
         self.vitesse = vitesse
         self.vitesse_camera = vitesse_camera
         self.max_deplacement_camera = max_deplacement_camera
-        #  range_deplacement représente la zone qui peut-être atteinte à un certain tour par la caméra
-        self.range_deplacement_camera = [[self.latitude - self.vitesse_camera, self.latitude + self.vitesse_camera],
-                                         [self.longitude - self.vitesse_camera, self.longitude + self.vitesse_camera]]
+        #  range_deplacement représente de combien on peut bouger dans chaque direction
+        self.range_deplacement_camera = [[self.vitesse_camera, self.vitesse_camera],
+                                         [self.vitesse_camera, self.vitesse_camera]]
 
     def tour_suivant(self, latitude_cam=None, longitude_cam=None):
         """ Calcule la position suivante du satellite
@@ -74,9 +74,6 @@ class Satellite:
 
             self.latitude_camera = lat_cam
             self.longitude_camera = long_cam
-            self.range_deplacement_camera = [[self.latitude - self.vitesse_camera, self.latitude + self.vitesse_camera],
-                                             [self.longitude - self.vitesse_camera,
-                                              self.longitude + self.vitesse_camera]]
 
     def distance_latitude(self, latitude):
         """Calcule la distance en arcsecondes entre la latitude satellite et une latitude
@@ -99,6 +96,36 @@ class Satellite:
 
         return dist_long
 
+    def reset_camera(self):
+        """Méthode qui réinitialise range_deplacement_camera, à utiliser quand on prend une photo à un tour t"""
+        self.range_deplacement_camera = [[self.vitesse_camera, self.vitesse_camera],
+                                         [self.vitesse_camera, self.vitesse_camera]]
+
+    def update_camera(self):
+        """Méthode qui met à jour range_deplacement_camera, à utiliser quand on ne prend pas de photo à un tour t"""
+        max = self.max_deplacement_camera
+        vitesse = self.vitesse_camera
+        cam_lat_min = self.range_deplacement_camera[0][0] + vitesse
+        cam_lat_max = self.range_deplacement_camera[0][1] + vitesse
+        cam_long_min = self.range_deplacement_camera[1][0] + vitesse
+        cam_long_max = self.range_deplacement_camera[1][1] + vitesse
+
+        if cam_lat_min > max:
+            self.range_deplacement_camera[0][0] = max
+        else:
+            self.range_deplacement_camera[0][0] += vitesse
+        if cam_lat_max > max:
+            self.range_deplacement_camera[0][1] = max
+        else:
+            self.range_deplacement_camera[0][1] += vitesse
+        if cam_long_min > max:
+            self.range_deplacement_camera[1][0] = max
+        else:
+            self.range_deplacement_camera[1][0] += vitesse
+        if cam_long_max > max:
+            self.range_deplacement_camera[1][1] = max
+        else:
+            self.range_deplacement_camera[1][1] += vitesse
 
 # Tests des fonctions
 if __name__ == "__main__":
@@ -116,7 +143,11 @@ if __name__ == "__main__":
     print("Distance entre " + str(long) + " et " + str(s1.longitude) + " = " + str(x))
 
     # Test range_deplacement_camera
-    s2 = Satellite(0, 50, 100, 400, 50, 4000)
-    print(str(s2.latitude), str(s2.longitude))
-    s2.tour_suivant()
+    s2 = Satellite(0, 0, 0, 100, 10, 20)
+    print(str(s2.range_deplacement_camera))
+    s2.update_camera()
+    print(str(s2.range_deplacement_camera))
+    s2.update_camera()  # Ici, ne va pas augmenter car il dépasserait le max
+    print(str(s2.range_deplacement_camera))
+    s2.reset_camera()
     print(str(s2.range_deplacement_camera))
