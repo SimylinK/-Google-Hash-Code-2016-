@@ -24,8 +24,10 @@ class Satellite:
         self.longitude_camera = longitude_depart
         self.vitesse = vitesse
         self.vitesse_camera = vitesse_camera
-        self.deplacement_camera_relatif = vitesse_camera
         self.max_deplacement_camera = max_deplacement_camera
+        #  range_deplacement représente la zone qui peut-être atteinte à un certain tour par la caméra
+        self.range_deplacement_camera = [[self.latitude - self.vitesse_camera, self.latitude + self.vitesse_camera],
+                                         [self.longitude - self.vitesse_camera, self.longitude + self.vitesse_camera]]
 
     def tour_suivant(self, latitude_cam=None, longitude_cam=None):
         """ Calcule la position suivante du satellite
@@ -72,14 +74,17 @@ class Satellite:
 
             self.latitude_camera = lat_cam
             self.longitude_camera = long_cam
+            self.range_deplacement_camera = [[self.latitude - self.vitesse_camera, self.latitude + self.vitesse_camera],
+                                             [self.longitude - self.vitesse_camera,
+                                              self.longitude + self.vitesse_camera]]
 
-    def distance_latitude(self,latitude):
+    def distance_latitude(self, latitude):
         """Calcule la distance en arcsecondes entre la latitude satellite et une latitude
         :return: latitude, entier positif """
         # Pas besoin de tester les pôles car il n'y a pas de photo à plus de 85° N ou S.
         return abs(self.latitude - latitude)
 
-    def distance_longitude(self,longitude):
+    def distance_longitude(self, longitude):
         """Calcule la distance en arcsecondes entre la longitude satellite et une longitude
                 :return: entier positif égal à cette distance"""
 
@@ -94,7 +99,8 @@ class Satellite:
 
         return dist_long
 
-#  Tests des fonctions
+
+# Tests des fonctions
 if __name__ == "__main__":
     # Création d'un satellite
     s1 = Satellite(0, -320000, -648000, 0, 0, 5000)
@@ -108,3 +114,9 @@ if __name__ == "__main__":
     long = 647950
     x = s1.distance_longitude(long)
     print("Distance entre " + str(long) + " et " + str(s1.longitude) + " = " + str(x))
+
+    # Test range_deplacement_camera
+    s2 = Satellite(0, 50, 100, 400, 50, 4000)
+    print(str(s2.latitude), str(s2.longitude))
+    s2.tour_suivant()
+    print(str(s2.range_deplacement_camera))
