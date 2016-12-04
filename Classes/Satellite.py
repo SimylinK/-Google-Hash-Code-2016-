@@ -203,15 +203,19 @@ if __name__ == "__main__":
     s2.update_camera()  # Ici, ne va pas augmenter car il dépasserait le max
     print(str(s2.range_deplacement_camera))
 
-    #Test update_camera avec tour_suivant
+    # Test update_camera avec tour_suivant
     print("-----------------------")
     s3 = Satellite(0, 0, 0, 100, 10, 50)
-    s3.longitude_camera = 30
     s3.latitude_camera = 40
+    s3.longitude_camera = 30
     print(str(s3.range_deplacement_camera))
     s3.update_camera()
     print(str(s3.range_deplacement_camera))
     s3.update_camera()
     print(str(s3.range_deplacement_camera))
-    s3.update_camera()
+    for i in range(500):
+        s3.update_camera()
     print(str(s3.range_deplacement_camera))
+    s3.reset_camera()
+    print(str(s3.range_deplacement_camera))
+
