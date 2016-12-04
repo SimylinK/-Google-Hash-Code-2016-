@@ -54,6 +54,7 @@ class Distributeur:
                                 self.liste_zones[lat][long].photos_prises.append(photo)
                                 nb_photos_prises += 1
 
+                # On prédit si on prend une photo au tour suivant
                 lat_choisie, long_choisie = self.prediction(satellite, tour, lat, long)
 
                 #  Pas de photo prise à plus de 85° Nord ou Sud = 36000 arcsecondes pour 10°
@@ -62,41 +63,45 @@ class Distributeur:
                     # On attribue directement au satellite le déplacement qu'il pourra faire pendant ces 10°
                     deplacement_max = 36000 / satellite.vitesse * satellite.vitesse_camera
                     if deplacement_max > satellite.max_deplacement_camera:
-                        satellite.deplacement_camera_relatif = satellite.max_deplacement_camera
+                        satellite.range_deplacement_camera = [
+                            [satellite.max_deplacement_camera, satellite.max_deplacement_camera],
+                            [satellite.max_deplacement_camera, satellite.max_deplacement_camera]]
                     else:
-                        satellite.vitesse_camera = deplacement_max
+                        satellite.range_deplacement_camera = [[deplacement_max, deplacement_max],
+                                                              [deplacement_max, deplacement_max]]
                     satellite.tour_suivant()
 
                 else:
                     if lat_choisie:
-                        satellite.deplacement_camera_relatif = satellite.vitesse_camera
+                        satellite.reset_camera()
+
                     else:
-                        satellite.deplacement_camera_relatif += satellite.vitesse_camera
+                        # Mise à jour de range_déplacement_camera
+                        satellite.update_camera()
                     satellite.tour_suivant(lat_choisie, long_choisie)
+
         return nb_photos_prises
 
     def prediction(self, satellite, tour, lat, long):
-        """Méthode qui retourne la liste des photos atteignables au tour suivant pour un satellite et un tour donnés
+        """Méthode qui la latitude et la longitude de la meilleure photo atteignable au tour suivant pour un satellite et un tour donnés
         lat et long sont les indices de la zone dans laquelle se trouve le satellite"""
+
         # On crée un satellite intermédiaire
-        sat = Satellite(satellite.id, satellite.latitude, satellite.longitude, satellite.vitesse,
-                        satellite.deplacement_camera_relatif, satellite.max_deplacement_camera)
-        sat.latitude_camera = satellite.latitude_camera
-        sat.longitude_camera = satellite.longitude_camera
+        sat = Satellite(satellite.id, satellite.latitude, satellite.longitude, satellite.vitesse, satellite.vitesse_camera, satellite.max_deplacement_camera)
+        sat.range_deplacement_camera = satellite.range_deplacement_camera
+
         # On simule un avancement d'un tour de ce satellite
         sat.tour_suivant()
+
         photos_prenables = []
         choix = False
-        # Mêmes tests que plus haut
+
         for photo in self.liste_zones[lat][long].photos_a_prendre:
             for intervalle in photo.collection.liste_intervalles:
                 if intervalle[0] <= tour + 1 <= intervalle[1]:
                     # On teste si dans l'intervalle de mouvement qu'on avait, il y a une photo
-                    # noinspection PyPep8
-                    if (sat.latitude_camera - sat.vitesse_camera <= photo.latitude <= sat.latitude_camera + sat.vitesse_camera
-                        and sat.longitude_camera - sat.vitesse_camera <= photo.longitude <= sat.latitude_camera + sat.vitesse_camera
-                            and sat.latitude - sat.max_deplacement_camera <= photo.latitude <= sat.latitude + sat.max_deplacement_camera
-                                and sat.longitude - sat.max_deplacement_camera <= photo.longitude <= sat.longitude + sat.max_deplacement_camera):
+                    if (sat.latitude_camera - sat.range_deplacement_camera[0][0] <= photo.latitude <= sat.latitude_camera +
+                            sat.range_deplacement_camera[0][1] and sat.longitude_camera - sat.range_deplacement_camera[1][0] <= photo.longitude <= sat.longitude_camera + sat.range_deplacement_camera[1][1]):
                         # La photo est bien prenable :
                         photos_prenables.append(photo)
                         choix = True

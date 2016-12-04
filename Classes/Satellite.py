@@ -25,7 +25,7 @@ class Satellite:
         self.vitesse = vitesse
         self.vitesse_camera = vitesse_camera
         self.max_deplacement_camera = max_deplacement_camera
-        #  range_deplacement représente de combien on peut bouger dans chaque direction
+        #  range_deplacement représente de combien on peut bouger dans chaque direction par rapport à la caméra
         self.range_deplacement_camera = [[self.vitesse_camera, self.vitesse_camera],
                                          [self.vitesse_camera, self.vitesse_camera]]
 
@@ -149,19 +149,48 @@ class Satellite:
 
     def update_camera(self):
         """Méthode qui met à jour range_deplacement_camera, à utiliser quand on ne prend pas de photo à un tour t"""
+        max = self.max_deplacement_camera
+        vitesse = self.vitesse_camera
+        # Maximums de déplacement en fonction de la caméra
+        lat_min = max - self.distance_latitude(self.latitude_camera)
+        lat_max = max + self.distance_latitude(self.latitude_camera)
+        long_min = max - self.distance_longitude(self.longitude_camera)
+        long_max = max + self.distance_longitude(self.longitude_camera)
+
+        if self.range_deplacement_camera[0][0] + vitesse > lat_min:
+            self.range_deplacement_camera[0][0] = lat_min
+        else:
+            self.range_deplacement_camera[0][0] += vitesse
+
+        if self.range_deplacement_camera[0][1] + vitesse > lat_max:
+            self.range_deplacement_camera[0][1] = lat_max
+        else:
+            self.range_deplacement_camera[0][1] += vitesse
+
+        if self.range_deplacement_camera[1][0] + vitesse > long_min:
+            self.range_deplacement_camera[1][0] = long_min
+        else:
+            self.range_deplacement_camera[1][0] += vitesse
+
+        if self.range_deplacement_camera[1][1] + vitesse > long_max:
+            self.range_deplacement_camera[1][1] = lat_min
+        else:
+            self.range_deplacement_camera[1][1] += vitesse
+
+
 
 # Tests des fonctions
 if __name__ == "__main__":
     # Création d'un satellite
-    s1 = Satellite(0, -320000, -648000, 0, 0, 5000)
+    s1 = Satellite(0, 0, 647999, 0, 0, 5000)
 
     # Test distance_latitude. Attention : ne fonctionne pas après un passage par pôle, mais pas important
-    lat = -310000
+    lat = -50000
     y = s1.distance_latitude(lat)
     print("Latitude point par rapport à satellite : " + str(y))
 
     #  Test distance_longitude
-    long = 10000
+    long = -648000
     x = s1.distance_longitude(long)
     print("Longitude point par rapport à satellite : " + str(x))
 
@@ -172,4 +201,3 @@ if __name__ == "__main__":
     print(str(s2.range_deplacement_camera))
     s2.update_camera()  # Ici, ne va pas augmenter car il dépasserait le max
     print(str(s2.range_deplacement_camera))
-
