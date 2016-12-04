@@ -92,7 +92,11 @@ class Distributeur:
             for intervalle in photo.collection.liste_intervalles:
                 if intervalle[0] <= tour + 1 <= intervalle[1]:
                     # On teste si dans l'intervalle de mouvement qu'on avait, il y a une photo
-                    if (sat.latitude_camera - sat.vitesse_camera <= photo.latitude <= sat.latitude_camera + sat.vitesse_camera and sat.longitude_camera - sat.vitesse_camera <= photo.longitude <= sat.latitude_camera + sat.vitesse_camera and sat.latitude - sat.max_deplacement_camera <= photo.latitude <= sat.latitude + sat.max_deplacement_camera and sat.longitude - sat.max_deplacement_camera <= photo.longitude <= sat.longitude + sat.max_deplacement_camera):
+                    # noinspection PyPep8
+                    if (sat.latitude_camera - sat.vitesse_camera <= photo.latitude <= sat.latitude_camera + sat.vitesse_camera
+                        and sat.longitude_camera - sat.vitesse_camera <= photo.longitude <= sat.latitude_camera + sat.vitesse_camera
+                            and sat.latitude - sat.max_deplacement_camera <= photo.latitude <= sat.latitude + sat.max_deplacement_camera
+                                and sat.longitude - sat.max_deplacement_camera <= photo.longitude <= sat.longitude + sat.max_deplacement_camera):
                         # La photo est bien prenable :
                         photos_prenables.append(photo)
                         choix = True
