@@ -54,23 +54,22 @@ class Distributeur:
                                 self.liste_zones[lat][long].photos_prises.append(photo)
                                 nb_photos_prises += 1
 
-                # On prédit si on prend une photo au tour suivant
-                lat_choisie, long_choisie = self.prediction(satellite, tour, lat, long)
-
                 #  Pas de photo prise à plus de 85° Nord ou Sud = 36000 arcsecondes pour 10°
-                #  On se contente de lui attribuer la distance maximale et de le faire avancer
-                if tour == 0:
-                    print("Latitude satellite :" + str(satellite.latitude) + ", longitude satellite :" + str(satellite.longitude))
-                    print("Latitude camera :" + str(satellite.latitude_camera) + ", longitude camera :" + str(
-                        satellite.longitude_camera))
-
-                if lat_choisie:
-                    satellite.reset_camera()
+                #  On se contente d'update sa camera et de le faire avancer
+                if satellite.latitude > 306000 or satellite.latitude < -306000:
+                    satellite.update_camera
+                    satellite.tour_suivant()
 
                 else:
-                    # Mise à jour de range_déplacement_camera
-                    satellite.update_camera()
-                satellite.tour_suivant(lat_choisie, long_choisie)
+                    # On prédit si on prend une photo au tour suivant
+                    lat_choisie, long_choisie = self.prediction(satellite, tour, lat, long)
+                    if lat_choisie:
+                        satellite.reset_camera()
+
+                    else:
+                        # Mise à jour de range_déplacement_camera
+                        satellite.update_camera()
+                    satellite.tour_suivant(lat_choisie, long_choisie)
 
         return nb_photos_prises
 
@@ -99,8 +98,6 @@ class Distributeur:
                         # La photo est bien prenable :
                         photos_prenables.append(photo)
                         choix = True
-                        if tour == 603:
-                            print("Latitude photo " + str(photo.latitude) + " Longitude photo " + str(photo.longitude))
 
         if choix:
             photo_choisie = sorted(photos_prenables, key=lambda k: [k.collection.ratio_rentabilite], reverse=True)[0]
