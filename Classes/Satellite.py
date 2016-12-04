@@ -121,7 +121,26 @@ class Satellite:
 
         return dist_long
 
+    def distance_latitude_absolue(self, latitude):
+        """Calcule la distance en arcsecondes entre la latitude satellite et une latitude
+        :return: latitude, entier positif """
+        # Pas besoin de tester les pôles car il n'y a pas de photo à plus de 85° N ou S.
+        return abs(self.latitude - latitude)
 
+    def distance_longitude_absolue(self, longitude):
+        """Calcule la distance en arcsecondes entre la longitude satellite et une longitude
+                :return: entier positif égal à cette distance"""
+
+        if abs(longitude - self.longitude) > self.max_deplacement_camera:
+            """ Dans ce cas on passe par -648000 et 647999 en longitude """
+            if longitude < self.longitude:
+                dist_long = longitude + 1296000 - self.longitude
+            else:
+                dist_long = self.longitude + 1296000 - longitude
+        else:
+            dist_long = abs(self.longitude - longitude)
+
+        return dist_long
 
     def reset_camera(self):
         """Méthode qui réinitialise range_deplacement_camera, à utiliser quand on prend une photo à un tour t"""
