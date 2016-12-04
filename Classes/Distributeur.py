@@ -37,35 +37,17 @@ class Distributeur:
                 lat = math.floor(((satellite.latitude - 1) / self.LAT_ZONE)) + self.NB_ZONES_LAT // 2
                 long = math.floor(((satellite.longitude - 1) / self.LONG_ZONE)) + self.NB_ZONES_LONG // 2
 
-                #  On boucle donc sur les photos dans cette zone seulement
-                for photo in self.liste_zones[lat][long].photos_a_prendre:
-                    #  Vérification qu'on est dans l'intervalle
-                    for intervalle in photo.collection.liste_intervalles:
-                        """Pas besoin de trop de tests : on ne peut logiquement être que dans 1 intervalle
-                        à la fois"""
-                        if intervalle[0] <= tour <= intervalle[1]:
-                            """On teste ensuite si la photo est là où est la caméra
-                            Pour le moment : position caméra = position satellite"""
-                            if (
-                                            satellite.latitude_camera == photo.latitude and satellite.longitude_camera == photo.longitude):
-                                photo.prise_par_id = satellite.id
-                                photo.prise_tour = tour
-                                self.liste_zones[lat][long].photos_a_prendre.remove(photo)
-                                self.liste_zones[lat][long].photos_prises.append(photo)
-                                nb_photos_prises += 1
-
                 #  Pas de photo prise à plus de 85° Nord ou Sud = 36000 arcsecondes pour 10°
                 #  On se contente d'update sa camera et de le faire avancer
                 if satellite.latitude > 306000 or satellite.latitude < -306000:
                     satellite.update_camera
                     satellite.tour_suivant()
-
                 else:
                     # On prédit si on prend une photo au tour suivant
                     lat_choisie, long_choisie = self.prediction(satellite, tour, lat, long)
                     if lat_choisie:
                         satellite.reset_camera()
-
+                        nb_photos_prises += 1
                     else:
                         # Mise à jour de range_déplacement_camera
                         satellite.update_camera()
@@ -101,6 +83,11 @@ class Distributeur:
 
         if choix:
             photo_choisie = sorted(photos_prenables, key=lambda k: [k.collection.ratio_rentabilite], reverse=True)[0]
+            photo_choisie.prise_par_id = satellite.id
+            photo_choisie.prise_tour = tour
+            self.liste_zones[lat][long].photos_a_prendre.remove(photo_choisie)
+            self.liste_zones[lat][long].photos_prises.append(photo_choisie)
+
             return photo_choisie.latitude, photo_choisie.longitude
 
         else:
