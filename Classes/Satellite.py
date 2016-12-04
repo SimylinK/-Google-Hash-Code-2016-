@@ -73,34 +73,38 @@ class Satellite:
             self.latitude_camera = lat_cam
             self.longitude_camera = long_cam
 
-    def calcul_distance_satellite_camera(self):
-        """ Calcul la distance entre le satellite et la position de la caméra
-        Attention ne marche pas si a côté d'un pôle
-        :return: 2 entiers positifs, (latitude, longitude)
-        """
-        """Calcul de la distance en longitude"""
-        if (abs(self.longitude_camera - self.longitude) > self.max_deplacement_camera):
+    def distance_latitude(self,latitude):
+        """Calcule la distance en arcsecondes entre la latitude satellite et une latitude
+        :return: latitude, entier positif """
+        # Pas besoin de tester les pôles car il n'y a pas de photo à plus de 85° N ou S.
+        return abs(self.latitude - latitude)
+
+    def distance_longitude(self,longitude):
+        """Calcule la distance en arcsecondes entre la longitude satellite et une longitude
+                :return: entier positif égal à cette distance"""
+
+        if abs(longitude - self.longitude) > self.max_deplacement_camera:
             """ Dans ce cas on passe par -648000 et 647999 en longitude """
-            if (self.longitude_camera < self.longitude):
-                dist_long = self.longitude_camera + 1296000 - self.longitude
+            if longitude < self.longitude:
+                dist_long = longitude + 1296000 - self.longitude
             else:
-                dist_long = self.longitude + 1296000 - self.longitude_camera
+                dist_long = self.longitude + 1296000 - longitude
         else:
-            dist_long = abs(self.longitude - self.longitude_camera)
+            dist_long = abs(self.longitude - longitude)
 
-        """Calcul de la distance en latitude"""
-        dist_lat = abs(self.latitude - self.latitude_camera)
+        return dist_long
 
-        return dist_lat, dist_long
-
-
-if(__name__ == "__main__"):
+#  Tests des fonctions
+if __name__ == "__main__":
     # Création d'un satellite
-    s1 = Satellite(0, 0, -648000, 10, 5, 100)
-    s1.latitude_camera = 6
-    s1.longitude_camera = 647998
+    s1 = Satellite(0, -320000, -648000, 0, 0, 5000)
 
-    # Test calcul_distance_satellite_camera
-    lat, long = s1.calcul_distance_satellite_camera()
-    print("lat = " + str(lat) + " ; (doit être égale a 6)")
-    print("long = " + str(long) + " ; (doit être égale a 2)")
+    # Test distance_latitude. Attention : ne fonctionne pas après un passage par pôle, mais pas important
+    lat = -50000
+    y = s1.distance_latitude(lat)
+    print("Distance entre " + str(lat) + " et " + str(s1.latitude) + " = " + str(y))
+
+    #  Test distance_longitude
+    long = 647950
+    x = s1.distance_longitude(long)
+    print("Distance entre " + str(long) + " et " + str(s1.longitude) + " = " + str(x))
