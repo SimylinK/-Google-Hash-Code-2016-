@@ -76,25 +76,52 @@ class Satellite:
             self.longitude_camera = long_cam
 
     def distance_latitude(self, latitude):
-        """Calcule la distance en arcsecondes entre la latitude satellite et une latitude
-        :return: latitude, entier positif """
+        """Calcule l'écart entre le satellite et un point par rapport au satellite
+        si positif, la latitude du satellite est supérieure à celle du point
+        si négatif, la latitude du satellite est inférieure à celle du point
+        :return: latitude, nombre entier"""
         # Pas besoin de tester les pôles car il n'y a pas de photo à plus de 85° N ou S.
-        return abs(self.latitude - latitude)
+        return self.latitude - latitude
 
-    def distance_longitude(self, longitude):
-        """Calcule la distance en arcsecondes entre la longitude satellite et une longitude
-                :return: entier positif égal à cette distance"""
+    def distance_longitude(self,longitude):
+        """Calcule l'écart entre le satellite et un point par rapport au satellite
+            :return: longitude, nombre entier"""
+        satellite = self.longitude
 
-        if abs(longitude - self.longitude) > self.max_deplacement_camera:
-            """ Dans ce cas on passe par -648000 et 647999 en longitude """
-            if longitude < self.longitude:
-                dist_long = longitude + 1296000 - self.longitude
-            else:
-                dist_long = self.longitude + 1296000 - longitude
+        if satellite >= 0:
+            # Le satellite a une longitude positive ou nulle
+            if longitude >= 0:
+                # Le point a une longitude positive ou nulle
+                dist_long = satellite - longitude
+            else :
+                # Le point a une longitude négative
+                distance_absolue = min(abs(satellite - longitude),abs(648000 - satellite) + abs(-648000 - longitude))
+                # Calcul de la plus courte distance entre passer par +180° ou pas
+                if distance_absolue == abs(satellite - longitude):
+                    # On ne passe pas par +180° pour aller du satellite au point
+                    dist_long = satellite - longitude
+                else:
+                    # On passe par +180° pour aller du satellite au point
+                    dist_long = -distance_absolue
         else:
-            dist_long = abs(self.longitude - longitude)
+            #  Le satellite a une longitude négative ou nulle
+            if longitude <= 0:
+                #  Le point a une longitude négative ou nulle
+                dist_long = satellite - longitude
+            else:
+                # Le point a une longitude positive
+                distance_absolue = min(abs(satellite - longitude), abs(-648000 - satellite) + abs(648000 - longitude))
+                # Calcul de la plus courte distance entre passer par -180° ou pas
+                if distance_absolue == abs(satellite - longitude):
+                    #  On ne passe pas par -180° pour aller du satellite au point
+                    dist_long = satellite - longitude
+                else:
+                    #  On passe par -180° pour aller du satellite au point
+                    dist_long = distance_absolue
 
         return dist_long
+
+
 
     def reset_camera(self):
         """Méthode qui réinitialise range_deplacement_camera, à utiliser quand on prend une photo à un tour t"""
@@ -103,29 +130,6 @@ class Satellite:
 
     def update_camera(self):
         """Méthode qui met à jour range_deplacement_camera, à utiliser quand on ne prend pas de photo à un tour t"""
-        max = self.max_deplacement_camera
-        vitesse = self.vitesse_camera
-        cam_lat_min = self.range_deplacement_camera[0][0] + vitesse
-        cam_lat_max = self.range_deplacement_camera[0][1] + vitesse
-        cam_long_min = self.range_deplacement_camera[1][0] + vitesse
-        cam_long_max = self.range_deplacement_camera[1][1] + vitesse
-
-        if cam_lat_min > max:
-            self.range_deplacement_camera[0][0] = max
-        else:
-            self.range_deplacement_camera[0][0] += vitesse
-        if cam_lat_max > max:
-            self.range_deplacement_camera[0][1] = max
-        else:
-            self.range_deplacement_camera[0][1] += vitesse
-        if cam_long_min > max:
-            self.range_deplacement_camera[1][0] = max
-        else:
-            self.range_deplacement_camera[1][0] += vitesse
-        if cam_long_max > max:
-            self.range_deplacement_camera[1][1] = max
-        else:
-            self.range_deplacement_camera[1][1] += vitesse
 
 # Tests des fonctions
 if __name__ == "__main__":
@@ -133,14 +137,14 @@ if __name__ == "__main__":
     s1 = Satellite(0, -320000, -648000, 0, 0, 5000)
 
     # Test distance_latitude. Attention : ne fonctionne pas après un passage par pôle, mais pas important
-    lat = -50000
+    lat = -310000
     y = s1.distance_latitude(lat)
-    print("Distance entre " + str(lat) + " et " + str(s1.latitude) + " = " + str(y))
+    print("Latitude point par rapport à satellite : " + str(y))
 
     #  Test distance_longitude
-    long = 647950
+    long = 10000
     x = s1.distance_longitude(long)
-    print("Distance entre " + str(long) + " et " + str(s1.longitude) + " = " + str(x))
+    print("Longitude point par rapport à satellite : " + str(x))
 
     # Test range_deplacement_camera
     s2 = Satellite(0, 0, 0, 100, 10, 20)
@@ -149,5 +153,4 @@ if __name__ == "__main__":
     print(str(s2.range_deplacement_camera))
     s2.update_camera()  # Ici, ne va pas augmenter car il dépasserait le max
     print(str(s2.range_deplacement_camera))
-    s2.reset_camera()
-    print(str(s2.range_deplacement_camera))
+
