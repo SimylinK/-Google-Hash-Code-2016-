@@ -144,8 +144,9 @@ class Satellite:
 
     def reset_camera(self):
         """Méthode qui réinitialise range_deplacement_camera, à utiliser quand on prend une photo à un tour t"""
-        self.range_deplacement_camera = [[self.vitesse_camera, self.vitesse_camera],
-                                         [self.vitesse_camera, self.vitesse_camera]]
+        self.range_deplacement_camera = [[0, 0],
+                                         [0, 0]]
+        self.update_camera()
 
     def update_camera(self):
         """Méthode qui met à jour range_deplacement_camera, à utiliser quand on ne prend pas de photo à un tour t"""
