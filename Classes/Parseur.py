@@ -28,17 +28,17 @@ class Parseur:
     """
 
     # Constantes :
-    LAT_ZONE = 5000  # Paramètres à changer pour modifier la taille des zones
-    LONG_ZONE = 10000
+    LAT_ZONE = 0  # Paramètres à changer pour modifier la taille des zones, calculé ensuite
+    LONG_ZONE = 0
     TAILLE_LAT = 648000  # Taille de la Terre en arcsecondes
     TAILLE_LONG = 1295999
-    NB_ZONES_LAT = math.ceil(TAILLE_LAT / LAT_ZONE)  # On ne compte pas la dernière zone plus petite
-    NB_ZONES_LONG = math.ceil(TAILLE_LONG / LONG_ZONE)
+    NB_ZONES_LAT = 0  # Calculé ensuite
+    NB_ZONES_LONG = 0
 
     def __init__(self):
         self.chemin_input = self.demander_input()
         self.chemin_output = self.demander_output() + '.out'
-        self.liste_zones = self.creation_zones()
+        self.liste_zones = []
 
     def demander_input(self):
         chemin = ' '
@@ -104,11 +104,26 @@ class Parseur:
 
         liste_satellites = []  # On transforme chaque ligne en une instance de la classe Satellite
         id = 0
+        max = 0 # Sert à calculer le max_déplacement_satellite sur tous les satellites
         for i in range(0, nb_satellites):
             chaine = fichier_input.readline().rstrip()
             satellite = self.satellite_par_chaine(id, chaine)
             liste_satellites.append(satellite)
             id += 1
+            if satellite.max_deplacement_camera > max:
+                max = satellite.max_deplacement_camera
+
+        #  On met à jour les constantes
+        self.LAT_ZONE = max  # Ainsi, le satellite ne peut pas prendre de caméra dans plus de 9 zones en même temps
+        self.LONG_ZONE = max
+        self.NB_ZONES_LAT = math.ceil(self.TAILLE_LAT / self.LAT_ZONE)  # On ne compte pas la dernière zone plus petite
+        self.NB_ZONES_LONG = math.ceil(self.TAILLE_LONG / self.LONG_ZONE)
+
+        # On lance ensuite la création des zones
+        self.liste_zones = self.creation_zones()
+
+
+
         # On transforme les lignes suivantes en instances des classes Photo et Collection
 
         nb_collections = int(fichier_input.readline().rstrip())
