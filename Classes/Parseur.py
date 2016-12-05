@@ -84,12 +84,12 @@ class Parseur:
             indice = 0
             for i in range(-324000, 324000, self.LAT_ZONE):
                 #  Pour éviter d'ajouter deux fois la case de latitude et longitude maximales:
-                if indice < self.NB_ZONES_LAT:
+                if indice < self.NB_ZONES_LAT - 1:
                     if i + self.LAT_ZONE > 324000:
                         liste_zones[indice].append(ZoneGlobe(i, 324000, 647999 - reste_long, 647999))
                     else:
                         liste_zones[indice].append(ZoneGlobe(i, i + self.LAT_ZONE, 647999 - reste_long, 647999))
-                    indice += 1
+                indice += 1
 
         return liste_zones
 
@@ -104,28 +104,25 @@ class Parseur:
 
         liste_satellites = []  # On transforme chaque ligne en une instance de la classe Satellite
         id = 0
-        max = 0 # Sert à calculer le max_déplacement_satellite sur tous les satellites
+        max_deplacement = 0 # Sert à calculer le max_déplacement_satellite sur tous les satellites
         for i in range(0, nb_satellites):
             chaine = fichier_input.readline().rstrip()
             satellite = self.satellite_par_chaine(id, chaine)
             liste_satellites.append(satellite)
             id += 1
-            if satellite.max_deplacement_camera > max:
-                max = satellite.max_deplacement_camera
+            if satellite.max_deplacement_camera > max_deplacement:
+                max_deplacement = satellite.max_deplacement_camera
 
         #  On met à jour les constantes
-        self.LAT_ZONE = max  # Ainsi, le satellite ne peut pas prendre de caméra dans plus de 9 zones en même temps
-        self.LONG_ZONE = max
+        self.LAT_ZONE = max_deplacement  # Ainsi, le satellite ne peut pas prendre de caméra dans plus de 9 zones en même temps
+        self.LONG_ZONE = max_deplacement
         self.NB_ZONES_LAT = math.ceil(self.TAILLE_LAT / self.LAT_ZONE)  # On ne compte pas la dernière zone plus petite
         self.NB_ZONES_LONG = math.ceil(self.TAILLE_LONG / self.LONG_ZONE)
 
         # On lance ensuite la création des zones
         self.liste_zones = self.creation_zones()
 
-
-
         # On transforme les lignes suivantes en instances des classes Photo et Collection
-
         nb_collections = int(fichier_input.readline().rstrip())
         liste_collections = []  # Liste qui contiendra les collections
         for i in range(nb_collections):  # On fait l'opération sur toutes les collections

@@ -10,19 +10,19 @@ class Distributeur:
     distribuer les photos entre les satellites et des les associer dans un calendrier
     """
     # Constantes :
-    LAT_ZONE = 5000  # Paramètres à changer pour modifier la taille des zones
-    LONG_ZONE = 10000
     TAILLE_LAT = 648000  # Taille de la Terre en arcsecondes
     TAILLE_LONG = 1295999
-    NB_ZONES_LAT = math.ceil(TAILLE_LAT / LAT_ZONE)  # On ne compte pas la dernière zone plus petite
-    NB_ZONES_LONG = math.ceil(TAILLE_LONG / LONG_ZONE)
 
-    def __init__(self, nb_tours, nb_satellites, liste_satellites, liste_collections, liste_zones):
+    def __init__(self, nb_tours, nb_satellites, liste_satellites, liste_collections, liste_zones, LAT_ZONE, LONG_ZONE):
         self.nb_tours = nb_tours
         self.nb_satellites = nb_satellites
         self.liste_satellites = liste_satellites
         self.liste_collections = liste_collections  # Liste de toutes les collections
         self.liste_zones = liste_zones
+        self.LAT_ZONE = LAT_ZONE # Calculés par parseur
+        self.LONG_ZONE = LONG_ZONE
+        self.NB_ZONES_LAT = math.ceil(self.TAILLE_LAT / LAT_ZONE)  # On ne compte pas la dernière zone plus petite
+        self.NB_ZONES_LONG = math.ceil(self.TAILLE_LONG / LONG_ZONE)
 
     def algo_opti(self):
         """
