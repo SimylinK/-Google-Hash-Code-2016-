@@ -116,7 +116,7 @@ class Parseur:
         #  On met à jour les constantes
         self.LAT_ZONE = max_deplacement  # Ainsi, le satellite ne peut pas prendre de caméra dans plus de 9 zones en même temps
         self.LONG_ZONE = max_deplacement
-        self.NB_ZONES_LAT = math.ceil(self.TAILLE_LAT / self.LAT_ZONE)  # On ne compte pas la dernière zone plus petite
+        self.NB_ZONES_LAT = math.ceil(self.TAILLE_LAT / self.LAT_ZONE)
         self.NB_ZONES_LONG = math.ceil(self.TAILLE_LONG / self.LONG_ZONE)
 
         # On lance ensuite la création des zones
@@ -131,8 +131,8 @@ class Parseur:
             for j in range(collection.nb_photos):  # À chaque collection, on ajoute ses photos
                 chaine_photo = (fichier_input.readline().rstrip())
                 photo = self.photo_par_chaine(chaine_photo, collection)
-                lat = math.floor(((photo.latitude - 1) / self.LAT_ZONE)) + self.NB_ZONES_LAT // 2
-                long = math.floor(((photo.longitude - 1) / self.LONG_ZONE)) + self.NB_ZONES_LONG // 2
+                lat = (photo.latitude + 324000) // self.LAT_ZONE
+                long = (photo.longitude + 648000) // self.LONG_ZONE
                 self.liste_zones[lat][long].ajouter_photo(photo)
                 collection.ajouter_photo(photo)
             for k in range(collection.nb_intervalles):  # À chaque collection, on ajoute ses intervalles
