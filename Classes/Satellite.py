@@ -38,13 +38,13 @@ class Satellite:
         long = self.longitude - 15
         # Passage au-dessus du pôle nord
         if lat > 324000:
-            lat = 324000 - (lat - 324000)
+            lat = 648000 - lat
             long -= 648000
             self.vitesse = -self.vitesse
         # Passage au-dessus du pôle sud
         elif lat < -324000:
-            lat = -324000 + (abs(lat) - 324000)
-            long -= 648000
+            lat = -648000 - lat
+            long += -648000
             self.vitesse = -self.vitesse
         # long est compris entre -648000 et 647999
         if long < -648000:
@@ -62,12 +62,12 @@ class Satellite:
 
             # Passage au-dessus du pôle nord
             if lat_cam > 324000:
-                lat_cam = 324000 - (lat_cam - 324000)
+                lat_cam = 648000 - lat_cam
                 long_cam -= 648000
             # Passage au-dessus du pôle sud
             elif lat_cam < -324000:
-                lat_cam = -324000 + (abs(lat_cam) - 324000)
-                long_cam -= 648000
+                lat_cam = -648000 - lat_cam
+                long_cam += 648000
             # long est compris entre -648000 et 647999
             if long_cam < -648000:
                 long_cam = 648000 - (-long_cam - 648000)
@@ -179,7 +179,6 @@ class Satellite:
             self.range_deplacement_camera[1][1] += vitesse
 
 
-
 # Tests des fonctions
 if __name__ == "__main__":
     # Création d'un satellite
@@ -218,4 +217,11 @@ if __name__ == "__main__":
     print(str(s3.range_deplacement_camera))
     s3.reset_camera()
     print(str(s3.range_deplacement_camera))
-
+    print("----------------------")
+    s4 = Satellite(0, 0, -647975, -500, 0, 0)
+    s4.tour_suivant()
+    print(str(s4.latitude),str(s4.longitude))
+    s4.tour_suivant()
+    print(str(s4.latitude), str(s4.longitude))
+    s4.tour_suivant()
+    print(str(s4.latitude), str(s4.longitude))
