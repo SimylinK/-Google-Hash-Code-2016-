@@ -38,12 +38,14 @@ class Parseur:
     REPERTOIRE = os.getcwd()
 
     def __init__(self, chemin_input=None, chemin_output=None):
+
         if chemin_input:
-            self.chemin_input = self.demander_input()
+            self.chemin_input = self.REPERTOIRE + chemin_input
         else:
             self.chemin_input = self.REPERTOIRE + '\\donneesTest\\forever_alone.in'
+
         if chemin_output:
-            self.chemin_output = self.demander_output() + '.out'
+            self.chemin_output = chemin_output
         else:
             self.chemin_output = self.REPERTOIRE + '\\fichier_output.out'
         self.liste_zones = []
