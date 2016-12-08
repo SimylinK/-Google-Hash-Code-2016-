@@ -40,7 +40,7 @@ class Distributeur:
                 #  Pas de photo prise à plus de 85° Nord ou Sud = 36000 arcsecondes pour 10°
                 #  On se contente d'update sa camera et de le faire avancer
                 if satellite.latitude > 306000 or satellite.latitude < -306000:
-                    satellite.update_camera
+                    satellite.update_camera()
                     satellite.tour_suivant()
                 else:
                     # On prédit si on prend une photo au tour suivant
@@ -84,7 +84,7 @@ class Distributeur:
         if choix:
             photo_choisie = sorted(photos_prenables, key=lambda k: [k.collection.ratio_rentabilite], reverse=True)[0]
             photo_choisie.prise_par_id = satellite.id
-            photo_choisie.prise_tour = tour
+            photo_choisie.prise_tour = tour + 1
             self.liste_zones[lat][long].photos_a_prendre.remove(photo_choisie)
             self.liste_zones[lat][long].photos_prises.append(photo_choisie)
 

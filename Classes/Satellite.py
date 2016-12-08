@@ -23,6 +23,7 @@ class Satellite:
         self.latitude_camera = latitude_depart  # longitude et latitude de camera au départ sont la position satellite
         self.longitude_camera = longitude_depart
         self.vitesse = vitesse
+        self.orientation_vitesse_camera = vitesse // abs(vitesse)
         self.vitesse_camera = vitesse_camera
         self.max_deplacement_camera = max_deplacement_camera
         #  range_deplacement représente de combien on peut bouger dans chaque direction par rapport à la caméra
@@ -57,17 +58,19 @@ class Satellite:
             self.latitude_camera = latitude_cam
             self.longitude_camera = longitude_cam
         else:
-            lat_cam = self.latitude_camera + self.vitesse
+            lat_cam = self.latitude_camera + self.orientation_vitesse_camera * abs(self.vitesse)
             long_cam = self.longitude_camera - 15
 
             # Passage au-dessus du pôle nord
             if lat_cam > 324000:
                 lat_cam = 648000 - lat_cam
                 long_cam -= 648000
+                self.orientation_vitesse_camera *= -1
             # Passage au-dessus du pôle sud
             elif lat_cam < -324000:
                 lat_cam = -648000 - lat_cam
                 long_cam += 648000
+                self.orientation_vitesse_camera *= -1
             # long est compris entre -648000 et 647999
             if long_cam < -648000:
                 long_cam = 648000 - (-long_cam - 648000)
