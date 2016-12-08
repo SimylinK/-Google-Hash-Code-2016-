@@ -37,7 +37,7 @@ class Parseur:
     NB_ZONES_LONG = 0
     REPERTOIRE = os.getcwd()
 
-    def __init__(self, chemin_input = None, chemin_output = None):
+    def __init__(self, chemin_input=None, chemin_output=None):
         if chemin_input:
             self.chemin_input = self.demander_input()
         else:
@@ -221,10 +221,10 @@ class Parseur:
     def creer_output(self, liste_zones, nb_photos_prises):
         fichier_output = open(self.chemin_output, "w")  # le "w" fait qu'on réécrit sur le fichier précedent
         fichier_output.write(str(nb_photos_prises) + "\n")
-        for liste in range(len(liste_zones)):
-            for zone in range(len(liste_zones[liste])):
-                for photo in range(len(liste_zones[liste][zone].photos_prises)):
-                    fichier_output.write(str(liste_zones[liste][zone].photos_prises[photo].latitude) + " ")
-                    fichier_output.write(str(liste_zones[liste][zone].photos_prises[photo].longitude) + " ")
-                    fichier_output.write(str(liste_zones[liste][zone].photos_prises[photo].prise_tour) + " ")
-                    fichier_output.write(str(liste_zones[liste][zone].photos_prises[photo].prise_par_id) + "\n")
+        for liste in liste_zones:
+            for zone in liste:
+                for photo in zone.photos_prises:
+                    fichier_output.write(str(photo.latitude) + " ")
+                    fichier_output.write(str(photo.longitude) + " ")
+                    fichier_output.write(str(photo.prise_tour) + " ")
+                    fichier_output.write(str(photo.prise_par_id) + "\n")
