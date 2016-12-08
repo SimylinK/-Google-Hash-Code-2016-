@@ -14,6 +14,7 @@ from Photo import Photo
 from Collection import Collection
 from Satellite import Satellite
 from ZoneGlobe import ZoneGlobe
+import os
 import math
 
 
@@ -34,10 +35,17 @@ class Parseur:
     TAILLE_LONG = 1295999
     NB_ZONES_LAT = 0  # Calculé ensuite
     NB_ZONES_LONG = 0
+    REPERTOIRE = os.getcwd()
 
-    def __init__(self):
-        self.chemin_input = self.demander_input()
-        self.chemin_output = self.demander_output() + '.out'
+    def __init__(self, chemin_input = None, chemin_output = None):
+        if chemin_input:
+            self.chemin_input = self.demander_input()
+        else:
+            self.chemin_input = self.REPERTOIRE + '\\donneesTest\\forever_alone.in'
+        if chemin_output:
+            self.chemin_output = self.demander_output() + '.out'
+        else:
+            self.chemin_output = self.REPERTOIRE + '\\fichier_output.out'
         self.liste_zones = []
 
     def demander_input(self):
