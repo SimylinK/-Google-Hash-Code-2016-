@@ -25,7 +25,7 @@ class Satellite:
         self.vitesse = vitesse
         self.vitesse_camera = vitesse_camera
         self.max_deplacement_camera = max_deplacement_camera
-        #  range_deplacement représente de combien on peut bouger dans chaque direction par rapport à la caméra
+        #  range_deplacement représente de combien on peut bouger dans chaque direction par rapport à la caméra au tour t +1
         self.range_deplacement_camera = [[self.vitesse_camera, self.vitesse_camera],
                                          [self.vitesse_camera, self.vitesse_camera]]
 
