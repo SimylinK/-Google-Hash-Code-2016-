@@ -9,20 +9,13 @@ class Distributeur:
     """Classe chargée de :
     distribuer les photos entre les satellites et des les associer dans un calendrier
     """
-    # Constantes :
-    TAILLE_LAT = 648000  # Taille de la Terre en arcsecondes
-    TAILLE_LONG = 1295999
 
-    def __init__(self, nb_tours, nb_satellites, liste_satellites, liste_collections, liste_zones, LAT_ZONE, LONG_ZONE):
+    def __init__(self, nb_tours, nb_satellites, liste_satellites, liste_collections, globe):
         self.nb_tours = nb_tours
         self.nb_satellites = nb_satellites
         self.liste_satellites = liste_satellites
         self.liste_collections = liste_collections  # Liste de toutes les collections
-        self.liste_zones = liste_zones
-        self.LAT_ZONE = LAT_ZONE # Calculés par parseur
-        self.LONG_ZONE = LONG_ZONE
-        self.NB_ZONES_LAT = math.ceil(self.TAILLE_LAT / LAT_ZONE)  # On ne compte pas la dernière zone plus petite
-        self.NB_ZONES_LONG = math.ceil(self.TAILLE_LONG / LONG_ZONE)
+        self.globe = globe
 
     def algo_opti(self):
         """
@@ -65,18 +58,18 @@ class Distributeur:
         sat.tour_suivant()
 
         #  Calcul de la Zone dans laquelle se trouve le satellite
-        lat = (satellite.latitude + 324000) // self.LAT_ZONE
+        lat = (satellite.latitude + 324000) // self.globe.lat_zone
         if satellite.latitude == 324000:
             lat -= 1
 
-        long = (satellite.longitude + 648000) // self.LONG_ZONE
-        if satellite.longitude == 648000:
+        long = (satellite.longitude + 648000) // self.globe.long_zone
+        if satellite.longitude == 647999:
             long -= 1
 
         photos_prenables = []
         choix = False
 
-        for photo in self.liste_zones[lat][long].photos_a_prendre:
+        for photo in self.globe.liste_zones[lat][long].photos_a_prendre:
             for intervalle in photo.collection.liste_intervalles:
                 if intervalle[0] <= tour + 1 <= intervalle[1]:
                     # On teste si dans l'intervalle de mouvement qu'on avait, il y a une photo
@@ -91,8 +84,8 @@ class Distributeur:
             photo_choisie = sorted(photos_prenables, key=lambda k: [k.collection.ratio_rentabilite], reverse=True)[0]
             photo_choisie.prise_par_id = satellite.id
             photo_choisie.prise_tour = tour + 1
-            self.liste_zones[lat][long].photos_a_prendre.remove(photo_choisie)
-            self.liste_zones[lat][long].photos_prises.append(photo_choisie)
+            self.globe.liste_zones[lat][long].photos_a_prendre.remove(photo_choisie)
+            self.globe.liste_zones[lat][long].photos_prises.append(photo_choisie)
 
             return photo_choisie.latitude, photo_choisie.longitude
 
