@@ -33,15 +33,10 @@ class Distributeur:
         nb_photos_prises = 0
         for tour in range(self.nb_tours):
             for satellite in self.liste_satellites:
-                print("tour :" + str(tour))
-                print("Latitude :" + str(satellite.latitude) + " Longitude :" + str(satellite.longitude))
-                print(satellite.range_deplacement_camera)
-                print("-----------------------------------------------------------------------------")
-
                 #  Pas de photo prise à plus de 85° Nord ou Sud = 36000 arcsecondes pour 10°
                 #  On se contente d'update sa camera et de le faire avancer
                 if satellite.latitude > 306000 or satellite.latitude < -306000:
-                    satellite.update_camera
+                    satellite.update_camera()
                     satellite.tour_suivant()
                 else:
                     # On prédit si on prend une photo au tour suivant
@@ -71,12 +66,16 @@ class Distributeur:
 
         #  Calcul de la Zone dans laquelle se trouve le satellite
         lat = (satellite.latitude + 324000) // self.LAT_ZONE
+        if satellite.latitude == 324000:
+            lat -= 1
+
         long = (satellite.longitude + 648000) // self.LONG_ZONE
+        if satellite.longitude == 648000:
+            long -= 1
 
         photos_prenables = []
         choix = False
 
-        print(str(sat.latitude_camera - sat.range_deplacement_camera[0][0]))
         for photo in self.liste_zones[lat][long].photos_a_prendre:
             for intervalle in photo.collection.liste_intervalles:
                 if intervalle[0] <= tour + 1 <= intervalle[1]:
