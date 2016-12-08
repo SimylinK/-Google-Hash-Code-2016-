@@ -38,12 +38,14 @@ class Parseur:
     REPERTOIRE = os.getcwd()
 
     def __init__(self, chemin_input=None, chemin_output=None):
+
         if chemin_input:
-            self.chemin_input = self.demander_input()
+            self.chemin_input = self.REPERTOIRE + chemin_input
         else:
             self.chemin_input = self.REPERTOIRE + '\\donneesTest\\forever_alone.in'
+
         if chemin_output:
-            self.chemin_output = self.demander_output() + '.out'
+            self.chemin_output = chemin_output
         else:
             self.chemin_output = self.REPERTOIRE + '\\fichier_output.out'
         self.liste_zones = []
@@ -62,8 +64,7 @@ class Parseur:
 
     def creation_zones(self):
         """Méthode chargée de créer les différentes zones du globe"""
-        # IDEE : (lat objet-1)/(lat zone) + self.NB_ZONES_LAT//2 = indice i de objet dans la liste
-        # On ajoute -1 pour le problème à la borne supérieure
+        # IDEE : lat(objet) + 324000 // LAT_ZONE = indice dans la liste
         print("Création des zones")
         reste_lat = self.TAILLE_LAT % self.LAT_ZONE
         reste_long = self.TAILLE_LONG % self.LONG_ZONE
@@ -92,7 +93,7 @@ class Parseur:
             indice = 0
             for i in range(-324000, 324000, self.LAT_ZONE):
                 #  Pour éviter d'ajouter deux fois la case de latitude et longitude maximales:
-                if indice < self.NB_ZONES_LAT - 1:
+                if indice < self.NB_ZONES_LAT:
                     if i + self.LAT_ZONE > 324000:
                         liste_zones[indice].append(ZoneGlobe(i, 324000, 647999 - reste_long, 647999))
                     else:
@@ -140,7 +141,11 @@ class Parseur:
                 chaine_photo = (fichier_input.readline().rstrip())
                 photo = self.photo_par_chaine(chaine_photo, collection)
                 lat = (photo.latitude + 324000) // self.LAT_ZONE
+                if satellite.latitude == 324000:
+                    lat -= 1
                 long = (photo.longitude + 648000) // self.LONG_ZONE
+                if satellite.longitude == 648000:
+                    long -= 1
                 self.liste_zones[lat][long].ajouter_photo(photo)
                 collection.ajouter_photo(photo)
             for k in range(collection.nb_intervalles):  # À chaque collection, on ajoute ses intervalles
