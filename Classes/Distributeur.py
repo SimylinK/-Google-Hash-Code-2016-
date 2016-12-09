@@ -34,13 +34,13 @@ class Distributeur:
                 else:
                     # On prédit si on prend une photo au tour suivant
                     lat_choisie, long_choisie = self.prediction(satellite, tour)
+                    satellite.tour_suivant(lat_choisie, long_choisie)
                     if lat_choisie:
                         satellite.reset_camera()
                         nb_photos_prises += 1
                     else:
                         # Mise à jour de range_déplacement_camera
                         satellite.update_camera()
-                    satellite.tour_suivant(lat_choisie, long_choisie)
 
         return nb_photos_prises
 
@@ -69,6 +69,9 @@ class Distributeur:
         photos_prenables = []
         choix = False
         photos_autour_zone = self.globe.photos_autour_zone(lat, long)
+        if tour == 1:
+            a=1
+
         for photo in photos_autour_zone:
             # On teste si dans l'intervalle de mouvement qu'on avait, il y a une photo
             if (sat.latitude_camera - sat.range_deplacement_camera[0][0] <= photo.latitude <= sat.latitude_camera +
