@@ -69,7 +69,7 @@ class Satellite:
             # Passage au-dessus du pôle sud
             elif lat_cam < -324000:
                 lat_cam = -648000 - lat_cam
-                long_cam += 648000
+                long_cam += -648000
                 self.orientation_vitesse_camera *= -1
             # long est compris entre -648000 et 647999
             if long_cam < -648000:
