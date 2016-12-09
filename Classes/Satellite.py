@@ -122,6 +122,15 @@ class Satellite:
                     #  On passe par -180° pour aller du satellite au point
                     dist_long = distance_absolue
 
+        #Cas où le satellite et la caméa sont séparés par un pôle
+        if abs(dist_long) > self.max_deplacement_camera :
+            if longitude >= 0:
+                #séparé par le pôle nord
+                dist_long = self.distance_longitude(longitude-648000)
+            if longitude <= 0:
+                #séparé par le pôle sud
+                dist_long = self.distance_longitude(longitude+648000)
+
         return dist_long
 
     def distance_latitude_absolue(self, latitude):
