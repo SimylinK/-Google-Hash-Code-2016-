@@ -58,18 +58,18 @@ class Distributeur:
         sat.tour_suivant()
 
         #  Calcul de la Zone dans laquelle se trouve le satellite
-        lat = (satellite.latitude + 324000) // self.globe.lat_zone
-        if satellite.latitude == 324000:
+        lat = (sat.latitude + 324000) // self.globe.lat_zone
+        if sat.latitude == 324000:
             lat -= 1
 
-        long = (satellite.longitude + 648000) // self.globe.long_zone
-        if satellite.longitude == 647999:
+        long = (sat.longitude + 648000) // self.globe.long_zone
+        if sat.longitude == 647999:
             long -= 1
 
         photos_prenables = []
         choix = False
-
-        for photo in self.globe.liste_zones[lat][long].photos_a_prendre:
+        photos_autour_zone = self.globe.photos_autour_zone(lat, long)
+        for photo in photos_autour_zone:
             for intervalle in photo.collection.liste_intervalles:
                 if intervalle[0] <= tour + 1 <= intervalle[1]:
                     # On teste si dans l'intervalle de mouvement qu'on avait, il y a une photo
@@ -84,8 +84,16 @@ class Distributeur:
             photo_choisie = sorted(photos_prenables, key=lambda k: [k.collection.ratio_rentabilite], reverse=True)[0]
             photo_choisie.prise_par_id = satellite.id
             photo_choisie.prise_tour = tour + 1
-            self.globe.liste_zones[lat][long].photos_a_prendre.remove(photo_choisie)
-            self.globe.liste_zones[lat][long].photos_prises.append(photo_choisie)
+
+            photo_lat = (photo_choisie.latitude + 324000) // self.globe.lat_zone
+            if photo_choisie.latitude == 324000:
+                photo_lat -= 1
+            photo_long = (photo_choisie.longitude + 648000) // self.globe.long_zone
+            if photo_choisie.longitude == 647999:
+                photo_long -= 1
+
+            self.globe.liste_zones[photo_lat][photo_long].photos_a_prendre.remove(photo_choisie)
+            self.globe.liste_zones[photo_lat][photo_long].photos_prises.append(photo_choisie)
 
             return photo_choisie.latitude, photo_choisie.longitude
 
