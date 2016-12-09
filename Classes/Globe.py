@@ -44,13 +44,15 @@ class Globe:
             # On ajoute à la fin de chaque sous-liste la dernière zone
             indice = 0
             for i in range(-324000, 324000, self.lat_zone):
-                #  Pour éviter d'ajouter deux fois la case de latitude et longitude maximales:
-                if indice < self.nb_zones_lat:
-                    if i + self.lat_zone > 324000:
-                        liste_zones[indice].append(ZoneGlobe(i, 324000, 647999 - reste_long, 647999))
-                    else:
-                        liste_zones[indice].append(ZoneGlobe(i, i + self.lat_zone, 647999 - reste_long, 647999))
+                if i + self.lat_zone > 324000:
+                    liste_zones[indice].append(ZoneGlobe(i, 324000, 647999 - reste_long, 647999))
+                else:
+                    liste_zones[indice].append(ZoneGlobe(i, i + self.lat_zone, 647999 - reste_long, 647999))
                 indice += 1
+
+        # Pour éviter d'ajouter deux fois la case de latitude et longitude maximales:
+        if reste_lat != 0 and reste_long != 0:
+            liste_zones[self.nb_zones_lat -1].pop()
 
         return liste_zones
 
