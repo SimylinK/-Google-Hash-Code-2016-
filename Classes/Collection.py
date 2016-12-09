@@ -38,3 +38,13 @@ class Collection:
             Méthode ajoute un intervalle à la collection.
         """
         self.liste_intervalles.append(intervalle)
+
+    def dispersion_collection(self):
+        liste_lat = []
+        liste_long = []
+        for photo in self.liste_photos:
+            liste_lat.append(photo.latitude)
+            liste_long.append(photo.longitude)
+        diff_lat = max(liste_lat) - min(liste_lat)
+        diff_long = max(liste_long) - min(liste_long)
+        return [diff_lat, diff_long]
