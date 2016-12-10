@@ -86,16 +86,12 @@ class Satellite:
         if self.passe_pole_nord and lat + self.max_deplacement_camera < 324000:
             # Les deux sont du même côté de la planète, on peut faire un calcul de latitude simpliste
             dist_lat = lat - self.latitude_camera
-            dist_long = self.distance_longitude(self.longitude_camera)
             self.latitude_camera = lat + dist_lat
-            self.longitude_camera = long + dist_long
             self.passe_pole_nord = False
 
         if self.passe_pole_sud and lat - self.max_deplacement_camera > -324000:
             dist_lat = lat - self.latitude_camera
-            dist_long = self.distance_longitude(self.longitude_camera)
             self.latitude_camera = lat + dist_lat
-            self.longitude_camera = long + dist_long
             self.passe_pole_sud = False
 
     def distance_latitude(self, latitude):
@@ -209,6 +205,26 @@ class Satellite:
             self.range_deplacement_camera[1][1] = long_max
         else:
             self.range_deplacement_camera[1][1] += vitesse
+
+    def clone(self):
+        """Méthode qui retourne un clone du satellite"""
+        sat = Satellite(self.id, self.latitude, self.longitude, self.vitesse,
+                        self.vitesse_camera, self.max_deplacement_camera)
+        sat.range_deplacement_camera = self.range_deplacement_camera
+        sat.latitude_camera = self.latitude_camera
+        sat.longitude_camera = self.longitude_camera
+
+        return sat
+
+    def peut_prendre(self, photo, tour):
+        peut_prendre = False
+        if (self.latitude_camera - self.range_deplacement_camera[0][0] <= photo.latitude <= self.latitude_camera +
+            self.range_deplacement_camera[0][1] and self.longitude_camera - self.range_deplacement_camera[1][0]
+            <= photo.longitude <= self.longitude_camera + self.range_deplacement_camera[1][1]):
+            for intervalle in photo.collection.liste_intervalles:
+                if intervalle[0] <= tour + 1 <= intervalle[1]:
+                    peut_prendre = True
+        return peut_prendre
 
 
 # Tests des fonctions

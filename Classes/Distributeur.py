@@ -48,11 +48,7 @@ class Distributeur:
         lat et long sont les indices de la zone dans laquelle se trouve le satellite"""
 
         # On crée un satellite intermédiaire
-        sat = Satellite(satellite.id, satellite.latitude, satellite.longitude, satellite.vitesse,
-                        satellite.vitesse_camera, satellite.max_deplacement_camera)
-        sat.range_deplacement_camera = satellite.range_deplacement_camera
-        sat.latitude_camera = satellite.latitude_camera
-        sat.longitude_camera = satellite.longitude_camera
+        sat = satellite.clone()
 
         # On simule un avancement d'un tour de ce satellite
         sat.tour_suivant()
@@ -68,18 +64,16 @@ class Distributeur:
 
         photos_prenables = []
         choix = False
+
+        # On boucle sur toutes les photos qu'on peut prendre, donc celles de notre zone et de ses adjacentes
         photos_autour_zone = self.globe.photos_autour_zone(lat, long)
 
         for photo in photos_autour_zone:
             # On teste si dans l'intervalle de mouvement qu'on avait, il y a une photo
-            if (sat.latitude_camera - sat.range_deplacement_camera[0][0] <= photo.latitude <= sat.latitude_camera +
-                sat.range_deplacement_camera[0][1] and sat.longitude_camera - sat.range_deplacement_camera[1][0]
-                <= photo.longitude <= sat.longitude_camera + sat.range_deplacement_camera[1][1]):
-                for intervalle in photo.collection.liste_intervalles:
-                    if intervalle[0] <= tour + 1 <= intervalle[1]:
-                        # La photo est bien prenable :
-                        photos_prenables.append(photo)
-                        choix = True
+            if sat.peut_prendre(photo, tour):
+                # La photo est bien prenable :
+                photos_prenables.append(photo)
+                choix = True
 
         if choix:
             photo_choisie = sorted(photos_prenables, key=lambda k: [k.collection.ratio_rentabilite], reverse=True)[0]
