@@ -32,7 +32,7 @@ class Satellite:
 
     def tour_suivant(self, latitude_cam=None, longitude_cam=None):
         """ Calcule la position suivante du satellite
-        et la prochaine position de la caméra si besoin ( si les valeurs sont différentes de None)
+        et la prochaine position de la caméra si besoin (si les valeurs sont différentes de None)
         """
         # Déplacement du Satellite
         lat = self.latitude + self.vitesse

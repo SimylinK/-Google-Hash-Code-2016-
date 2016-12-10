@@ -7,7 +7,7 @@ from Satellite import Satellite
 
 class Distributeur:
     """Classe chargée de :
-    distribuer les photos entre les satellites et des les associer dans un calendrier
+    distribuer les photos entre les satellites et les associer dans un calendrier
     """
 
     def __init__(self, nb_tours, nb_satellites, liste_satellites, liste_collections, globe):
@@ -45,7 +45,7 @@ class Distributeur:
         return nb_photos_prises
 
     def prediction(self, satellite, tour):
-        """Méthode qui la latitude et la longitude de la meilleure photo atteignable au tour suivant pour un satellite et un tour donnés
+        """Méthode qui renvoie  la latitude et la longitude de la meilleure photo atteignable au tour suivant pour un satellite et un tour donnés
         lat et long sont les indices de la zone dans laquelle se trouve le satellite"""
 
         # On crée un satellite intermédiaire
