@@ -60,24 +60,25 @@ class Globe:
     def calcul_indice(self, objet):
         """Méthode qui calcule les indices d'un objet dans liste_zones en fonction de ses coordonnées
         """
-        lat = (objet.latitude + 324000) // self.lat_zone
+        indice_lat = (objet.latitude + 324000) // self.lat_zone
         if objet.latitude == 324000:
-            lat -= 1
-        long = (objet.longitude + 648000) // self.long_zone
+            indice_lat -= 1
+        indice_long = (objet.longitude + 648000) // self.long_zone
         if objet.longitude == 647999:
-            long -= 1
-        return lat, long
+            indice_long -= 1
+        return indice_lat, indice_long
 
-    def photos_autour_zone(self, lat, long):
-        """Méthode qui renvoie la liste des photos autour d'une zone d'indices [lat][long]"""
-        liste_photos = list(self.liste_zones[lat][long].photos_a_prendre)
-        max_lat = self.nb_zones_lat - 1  # indices maximaux de liste_zones
+    def photos_autour_zone(self, indice_lat, indice_long):
+        """Méthode qui renvoie la liste des photos autour d'une zone d'indices [indice_lat][indice_long]"""
+        liste_photos = list(self.liste_zones[indice_lat][indice_long].photos_a_prendre)
+        # indices maximaux de liste_zones
+        max_lat = self.nb_zones_lat - 1
         max_long = self.nb_zones_long - 1
 
-        if lat == 0:
+        if indice_lat == 0:
             # Coin bas gauche
             # On prend les indices finaux en latitude pour zones en-dessous
-            if long == 0:
+            if indice_long == 0:
                 # On prend les indices finaux en longitude pour zones à gauche
                 liste_photos += self.liste_zones[1][0].photos_a_prendre  # zone au-dessus
                 liste_photos += self.liste_zones[1][1].photos_a_prendre  # zone au-dessus à droite
@@ -89,98 +90,98 @@ class Globe:
                 liste_photos += self.liste_zones[1][max_long].photos_a_prendre  # zone au-dessus à gauche
 
                 # Coin bas droit
-            elif long == max_long:
+            elif indice_long == max_long:
                 # On prend les indices de début en longitude pour les zones à droite
-                liste_photos += self.liste_zones[1][long].photos_a_prendre  # zone au-dessus
+                liste_photos += self.liste_zones[1][indice_long].photos_a_prendre  # zone au-dessus
                 liste_photos += self.liste_zones[1][0].photos_a_prendre  # zone au-dessus à droite
                 liste_photos += self.liste_zones[0][0].photos_a_prendre  # zone à droite
                 liste_photos += self.liste_zones[max_lat][0].photos_a_prendre  # en bas à droite
-                liste_photos += self.liste_zones[max_lat][long].photos_a_prendre  # en bas
-                liste_photos += self.liste_zones[max_lat][long - 1].photos_a_prendre  # en bas à gauche
-                liste_photos += self.liste_zones[0][long - 1].photos_a_prendre  # zone à gauche
-                liste_photos += self.liste_zones[1][long - 1].photos_a_prendre  # zone au-dessus à gauche
+                liste_photos += self.liste_zones[max_lat][indice_long].photos_a_prendre  # en bas
+                liste_photos += self.liste_zones[max_lat][indice_long - 1].photos_a_prendre  # en bas à gauche
+                liste_photos += self.liste_zones[0][indice_long - 1].photos_a_prendre  # zone à gauche
+                liste_photos += self.liste_zones[1][indice_long - 1].photos_a_prendre  # zone au-dessus à gauche
 
                 # Bord bas
             else:
-                liste_photos += self.liste_zones[1][long].photos_a_prendre  # zone au-dessus
-                liste_photos += self.liste_zones[1][long + 1].photos_a_prendre  # zone au-dessus à droite
-                liste_photos += self.liste_zones[0][long + 1].photos_a_prendre  # zone à droite
-                liste_photos += self.liste_zones[max_lat][long + 1].photos_a_prendre  # en bas à droite
-                liste_photos += self.liste_zones[max_lat][long].photos_a_prendre  # en bas
-                liste_photos += self.liste_zones[max_lat][long - 1].photos_a_prendre  # en bas à gauche
-                liste_photos += self.liste_zones[0][long - 1].photos_a_prendre  # zone à gauche
-                liste_photos += self.liste_zones[1][long - 1].photos_a_prendre  # zone au-dessus à gauche
+                liste_photos += self.liste_zones[1][indice_long].photos_a_prendre  # zone au-dessus
+                liste_photos += self.liste_zones[1][indice_long + 1].photos_a_prendre  # zone au-dessus à droite
+                liste_photos += self.liste_zones[0][indice_long + 1].photos_a_prendre  # zone à droite
+                liste_photos += self.liste_zones[max_lat][indice_long + 1].photos_a_prendre  # en bas à droite
+                liste_photos += self.liste_zones[max_lat][indice_long].photos_a_prendre  # en bas
+                liste_photos += self.liste_zones[max_lat][indice_long - 1].photos_a_prendre  # en bas à gauche
+                liste_photos += self.liste_zones[0][indice_long - 1].photos_a_prendre  # zone à gauche
+                liste_photos += self.liste_zones[1][indice_long - 1].photos_a_prendre  # zone au-dessus à gauche
 
-        elif lat == max_lat:
+        elif indice_lat == max_lat:
             #  Coin haut gauche
             #  On prend l'indice 0 en latitude pour les zones au-dessus
-            if long == 0:
+            if indice_long == 0:
                 #  On prend les indices finaux en longitude pour les zones à gauche
                 liste_photos += self.liste_zones[0][0].photos_a_prendre  # zone au-dessus
                 liste_photos += self.liste_zones[0][1].photos_a_prendre  # zone au-dessus à droite
-                liste_photos += self.liste_zones[lat][1].photos_a_prendre  # zone à droite
-                liste_photos += self.liste_zones[lat - 1][1].photos_a_prendre  # en bas à droite
-                liste_photos += self.liste_zones[lat - 1][0].photos_a_prendre  # en bas
-                liste_photos += self.liste_zones[lat - 1][max_long].photos_a_prendre  # en bas à gauche
-                liste_photos += self.liste_zones[lat][max_long].photos_a_prendre  # zone à gauche
+                liste_photos += self.liste_zones[indice_lat][1].photos_a_prendre  # zone à droite
+                liste_photos += self.liste_zones[indice_lat - 1][1].photos_a_prendre  # en bas à droite
+                liste_photos += self.liste_zones[indice_lat - 1][0].photos_a_prendre  # en bas
+                liste_photos += self.liste_zones[indice_lat - 1][max_long].photos_a_prendre  # en bas à gauche
+                liste_photos += self.liste_zones[indice_lat][max_long].photos_a_prendre  # zone à gauche
                 liste_photos += self.liste_zones[0][max_long].photos_a_prendre  # zone au-dessus à gauche
 
             # Coin haut droit
-            elif long == max_long:
+            elif indice_long == max_long:
                 # On prend les indices de début en longitude pour les zones à droite
-                liste_photos += self.liste_zones[0][long].photos_a_prendre  # zone au-dessus
+                liste_photos += self.liste_zones[0][indice_long].photos_a_prendre  # zone au-dessus
                 liste_photos += self.liste_zones[0][0].photos_a_prendre  # zone au-dessus à droite
-                liste_photos += self.liste_zones[lat][0].photos_a_prendre  # zone à droite
-                liste_photos += self.liste_zones[lat - 1][0].photos_a_prendre  # en bas à droite
-                liste_photos += self.liste_zones[lat - 1][long].photos_a_prendre  # en bas
-                liste_photos += self.liste_zones[lat - 1][long - 1].photos_a_prendre  # en bas à gauche
-                liste_photos += self.liste_zones[lat][long - 1].photos_a_prendre  # zone à gauche
-                liste_photos += self.liste_zones[0][long - 1].photos_a_prendre  # zone au-dessus à gauche
+                liste_photos += self.liste_zones[indice_lat][0].photos_a_prendre  # zone à droite
+                liste_photos += self.liste_zones[indice_lat - 1][0].photos_a_prendre  # en bas à droite
+                liste_photos += self.liste_zones[indice_lat - 1][indice_long].photos_a_prendre  # en bas
+                liste_photos += self.liste_zones[indice_lat - 1][indice_long - 1].photos_a_prendre  # en bas à gauche
+                liste_photos += self.liste_zones[indice_lat][indice_long - 1].photos_a_prendre  # zone à gauche
+                liste_photos += self.liste_zones[0][indice_long - 1].photos_a_prendre  # zone au-dessus à gauche
 
             # Bord haut
             else:
-                liste_photos += self.liste_zones[0][long].photos_a_prendre  # zone au-dessus
-                liste_photos += self.liste_zones[0][long + 1].photos_a_prendre  # zone au-dessus à droite
-                liste_photos += self.liste_zones[lat][long + 1].photos_a_prendre  # zone à droite
-                liste_photos += self.liste_zones[lat - 1][long + 1].photos_a_prendre  # en bas à droite
-                liste_photos += self.liste_zones[lat - 1][long].photos_a_prendre  # en bas
-                liste_photos += self.liste_zones[lat - 1][long - 1].photos_a_prendre  # en bas à gauche
-                liste_photos += self.liste_zones[lat][long - 1].photos_a_prendre  # zone à gauche
-                liste_photos += self.liste_zones[0][long - 1].photos_a_prendre  # zone au-dessus à gauche
+                liste_photos += self.liste_zones[0][indice_long].photos_a_prendre  # zone au-dessus
+                liste_photos += self.liste_zones[0][indice_long + 1].photos_a_prendre  # zone au-dessus à droite
+                liste_photos += self.liste_zones[indice_lat][indice_long + 1].photos_a_prendre  # zone à droite
+                liste_photos += self.liste_zones[indice_lat - 1][indice_long + 1].photos_a_prendre  # en bas à droite
+                liste_photos += self.liste_zones[indice_lat - 1][indice_long].photos_a_prendre  # en bas
+                liste_photos += self.liste_zones[indice_lat - 1][indice_long - 1].photos_a_prendre  # en bas à gauche
+                liste_photos += self.liste_zones[indice_lat][indice_long - 1].photos_a_prendre  # zone à gauche
+                liste_photos += self.liste_zones[0][indice_long - 1].photos_a_prendre  # zone au-dessus à gauche
 
         # Bord gauche
-        elif long == 0:
+        elif indice_long == 0:
             #  On prend les indices finaux en longitude pour les zones à gauche
-            liste_photos += self.liste_zones[lat + 1][0].photos_a_prendre  # zone au-dessus
-            liste_photos += self.liste_zones[lat + 1][1].photos_a_prendre  # zone au-dessus à droite
-            liste_photos += self.liste_zones[lat][1].photos_a_prendre  # zone à droite
-            liste_photos += self.liste_zones[lat - 1][1].photos_a_prendre  # en bas à droite
-            liste_photos += self.liste_zones[lat - 1][0].photos_a_prendre  # en bas
-            liste_photos += self.liste_zones[lat - 1][max_long].photos_a_prendre  # en bas à gauche
-            liste_photos += self.liste_zones[lat][max_long].photos_a_prendre  # zone à gauche
-            liste_photos += self.liste_zones[lat + 1][max_long].photos_a_prendre  # zone au-dessus à gauche
+            liste_photos += self.liste_zones[indice_lat + 1][0].photos_a_prendre  # zone au-dessus
+            liste_photos += self.liste_zones[indice_lat + 1][1].photos_a_prendre  # zone au-dessus à droite
+            liste_photos += self.liste_zones[indice_lat][1].photos_a_prendre  # zone à droite
+            liste_photos += self.liste_zones[indice_lat - 1][1].photos_a_prendre  # en bas à droite
+            liste_photos += self.liste_zones[indice_lat - 1][0].photos_a_prendre  # en bas
+            liste_photos += self.liste_zones[indice_lat - 1][max_long].photos_a_prendre  # en bas à gauche
+            liste_photos += self.liste_zones[indice_lat][max_long].photos_a_prendre  # zone à gauche
+            liste_photos += self.liste_zones[indice_lat + 1][max_long].photos_a_prendre  # zone au-dessus à gauche
 
         # Bord droit
-        elif long == max_long:
+        elif indice_long == max_long:
             # On prend les indices de début en longitude pour les zones à droite
-            liste_photos += self.liste_zones[lat + 1][long].photos_a_prendre  # zone au-dessus
-            liste_photos += self.liste_zones[lat + 1][0].photos_a_prendre  # zone au-dessus à droite
-            liste_photos += self.liste_zones[lat][0].photos_a_prendre  # zone à droite
-            liste_photos += self.liste_zones[lat - 1][0].photos_a_prendre  # en bas à droite
-            liste_photos += self.liste_zones[lat - 1][long].photos_a_prendre  # en bas
-            liste_photos += self.liste_zones[lat - 1][long - 1].photos_a_prendre  # en bas à gauche
-            liste_photos += self.liste_zones[lat][long - 1].photos_a_prendre  # zone à gauche
-            liste_photos += self.liste_zones[lat + 1][long - 1].photos_a_prendre  # zone au-dessus à gauche
+            liste_photos += self.liste_zones[indice_lat + 1][indice_long].photos_a_prendre  # zone au-dessus
+            liste_photos += self.liste_zones[indice_lat + 1][0].photos_a_prendre  # zone au-dessus à droite
+            liste_photos += self.liste_zones[indice_lat][0].photos_a_prendre  # zone à droite
+            liste_photos += self.liste_zones[indice_lat - 1][0].photos_a_prendre  # en bas à droite
+            liste_photos += self.liste_zones[indice_lat - 1][indice_long].photos_a_prendre  # en bas
+            liste_photos += self.liste_zones[indice_lat - 1][indice_long - 1].photos_a_prendre  # en bas à gauche
+            liste_photos += self.liste_zones[indice_lat][indice_long - 1].photos_a_prendre  # zone à gauche
+            liste_photos += self.liste_zones[indice_lat + 1][indice_long - 1].photos_a_prendre  # zone au-dessus à gauche
 
         # Cas général sans problème de bornes
         else:
-            liste_photos += self.liste_zones[lat + 1][long].photos_a_prendre  # zone au-dessus
-            liste_photos += self.liste_zones[lat + 1][long + 1].photos_a_prendre  # zone au-dessus à droite
-            liste_photos += self.liste_zones[lat][long + 1].photos_a_prendre  # zone à droite
-            liste_photos += self.liste_zones[lat - 1][long + 1].photos_a_prendre  # en bas à droite
-            liste_photos += self.liste_zones[lat - 1][long].photos_a_prendre  # en bas
-            liste_photos += self.liste_zones[lat - 1][long - 1].photos_a_prendre  # en bas à gauche
-            liste_photos += self.liste_zones[lat][long - 1].photos_a_prendre  # zone à gauche
-            liste_photos += self.liste_zones[lat + 1][long - 1].photos_a_prendre  # zone au-dessus à gauche
+            liste_photos += self.liste_zones[indice_lat + 1][indice_long].photos_a_prendre  # zone au-dessus
+            liste_photos += self.liste_zones[indice_lat + 1][indice_long + 1].photos_a_prendre  # zone au-dessus à droite
+            liste_photos += self.liste_zones[indice_lat][indice_long + 1].photos_a_prendre  # zone à droite
+            liste_photos += self.liste_zones[indice_lat - 1][indice_long + 1].photos_a_prendre  # en bas à droite
+            liste_photos += self.liste_zones[indice_lat - 1][indice_long].photos_a_prendre  # en bas
+            liste_photos += self.liste_zones[indice_lat - 1][indice_long - 1].photos_a_prendre  # en bas à gauche
+            liste_photos += self.liste_zones[indice_lat][indice_long - 1].photos_a_prendre  # zone à gauche
+            liste_photos += self.liste_zones[indice_lat + 1][indice_long - 1].photos_a_prendre  # zone au-dessus à gauche
 
         return liste_photos
