@@ -73,7 +73,7 @@ class Distributeur:
                     choix = True
 
         if choix:
-            photo_choisie = sorted(photos_prenables, key=lambda k: [k.collection.ratio_rentabilite], reverse=True)[0]
+            photo_choisie = sorted(photos_prenables, key=lambda k: [k.collection.ratio_rentabilite * (self.nb_tours - tour) + k.collection.ratio_actuel * tour], reverse=True)[0]
             photo_choisie.prise_par_id = satellite.id
             photo_choisie.prise_tour = tour + 1
 
@@ -82,6 +82,7 @@ class Distributeur:
 
             self.globe.liste_zones[photo_indice_lat][photo_indice_long].photos_a_prendre.remove(photo_choisie)
             self.globe.liste_zones[photo_indice_lat][photo_indice_long].photos_prises.append(photo_choisie)
+            photo_choisie.collection.update_ratio()
 
             return photo_choisie.latitude, photo_choisie.longitude
 
