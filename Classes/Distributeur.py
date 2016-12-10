@@ -69,8 +69,6 @@ class Distributeur:
         photos_prenables = []
         choix = False
         photos_autour_zone = self.globe.photos_autour_zone(lat, long)
-        if tour == 1:
-            a = 1
 
         for photo in photos_autour_zone:
             # On teste si dans l'intervalle de mouvement qu'on avait, il y a une photo
