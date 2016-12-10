@@ -15,6 +15,8 @@ class Distributeur:
         self.liste_satellites = liste_satellites
         self.liste_collections = liste_collections  # Liste de toutes les collections
         self.globe = globe
+        self.ratio_moyen = self.moyenne_ratio()
+        self.seuil_ratio = self.ratio_moyen * 15 / 100
 
     def algo_opti(self):
         """
@@ -66,25 +68,29 @@ class Distributeur:
             # On teste si dans l'intervalle de mouvement qu'on avait, il y a une photo
             if sat.peut_prendre(photo, tour):
                 # La photo est bien prenable :
-                photos_prenables.append(photo)
-                choix = True
+                if photo.collection.ratio_rentabilite > self.seuil_ratio:
+                    photos_prenables.append(photo)
+                    choix = True
 
         if choix:
             photo_choisie = sorted(photos_prenables, key=lambda k: [k.collection.ratio_rentabilite], reverse=True)[0]
             photo_choisie.prise_par_id = satellite.id
             photo_choisie.prise_tour = tour + 1
 
-            photo_lat = (photo_choisie.latitude + 324000) // self.globe.lat_zone
-            if photo_choisie.latitude == 324000:
-                photo_lat -= 1
-            photo_long = (photo_choisie.longitude + 648000) // self.globe.long_zone
-            if photo_choisie.longitude == 647999:
-                photo_long -= 1
+            # Calcul des indices de la photo choisie dans liste_zones
+            photo_indice_lat, photo_indice_long = self.globe.calcul_indice(photo_choisie)
 
-            self.globe.liste_zones[photo_lat][photo_long].photos_a_prendre.remove(photo_choisie)
-            self.globe.liste_zones[photo_lat][photo_long].photos_prises.append(photo_choisie)
+            self.globe.liste_zones[photo_indice_lat][photo_indice_long].photos_a_prendre.remove(photo_choisie)
+            self.globe.liste_zones[photo_indice_lat][photo_indice_long].photos_prises.append(photo_choisie)
 
             return photo_choisie.latitude, photo_choisie.longitude
 
         else:
             return None, None
+
+    def moyenne_ratio(self):
+        somme = 0
+        for collection in self.liste_collections:
+            somme += collection.ratio_rentabilite
+        somme /= len(self.liste_collections)
+        return somme
