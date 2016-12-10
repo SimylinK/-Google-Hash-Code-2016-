@@ -53,14 +53,8 @@ class Distributeur:
         # On simule un avancement d'un tour de ce satellite
         sat.tour_suivant()
 
-        #  Calcul de la Zone dans laquelle se trouve le satellite
-        lat = (sat.latitude + 324000) // self.globe.lat_zone
-        if sat.latitude == 324000:
-            lat -= 1
-
-        long = (sat.longitude + 648000) // self.globe.long_zone
-        if sat.longitude == 647999:
-            long -= 1
+        #  Calcul des indices de ce dernier dans liste_zones
+        lat, long = self.globe.calcul_indice(sat)
 
         photos_prenables = []
         choix = False

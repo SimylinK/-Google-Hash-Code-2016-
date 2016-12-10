@@ -57,6 +57,17 @@ class Globe:
 
         return liste_zones
 
+    def calcul_indice(self, objet):
+        """Méthode qui calcule les indices d'un objet dans liste_zones en fonction de ses coordonnées
+        """
+        lat = (objet.latitude + 324000) // self.lat_zone
+        if objet.latitude == 324000:
+            lat -= 1
+        long = (objet.longitude + 648000) // self.long_zone
+        if objet.longitude == 647999:
+            long -= 1
+        return lat, long
+
     def photos_autour_zone(self, lat, long):
         """Méthode qui renvoie la liste des photos autour d'une zone d'indices [lat][long]"""
         liste_photos = list(self.liste_zones[lat][long].photos_a_prendre)
