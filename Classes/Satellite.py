@@ -86,16 +86,12 @@ class Satellite:
         if self.passe_pole_nord and lat + self.max_deplacement_camera < 324000:
             # Les deux sont du même côté de la planète, on peut faire un calcul de latitude simpliste
             dist_lat = lat - self.latitude_camera
-            dist_long = self.distance_longitude(self.longitude_camera)
             self.latitude_camera = lat + dist_lat
-            self.longitude_camera = long + dist_long
             self.passe_pole_nord = False
 
         if self.passe_pole_sud and lat - self.max_deplacement_camera > -324000:
             dist_lat = lat - self.latitude_camera
-            dist_long = self.distance_longitude(self.longitude_camera)
             self.latitude_camera = lat + dist_lat
-            self.longitude_camera = long + dist_long
             self.passe_pole_sud = False
 
     def distance_latitude(self, latitude):
