@@ -206,6 +206,16 @@ class Satellite:
         else:
             self.range_deplacement_camera[1][1] += vitesse
 
+    def clone(self):
+        """Méthode qui retourne un clone du satellite"""
+        sat = Satellite(self.id, self.latitude, self.longitude, self.vitesse,
+                        self.vitesse_camera, self.max_deplacement_camera)
+        sat.range_deplacement_camera = self.range_deplacement_camera
+        sat.latitude_camera = self.latitude_camera
+        sat.longitude_camera = self.longitude_camera
+
+        return sat
+
 
 # Tests des fonctions
 if __name__ == "__main__":

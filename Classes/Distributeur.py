@@ -48,11 +48,7 @@ class Distributeur:
         lat et long sont les indices de la zone dans laquelle se trouve le satellite"""
 
         # On crée un satellite intermédiaire
-        sat = Satellite(satellite.id, satellite.latitude, satellite.longitude, satellite.vitesse,
-                        satellite.vitesse_camera, satellite.max_deplacement_camera)
-        sat.range_deplacement_camera = satellite.range_deplacement_camera
-        sat.latitude_camera = satellite.latitude_camera
-        sat.longitude_camera = satellite.longitude_camera
+        sat = satellite.clone()
 
         # On simule un avancement d'un tour de ce satellite
         sat.tour_suivant()
