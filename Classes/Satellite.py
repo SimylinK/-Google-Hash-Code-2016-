@@ -29,21 +29,26 @@ class Satellite:
         #  range_deplacement représente de combien on peut bouger dans chaque direction par rapport à la caméra au tour t +1
         self.range_deplacement_camera = [[self.vitesse_camera, self.vitesse_camera],
                                          [self.vitesse_camera, self.vitesse_camera]]
+        self.passe_pole_nord = False
+        self.passe_pole_sud = False
 
     def tour_suivant(self, latitude_cam=None, longitude_cam=None):
         """ Calcule la position suivante du satellite
         et la prochaine position de la caméra si besoin ( si les valeurs sont différentes de None)
         """
+
         # Déplacement du Satellite
         lat = self.latitude + self.vitesse
         long = self.longitude - 15
         # Passage au-dessus du pôle nord
         if lat > 324000:
+            self.passe_pole_nord = True
             lat = 648000 - lat
             long -= 648000
             self.vitesse = -self.vitesse
         # Passage au-dessus du pôle sud
         elif lat < -324000:
+            self.passe_pole_sud = True
             lat = -648000 - lat
             long += -648000
             self.vitesse = -self.vitesse
@@ -69,7 +74,7 @@ class Satellite:
             # Passage au-dessus du pôle sud
             elif lat_cam < -324000:
                 lat_cam = -648000 - lat_cam
-                long_cam += 648000
+                long_cam += -648000
                 self.orientation_vitesse_camera *= -1
             # long est compris entre -648000 et 647999
             if long_cam < -648000:
@@ -77,6 +82,21 @@ class Satellite:
 
             self.latitude_camera = lat_cam
             self.longitude_camera = long_cam
+
+        if self.passe_pole_nord and lat + self.max_deplacement_camera < 324000:
+            # Les deux sont du même côté de la planète, on peut faire un calcul de latitude simpliste
+            dist_lat = lat - self.latitude_camera
+            dist_long = self.distance_longitude(self.longitude_camera)
+            self.latitude_camera = lat + dist_lat
+            self.longitude_camera = long + dist_long
+            self.passe_pole_nord = False
+
+        if self.passe_pole_sud and lat - self.max_deplacement_camera > -324000:
+            dist_lat = lat - self.latitude_camera
+            dist_long = self.distance_longitude(self.longitude_camera)
+            self.latitude_camera = lat + dist_lat
+            self.longitude_camera = long + dist_long
+            self.passe_pole_sud = False
 
     def distance_latitude(self, latitude):
         """Calcule l'écart entre le satellite et un point par rapport au satellite
@@ -86,7 +106,7 @@ class Satellite:
         # Pas besoin de tester les pôles car il n'y a pas de photo à plus de 85° N ou S.
         return self.latitude - latitude
 
-    def distance_longitude(self,longitude):
+    def distance_longitude(self, longitude):
         """Calcule l'écart entre le satellite et un point par rapport au satellite
             :return: longitude, nombre entier"""
         satellite = self.longitude
@@ -96,9 +116,9 @@ class Satellite:
             if longitude >= 0:
                 # Le point a une longitude positive ou nulle
                 dist_long = satellite - longitude
-            else :
+            else:
                 # Le point a une longitude négative
-                distance_absolue = min(abs(satellite - longitude),abs(648000 - satellite) + abs(-648000 - longitude))
+                distance_absolue = min(abs(satellite - longitude), abs(648000 - satellite) + abs(-648000 - longitude))
                 # Calcul de la plus courte distance entre passer par +180° ou pas
                 if distance_absolue == abs(satellite - longitude):
                     # On ne passe pas par +180° pour aller du satellite au point
@@ -121,6 +141,15 @@ class Satellite:
                 else:
                     #  On passe par -180° pour aller du satellite au point
                     dist_long = distance_absolue
+
+        # Cas où le satellite et la caméra sont séparés par un pôle
+        if abs(dist_long) > self.max_deplacement_camera:
+            if longitude >= 0:
+                # séparé par le pôle nord
+                dist_long = self.distance_longitude(longitude - 648000)
+            if longitude <= 0:
+                # séparé par le pôle sud
+                dist_long = self.distance_longitude(longitude + 648000)
 
         return dist_long
 
@@ -223,7 +252,7 @@ if __name__ == "__main__":
     print("----------------------")
     s4 = Satellite(0, 0, -647975, -500, 0, 0)
     s4.tour_suivant()
-    print(str(s4.latitude),str(s4.longitude))
+    print(str(s4.latitude), str(s4.longitude))
     s4.tour_suivant()
     print(str(s4.latitude), str(s4.longitude))
     s4.tour_suivant()

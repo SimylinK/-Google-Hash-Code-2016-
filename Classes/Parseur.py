@@ -10,12 +10,12 @@
         import ZoneGlobe : classe ZoneGlobe.
 """
 
-from Photo import Photo
-from Collection import Collection
-from Satellite import Satellite
-from ZoneGlobe import ZoneGlobe
 import os
-import math
+
+from Classes.Collection import Collection
+from Classes.Globe import Globe
+from Classes.Photo import Photo
+from Classes.Satellite import Satellite
 
 
 class Parseur:
@@ -29,12 +29,6 @@ class Parseur:
     """
 
     # Constantes :
-    LAT_ZONE = 0  # Paramètres à changer pour modifier la taille des zones, calculé ensuite
-    LONG_ZONE = 0
-    TAILLE_LAT = 648000  # Taille de la Terre en arcsecondes
-    TAILLE_LONG = 1295999
-    NB_ZONES_LAT = 0  # Calculé ensuite
-    NB_ZONES_LONG = 0
     REPERTOIRE = os.getcwd()
 
     def __init__(self, chemin_input=None, chemin_output=None):
@@ -48,7 +42,6 @@ class Parseur:
             self.chemin_output = chemin_output
         else:
             self.chemin_output = self.REPERTOIRE + '\\fichier_output.out'
-        self.liste_zones = []
 
     def demander_input(self):
         chemin = ' '
@@ -62,46 +55,6 @@ class Parseur:
             chemin = input("Chemin absolu du fichier output : ")
         return chemin
 
-    def creation_zones(self):
-        """Méthode chargée de créer les différentes zones du globe"""
-        # IDEE : lat(objet) + 324000 // LAT_ZONE = indice dans la liste
-        print("Création des zones")
-        reste_lat = self.TAILLE_LAT % self.LAT_ZONE
-        reste_long = self.TAILLE_LONG % self.LONG_ZONE
-
-        liste_zones = []  # Liste de listes de zones. Tous les éléments d'une sous-liste possèdent la même latitude
-
-        for i in range(-324000, 324000 - reste_lat, self.LAT_ZONE):
-            liste_longitude = []
-            for j in range(-648000, 647999 - reste_long, self.LONG_ZONE):
-                liste_longitude.append(ZoneGlobe(i, i + self.LAT_ZONE, j, j + self.LONG_ZONE))
-            liste_zones.append(liste_longitude)
-
-        # S'il reste des zones de tailles inférieures, on les ajoute ici
-        if reste_lat != 0:
-            # On boucle sur la longitude, on ajoute donc une nouvelle sous-liste:
-            liste_ajoutee = []
-            for i in range(-648000, 647999, self.LONG_ZONE):
-                if i + self.LONG_ZONE > 647999:
-                    liste_ajoutee.append(ZoneGlobe(324000 - reste_lat, 324000, i, 647999))
-                else:
-                    liste_ajoutee.append(ZoneGlobe(324000 - reste_lat, 324000, i, i + self.LONG_ZONE))
-            liste_zones.append(liste_ajoutee)
-
-        if reste_long != 0:
-            # On ajoute à la fin de chaque sous-liste la dernière zone
-            indice = 0
-            for i in range(-324000, 324000, self.LAT_ZONE):
-                #  Pour éviter d'ajouter deux fois la case de latitude et longitude maximales:
-                if indice < self.NB_ZONES_LAT:
-                    if i + self.LAT_ZONE > 324000:
-                        liste_zones[indice].append(ZoneGlobe(i, 324000, 647999 - reste_long, 647999))
-                    else:
-                        liste_zones[indice].append(ZoneGlobe(i, i + self.LAT_ZONE, 647999 - reste_long, 647999))
-                indice += 1
-
-        return liste_zones
-
     def recup(self):
         """Méthode chargée de : Récupérer les informations du fichier d'input et de les transformer en instances
         de classes.
@@ -113,7 +66,7 @@ class Parseur:
 
         liste_satellites = []  # On transforme chaque ligne en une instance de la classe Satellite
         id = 0
-        max_deplacement = 0 # Sert à calculer le max_déplacement_satellite sur tous les satellites
+        max_deplacement = 0  # Sert à calculer le max_déplacement_satellite sur tous les satellites
         for i in range(0, nb_satellites):
             chaine = fichier_input.readline().rstrip()
             satellite = self.satellite_par_chaine(id, chaine)
@@ -122,14 +75,8 @@ class Parseur:
             if satellite.max_deplacement_camera > max_deplacement:
                 max_deplacement = satellite.max_deplacement_camera
 
-        #  On met à jour les constantes
-        self.LAT_ZONE = max_deplacement  # Ainsi, le satellite ne peut pas prendre de caméra dans plus de 9 zones en même temps
-        self.LONG_ZONE = max_deplacement
-        self.NB_ZONES_LAT = math.ceil(self.TAILLE_LAT / self.LAT_ZONE)
-        self.NB_ZONES_LONG = math.ceil(self.TAILLE_LONG / self.LONG_ZONE)
-
-        # On lance ensuite la création des zones
-        self.liste_zones = self.creation_zones()
+        # On crée le globe (avec les zones)
+        globe = Globe(max_deplacement)
 
         # On transforme les lignes suivantes en instances des classes Photo et Collection
         nb_collections = int(fichier_input.readline().rstrip())
@@ -140,13 +87,13 @@ class Parseur:
             for j in range(collection.nb_photos):  # À chaque collection, on ajoute ses photos
                 chaine_photo = (fichier_input.readline().rstrip())
                 photo = self.photo_par_chaine(chaine_photo, collection)
-                lat = (photo.latitude + 324000) // self.LAT_ZONE
+                lat = (photo.latitude + 324000) // globe.lat_zone
                 if satellite.latitude == 324000:
                     lat -= 1
-                long = (photo.longitude + 648000) // self.LONG_ZONE
-                if satellite.longitude == 648000:
+                long = (photo.longitude + 648000) // globe.long_zone
+                if satellite.longitude == 647999:
                     long -= 1
-                self.liste_zones[lat][long].ajouter_photo(photo)
+                globe.liste_zones[lat][long].ajouter_photo(photo)
                 collection.ajouter_photo(photo)
             for k in range(collection.nb_intervalles):  # À chaque collection, on ajoute ses intervalles
                 chaine_intervalle = (fichier_input.readline().rstrip())
@@ -155,7 +102,7 @@ class Parseur:
             liste_collections.append(collection)
         fichier_input.close()
 
-        return nb_tours, nb_satellites, liste_satellites, liste_collections
+        return nb_tours, nb_satellites, liste_satellites, liste_collections, globe
 
     def photo_par_chaine(self, caracteres, collection):
         """Transforme une ligne du fichier input en une instance de la classe Photo"""

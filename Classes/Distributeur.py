@@ -1,28 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import math
-from Satellite import Satellite
+from Classes.Satellite import Satellite
 
 
 class Distributeur:
     """Classe chargée de :
     distribuer les photos entre les satellites et des les associer dans un calendrier
     """
-    # Constantes :
-    TAILLE_LAT = 648000  # Taille de la Terre en arcsecondes
-    TAILLE_LONG = 1295999
 
-    def __init__(self, nb_tours, nb_satellites, liste_satellites, liste_collections, liste_zones, LAT_ZONE, LONG_ZONE):
+    def __init__(self, nb_tours, nb_satellites, liste_satellites, liste_collections, globe):
         self.nb_tours = nb_tours
         self.nb_satellites = nb_satellites
         self.liste_satellites = liste_satellites
         self.liste_collections = liste_collections  # Liste de toutes les collections
-        self.liste_zones = liste_zones
-        self.LAT_ZONE = LAT_ZONE # Calculés par parseur
-        self.LONG_ZONE = LONG_ZONE
-        self.NB_ZONES_LAT = math.ceil(self.TAILLE_LAT / LAT_ZONE)  # On ne compte pas la dernière zone plus petite
-        self.NB_ZONES_LONG = math.ceil(self.TAILLE_LONG / LONG_ZONE)
+        self.globe = globe
 
     def algo_opti(self):
         """
@@ -41,13 +33,13 @@ class Distributeur:
                 else:
                     # On prédit si on prend une photo au tour suivant
                     lat_choisie, long_choisie = self.prediction(satellite, tour)
+                    satellite.tour_suivant(lat_choisie, long_choisie)
                     if lat_choisie:
                         satellite.reset_camera()
                         nb_photos_prises += 1
                     else:
                         # Mise à jour de range_déplacement_camera
                         satellite.update_camera()
-                    satellite.tour_suivant(lat_choisie, long_choisie)
 
         return nb_photos_prises
 
@@ -56,7 +48,8 @@ class Distributeur:
         lat et long sont les indices de la zone dans laquelle se trouve le satellite"""
 
         # On crée un satellite intermédiaire
-        sat = Satellite(satellite.id, satellite.latitude, satellite.longitude, satellite.vitesse, satellite.vitesse_camera, satellite.max_deplacement_camera)
+        sat = Satellite(satellite.id, satellite.latitude, satellite.longitude, satellite.vitesse,
+                        satellite.vitesse_camera, satellite.max_deplacement_camera)
         sat.range_deplacement_camera = satellite.range_deplacement_camera
         sat.latitude_camera = satellite.latitude_camera
         sat.longitude_camera = satellite.longitude_camera
@@ -65,24 +58,25 @@ class Distributeur:
         sat.tour_suivant()
 
         #  Calcul de la Zone dans laquelle se trouve le satellite
-        lat = (satellite.latitude + 324000) // self.LAT_ZONE
-        if satellite.latitude == 324000:
+        lat = (sat.latitude + 324000) // self.globe.lat_zone
+        if sat.latitude == 324000:
             lat -= 1
 
-        long = (satellite.longitude + 648000) // self.LONG_ZONE
-        if satellite.longitude == 648000:
+        long = (sat.longitude + 648000) // self.globe.long_zone
+        if sat.longitude == 647999:
             long -= 1
 
         photos_prenables = []
         choix = False
+        photos_autour_zone = self.globe.photos_autour_zone(lat, long)
 
-        for photo in self.liste_zones[lat][long].photos_a_prendre:
-            for intervalle in photo.collection.liste_intervalles:
-                if intervalle[0] <= tour + 1 <= intervalle[1]:
-                    # On teste si dans l'intervalle de mouvement qu'on avait, il y a une photo
-                    if (sat.latitude_camera - sat.range_deplacement_camera[0][0] <= photo.latitude <= sat.latitude_camera +
-                        sat.range_deplacement_camera[0][1] and sat.longitude_camera - sat.range_deplacement_camera[1][0]
-                        <= photo.longitude <= sat.longitude_camera + sat.range_deplacement_camera[1][1]):
+        for photo in photos_autour_zone:
+            # On teste si dans l'intervalle de mouvement qu'on avait, il y a une photo
+            if (sat.latitude_camera - sat.range_deplacement_camera[0][0] <= photo.latitude <= sat.latitude_camera +
+                sat.range_deplacement_camera[0][1] and sat.longitude_camera - sat.range_deplacement_camera[1][0]
+                <= photo.longitude <= sat.longitude_camera + sat.range_deplacement_camera[1][1]):
+                for intervalle in photo.collection.liste_intervalles:
+                    if intervalle[0] <= tour + 1 <= intervalle[1]:
                         # La photo est bien prenable :
                         photos_prenables.append(photo)
                         choix = True
@@ -91,8 +85,16 @@ class Distributeur:
             photo_choisie = sorted(photos_prenables, key=lambda k: [k.collection.ratio_rentabilite], reverse=True)[0]
             photo_choisie.prise_par_id = satellite.id
             photo_choisie.prise_tour = tour + 1
-            self.liste_zones[lat][long].photos_a_prendre.remove(photo_choisie)
-            self.liste_zones[lat][long].photos_prises.append(photo_choisie)
+
+            photo_lat = (photo_choisie.latitude + 324000) // self.globe.lat_zone
+            if photo_choisie.latitude == 324000:
+                photo_lat -= 1
+            photo_long = (photo_choisie.longitude + 648000) // self.globe.long_zone
+            if photo_choisie.longitude == 647999:
+                photo_long -= 1
+
+            self.globe.liste_zones[photo_lat][photo_long].photos_a_prendre.remove(photo_choisie)
+            self.globe.liste_zones[photo_lat][photo_long].photos_prises.append(photo_choisie)
 
             return photo_choisie.latitude, photo_choisie.longitude
 

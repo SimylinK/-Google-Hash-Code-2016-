@@ -11,11 +11,11 @@
 
 __version__ = "0.0.1"
 
-
 # [Optionnel] ajouter ici les principaux symboles, à importer facilement lors de l'usage du paquet polyhash
 
 # permet l'usage dans le module main de: from .polyhash import solve
 # plutôt que: from .polyhash.polyhsolver import solve
-from .polyhsolver import solve
 from .polyhmodel import useless
+from .polyhsolver import solve
 from .polyhutils import say_hello
+
