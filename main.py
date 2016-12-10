@@ -11,8 +11,8 @@ import time
 
 if __name__ == '__main__':
     time.clock()
-    parseur = Parseur()
-    nombre_tours, nombre_satellites, liste_satellites, liste_collections, globe = parseur.recup()
+    parseur = Parseur('/donneesTest/weekend.in')
+    nombre_tours, nombre_satellites, liste_satellites, liste_collections, globe = parseur.initialisation()
     distrib = Distributeur(nombre_tours, nombre_satellites, liste_satellites, liste_collections, globe)
     nb_photos_prises = distrib.algo_opti()
     parseur.creer_output(globe.liste_zones, nb_photos_prises)
