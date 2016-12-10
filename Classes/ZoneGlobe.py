@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from Classes.Photo import Photo
+
 
 class ZoneGlobe:
     """Classe représentant une zone de la planète.
@@ -23,9 +25,10 @@ class ZoneGlobe:
     def ajouter_photo(self, photo):
         self.photos_a_prendre.append(photo)
 
+
 if __name__ == "__main__":
     # Création d'une ZoneGlobe
     zg = ZoneGlobe(-20000, 20000, -20000, 20000)
 
     # Test de la méthode ajouter_photo
-    zg.ajouter_photo(19500, -5042)
+    zg.ajouter_photo(Photo(19500, -5042, None))

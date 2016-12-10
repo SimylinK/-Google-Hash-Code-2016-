@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from Classes.Photo import Photo
+
 
 class Collection:
     """
@@ -39,6 +41,7 @@ class Collection:
         """
         self.liste_intervalles.append(intervalle)
 
+
 if __name__ == "__main__":
     nb_points = 192
     nb_photos = 1
@@ -48,7 +51,7 @@ if __name__ == "__main__":
 
     # Test de la méthode ajouter_photo
     # 97797 -340859
-    c1.ajouter_photo(97797, -340859, c1)
+    c1.ajouter_photo(Photo(97797, -340859, c1))
 
     # Test de la méthode ajouter_intervalle
     # 0 604799

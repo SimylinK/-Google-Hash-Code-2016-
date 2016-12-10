@@ -17,7 +17,7 @@ if __name__ == '__main__':
     nb_photos_prises = distrib.algo_opti()
     parseur.creer_output(globe.liste_zones, nb_photos_prises)
     temps_exec = time.clock()
-    if temps_exec <= 60 :
+    if temps_exec <= 60:
         print("Le temps d'exécution fut de " + str(temps_exec) + " secondes")
     else:
-        print("Le temps d'exécution fut de " + str(temps_exec/60) + " minutes")
+        print("Le temps d'exécution fut de " + str(temps_exec / 60) + " minutes")
