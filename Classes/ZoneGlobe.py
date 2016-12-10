@@ -22,3 +22,10 @@ class ZoneGlobe:
 
     def ajouter_photo(self, photo):
         self.photos_a_prendre.append(photo)
+
+if __name__ == "__main__":
+    # Création d'une ZoneGlobe
+    zg = ZoneGlobe(-20000, 20000, -20000, 20000)
+
+    # Test de la méthode ajouter_photo
+    zg.ajouter_photo(19500, -5042)
