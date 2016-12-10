@@ -69,7 +69,7 @@ class Noeud:
 
 
 if __name__ == "__main__":
-    photos_prenables = [Photo(4,5,1), Photo(8,3,1), Photo(7,2,1), Photo(40,5,3), Photo(4,8,2), Photo(4,7,3),]
+    photos_prenables = [Photo(4,5,1), Photo(8,3,1), Photo(7,2,1), Photo(40,5,3), Photo(4,8,2), Photo(4,7,3)]
     n = Noeud(0, True)
     a = Arbre(Noeud)
 
