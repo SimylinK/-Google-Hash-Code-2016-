@@ -5,8 +5,8 @@
     Module d'entrée pour la mise en oeuvre du projet Poly#.
 """
 
-from Parseur import Parseur
-from Distributeur import Distributeur
+from Classes.Parseur import Parseur
+from Classes.Distributeur import Distributeur
 import time
 
 if __name__ == '__main__':
