@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from ZoneGlobe import ZoneGlobe
+from Classes.ZoneGlobe import ZoneGlobe
 import math
+
 
 class Globe:
     def __init__(self, cote_zone):
@@ -52,7 +53,7 @@ class Globe:
 
         # Pour éviter d'ajouter deux fois la case de latitude et longitude maximales:
         if reste_lat != 0 and reste_long != 0:
-            liste_zones[self.nb_zones_lat -1].pop()
+            liste_zones[self.nb_zones_lat - 1].pop()
 
         return liste_zones
 
