@@ -216,6 +216,16 @@ class Satellite:
 
         return sat
 
+    def peut_prendre(self, photo, tour):
+        peut_prendre = False
+        if (self.latitude_camera - self.range_deplacement_camera[0][0] <= photo.latitude <= self.latitude_camera +
+            self.range_deplacement_camera[0][1] and self.longitude_camera - self.range_deplacement_camera[1][0]
+            <= photo.longitude <= self.longitude_camera + self.range_deplacement_camera[1][1]):
+            for intervalle in photo.collection.liste_intervalles:
+                if intervalle[0] <= tour + 1 <= intervalle[1]:
+                    peut_prendre = True
+        return peut_prendre
+
 
 # Tests des fonctions
 if __name__ == "__main__":
