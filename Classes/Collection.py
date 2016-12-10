@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from Classes.Photo import Photo
+
 
 class Collection:
     """
@@ -38,3 +40,23 @@ class Collection:
             Méthode ajoute un intervalle à la collection.
         """
         self.liste_intervalles.append(intervalle)
+
+
+if __name__ == "__main__":
+    nb_points = 192
+    nb_photos = 1
+    nb_intervalles = 1
+    # Création d'une collection
+    c1 = Collection(nb_points, nb_photos, nb_intervalles)
+
+    # Test de la méthode ajouter_photo
+    # 97797 -340859
+    c1.ajouter_photo(Photo(97797, -340859, c1))
+
+    # Test de la méthode ajouter_intervalle
+    # 0 604799
+    c1.ajouter_intervalle([0, 604799])
+
+    # Test de la méthode donner_ratio
+    ratio = c1.donner_ratio(nb_points, nb_photos)
+    print("Ratio de rentabilité de la collection : " + str(ratio))

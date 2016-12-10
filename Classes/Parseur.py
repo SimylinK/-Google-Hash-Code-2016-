@@ -10,12 +10,12 @@
         import ZoneGlobe : classe ZoneGlobe.
 """
 
-from Photo import Photo
-from Collection import Collection
-from Satellite import Satellite
-from Globe import Globe
 import os
-import math
+
+from Classes.Collection import Collection
+from Classes.Globe import Globe
+from Classes.Photo import Photo
+from Classes.Satellite import Satellite
 
 
 class Parseur:
@@ -66,7 +66,7 @@ class Parseur:
 
         liste_satellites = []  # On transforme chaque ligne en une instance de la classe Satellite
         id = 0
-        max_deplacement = 0 # Sert à calculer le max_déplacement_satellite sur tous les satellites
+        max_deplacement = 0  # Sert à calculer le max_déplacement_satellite sur tous les satellites
         for i in range(0, nb_satellites):
             chaine = fichier_input.readline().rstrip()
             satellite = self.satellite_par_chaine(id, chaine)
@@ -75,7 +75,7 @@ class Parseur:
             if satellite.max_deplacement_camera > max_deplacement:
                 max_deplacement = satellite.max_deplacement_camera
 
-        #On crée le globe (avec les zones)
+        # On crée le globe (avec les zones)
         globe = Globe(max_deplacement)
 
         # On transforme les lignes suivantes en instances des classes Photo et Collection

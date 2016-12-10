@@ -11,9 +11,13 @@ import time
 
 if __name__ == '__main__':
     time.clock()
-    parseur = Parseur()
+    parseur = Parseur(chemin_input='/donneesTest/overlap.in')
     nombre_tours, nombre_satellites, liste_satellites, liste_collections, globe = parseur.recup()
     distrib = Distributeur(nombre_tours, nombre_satellites, liste_satellites, liste_collections, globe)
     nb_photos_prises = distrib.algo_opti()
     parseur.creer_output(globe.liste_zones, nb_photos_prises)
-    print("Le temps d'exécution fut de " + str(time.clock()) + " secondes")
+    temps_exec = time.clock()
+    if temps_exec <= 60:
+        print("Le temps d'exécution fut de " + str(temps_exec) + " secondes")
+    else:
+        print("Le temps d'exécution fut de " + str(temps_exec / 60) + " minutes")
