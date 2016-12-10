@@ -180,21 +180,3 @@ class Parseur:
                     fichier_output.write(str(photo.longitude) + " ")
                     fichier_output.write(str(photo.prise_tour) + " ")
                     fichier_output.write(str(photo.prise_par_id) + "\n")
-
-#fonctions servant pour les stats sur les colections
-
-    def liste_dispersion(self, liste_collection):
-        liste = []
-        for collection in liste_collection:
-            liste.append([collection.dispersion_collection()])
-        return liste
-
-
-    def moyenne_dispersion(self, liste_collection):
-        somlat = 0
-        somlong = 0
-        for collection in liste_collection:
-            somlat += collection.dispersion_collection()[0]
-            somlong += collection.dispersion_collection()[1]
-        return [somlat/len(liste_collection), somlong/len(liste_collection)]
-
