@@ -18,6 +18,7 @@ class Distributeur:
         self.ratio_moyen = self.moyenne_ratio()
         self.seuil_ratio = self.ratio_moyen * 15 / 100  # Valeur fixée arbitrairement à 15 pourcents
         self.collections_partielles = []  # Liste de collections prises partiellement
+        self.meilleures_petites_collections = []
 
     def algo_opti(self):
         """
@@ -32,11 +33,13 @@ class Distributeur:
                 for photo in collection.liste_photos:
                     indice_lat, indice_long = self.globe.calcul_indice(photo)
                     self.globe.liste_zones[indice_lat][indice_long].photos_a_prendre.remove(photo)
-
+        # Des collections à une ou deux photos qu'on rajoutera sur le dernier tour
+        self.meilleures_petites_collections = sorted(self.liste_collections, key=lambda k: [[k.nb_photos], [-k.ratio_rentabilite]])[:5]
         # Ici, on exécute tant qu'il reste des collections prises partiellement
         completion_partielle = True
+        dernier_tour = False
         iteration = 1
-        max_iterations = 3  # Nombre maximal de fois que l'algorithme entrera dans le while
+        max_iterations = 3   # Nombre maximal de fois que l'algorithme entrera dans le while
         collections_a_eliminer = 1  # Nombre de collections éliminées à chaque itération
         while completion_partielle:
             # Réinitialisation
@@ -45,7 +48,10 @@ class Distributeur:
             self.collections_partielles = []
             # Il faut réinitialiser les satellites, pour cela on les clone au tour 0
             liste_satellite_clone = copy.deepcopy(self.liste_satellites)
-            print('Itération numéro ' + str(iteration) + " de l'algorithme")
+            if not dernier_tour:
+                print('Itération numéro ' + str(iteration) + " de l'algorithme")
+            else:
+                print("Dernier tour de l'algorithme")
 
             # Il faut réinitialiser les collections, on les clone au tour 0
             liste_collection_clone = copy.deepcopy(self.liste_collections)
@@ -86,18 +92,43 @@ class Distributeur:
                             satellite.update_camera()
 
             #  On regarde si des collections sont complétées partiellement et si oui on élimine la pire, sinon on termine l'algorithme
-            if len(self.collections_partielles) != 0 and iteration < max_iterations:
+            if len(self.collections_partielles) != 0 and iteration < max_iterations and not dernier_tour:
                 pire_collections = sorted(self.collections_partielles, key=lambda k: [k.ratio_rentabilite])[:collections_a_eliminer]  # On selectionne le nombre de collections à éliminer
                 for pire_collection in pire_collections:
                     for pire_photo in pire_collection.liste_photos:
                         indice_lat, indice_long = self.globe.calcul_indice(pire_photo)
                         globe_clone.liste_zones[indice_lat][indice_long].photos_a_prendre.remove(pire_photo)
-                self.globe = globe_clone  # Le globe est remplacé par celui sans les photos indésirables et on reboucle
+
+                        # On remplace le globe et les listes actuels par les clones et on reboucle
+                self.globe = globe_clone
                 self.liste_satellites = liste_satellite_clone
                 self.liste_collections = liste_collection_clone
                 iteration += 1
             else:
-                completion_partielle = False
+                if not dernier_tour:
+                    # On retire toutes les collections partielles qu'il reste
+                    pire_collections = self.collections_partielles
+                    for pire_collection in pire_collections:
+                        for pire_photo in pire_collection.liste_photos:
+                            indice_lat, indice_long = self.globe.calcul_indice(pire_photo)
+                            globe_clone.liste_zones[indice_lat][indice_long].photos_a_prendre.remove(pire_photo)
+
+                    # On ajoute les meilleures petites collections
+                    for bonne_collection in self.meilleures_petites_collections:
+                        for bonne_photo in bonne_collection.liste_photos:
+                            indice_lat, indice_long = self.globe.calcul_indice(bonne_photo)
+                            if bonne_photo not in  globe_clone.liste_zones[indice_lat][indice_long].photos_a_prendre:
+                                globe_clone.liste_zones[indice_lat][indice_long].photos_a_prendre.append(bonne_photo)
+
+                    # On remplace le globe et les listes actuels par les clones et on reboucle
+                    self.globe = globe_clone
+                    self.liste_satellites = liste_satellite_clone
+                    self.liste_collections = liste_collection_clone
+
+                    dernier_tour = True
+
+                else:
+                    completion_partielle = False
 
         return nb_photos_prises
 
