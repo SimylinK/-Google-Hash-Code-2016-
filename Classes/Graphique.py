@@ -32,7 +32,7 @@ class Graphique:
 
         # Placement de la map monde
         self.canvas = Canvas(self.fenetre, width=1500, height=752)
-        photo = PhotoImage(file="docs/map_monde3.png")
+        photo = PhotoImage(file="docs/map_monde.png")
         # Taille de 1500 * 752 px
         # La map commence en x : 19 et y : 8
         # La map termine en x : 1474 et y : 738
