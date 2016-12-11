@@ -11,7 +11,7 @@ class Graphique:
     """
 
     def __init__(self, nb_tours, liste_satellites, globe, liste_photos_prises):
-        self.fenetre = Tk()  # Tk() doit être fais avant "StringVar()"
+        self.fenetre = Tk()  # Tk() doit être fait avant "StringVar()"
 
         self.tour_max = nb_tours
         self.liste_satellites = liste_satellites
@@ -92,7 +92,7 @@ class Graphique:
         self.fenetre.mainloop()
 # TODO : ajouter icone chargement
     def tours_suivants(self, nb_tours=1):
-        """ Fais avancer un tour pour les satellites, et remets en place les dessins
+        """ Fait avancer un tour pour les satellites, et remet en place les dessins
         """
         if (self.tour < self.tour_max) : # self.tour_max est le dernier tour
             if (self.tour + nb_tours > self.tour_max) : # self.tour_max ne doit pas être dépassé
@@ -116,14 +116,14 @@ class Graphique:
 
 
     def tours_precedents(self, nb_tours=1):
-        """ Fais revenir la carte a un tour précédent
+        """ Fait revenir la carte à un tour précédent
         :param nb_tours: nombre de tours à reculer
         """
         if (self.tour > 0): # le tour 0 est le tour minimum
             if (self.tour > nb_tours):
                 self.tour = self.tour - nb_tours # Cas normal
             else :
-                nb_tours = self.tour # nb_tour fais revenir avant le tour 0
+                nb_tours = self.tour # nb_tour fait revenir avant le tour 0
                 self.tour = 0
 
             self.compteur_tour.set(str(self.tour))
@@ -142,7 +142,7 @@ class Graphique:
                 self.canvas.delete(croix1)
                 self.canvas.delete(croix2)
 
-            # Les satelittes reculent de nb_tours
+            # Les satelites reculent de nb_tours
             for i in range(nb_tours):
                 for satellite in self.liste_satellites:
                     satellite.tour_precedent()
