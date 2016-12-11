@@ -56,6 +56,11 @@ class Graphique:
         panel_principal.add(Button(self.fenetre, text='Tour suivant', command=self.tours_suivants))
         panel_principal.add(Button(self.fenetre, text='Tour précédent', command=self.tours_precedents))
 
+        # Affichage de "Aller au tour : "
+        panel_principal.add(Label(self.fenetre, text="Aller au tour : "))
+        valeur_aller = IntVar()
+        panel_principal.add(Spinbox(self.fenetre, textvariable=valeur_aller, from_=0, to=self.tour_max))
+        panel_principal.add(Button(self.fenetre, text='Exécuter', command= lambda: self.aller_tour(valeur_aller)))
 
         # Pour éviter d'étirer l'élément juste au-dessus
         panel_principal.add(Label(self.fenetre, text=""))
@@ -64,7 +69,7 @@ class Graphique:
         self.canvas.pack()
 
         self.fenetre.mainloop()
-
+# TODO : ajouter icone chargement
     def tours_suivants(self, nb_tours=1):
         """ Fais avancer un tour pour les satellites, et remets en place les dessins
         """
@@ -80,7 +85,6 @@ class Graphique:
                 self.effacer_dessins()
                 self.dessiner_satellites()
                 self.tour += 1
-                self.compteur_tour.set(str(self.tour))
                 # Boucle pour afficher les photos prises à ce tour
                 while ( self.index_liste_photos < len(self.liste_photos_prises)
                         and self.liste_photos_prises[self.index_liste_photos][2] == self.tour):
@@ -88,6 +92,8 @@ class Graphique:
                     self.dessiner_croix(photo[0], photo[1])
 
                     self.index_liste_photos += 1
+                self.compteur_tour.set(str(self.tour))
+
 
     def tours_precedents(self, nb_tours=1):
         """ Fais revenir la carte a un tour précédent
@@ -123,6 +129,15 @@ class Graphique:
             self.effacer_dessins()
             self.dessiner_satellites()
 
+    def aller_tour(self, tour):
+        """ Permet de faire avancer ou reculer jusqu'à un tour
+        :param tour: un entier dans [0, self.tour_max]
+        """
+        nb_tours = abs(tour.get() - self.tour)
+        if (tour.get() > self.tour):
+            self.tours_suivants(nb_tours)
+        else:
+            self.tours_precedents(nb_tours)
 
     def dessiner_rond(self, latitude, longitude):
         """ Dessine un rond a une latitude et longitude
