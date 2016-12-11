@@ -196,7 +196,7 @@ class Parseur:
     def recup_output(self):
         """Méthode chargée de : Récupérer les informations d'un fichier d'output et de les transformer en instances
                de classes.
-        :return: une liste contenant toutes les photos prises
+        :return: une liste contenant toutes les photos prises triées par le tour
         """
         liste_photos = []
 
@@ -210,5 +210,8 @@ class Parseur:
             liste_photos.append(photo)
 
         fichier_output.close()
+
+        # Trie des photos en fonction du tour
+        liste_photos.sort(key=lambda k: [k[2]])
 
         return liste_photos

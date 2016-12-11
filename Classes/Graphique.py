@@ -24,6 +24,7 @@ class Graphique:
         # compteur_tour va être associé à un label pour afficher les tours dynamiquement
         self.compteur_tour = StringVar()
         self.compteur_tour.set("0")
+        self.index_liste_photos = 0
 
     def initialisation(self):
         """ Met en place l'affichage
@@ -51,16 +52,24 @@ class Graphique:
     def tour_suivant(self):
         """ Fais avancer un tour pour les satellites, et remets en place les dessins
         """
-        for satellite in self.liste_satellites:
-            satellite.tour_suivant()
-        self.effacer_dessins()
-        self.dessiner_satellites()
-        self.tour += 1
-        self.compteur_tour.set(str(self.tour))
+        for i in range (0, 50): # TODO : pouvoir choisir ce nombre
+
+            for satellite in self.liste_satellites:
+                satellite.tour_suivant()
+            self.effacer_dessins()
+            self.dessiner_satellites()
+            self.tour += 1
+            self.compteur_tour.set(str(self.tour))
+            # Boucle pour afficher les photos prises à ce tour
+            while ( self.index_liste_photos < len(self.liste_photos_prises)
+                   and self.liste_photos_prises[self.index_liste_photos][2] == self.tour):
+                photo = self.liste_photos_prises[self.index_liste_photos]
+                self.dessiner_croix(photo[0], photo[1])
+                self.index_liste_photos += 1
 
         # TODO : cas tour max atteint
 
-    def dessin_rond(self, latitude, longitude):
+    def dessiner_rond(self, latitude, longitude):
         """ Dessine un rond a une latitude et longitude
         :param latitude: un entier dans [-324000;324000]
         :param longitude: un entier dans [-648000;647999]
@@ -71,6 +80,17 @@ class Graphique:
         rond = self.canvas.create_oval(longitude_pixel, latitude_pixel, (longitude_pixel + 5), (latitude_pixel + 5),
                                        fill="red", width=2, outline="black")
         self.liste_dessins.append(rond)
+
+    def dessiner_croix(self, latitude, longitude):
+        """ Dessinne une croix a une latitude et une longitude
+        :param latitude: un entier dans [-324000;324000]
+        :param longitude: un entier dans [-648000;647999]
+        """
+        latitude_pixel = self.latitude_vers_pixel(latitude)
+        longitude_pixel = self.longitude_vers_pixel(longitude)
+
+        self.canvas.create_line(longitude_pixel - 5, latitude_pixel - 5, longitude_pixel + 5, latitude_pixel + 5, width=5, fill="blue")
+        self.canvas.create_line(longitude_pixel - 5, latitude_pixel + 5, longitude_pixel + 5, latitude_pixel - 5, width=5, fill="blue")
 
     def latitude_vers_pixel(self, latitude):
         """ Transforme une latitude en sa position sur la map en pixel
@@ -106,7 +126,7 @@ class Graphique:
         """ Dessine les satellites sur le canvas
         """
         for satellite in self.liste_satellites:
-            self.dessin_rond(satellite.latitude, satellite.longitude)
+            self.dessiner_rond(satellite.latitude, satellite.longitude)
 
 # TODO : afficher cadrillage globe (une checkbox ce serait cool)
 
