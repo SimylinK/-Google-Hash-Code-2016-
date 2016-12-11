@@ -6,7 +6,7 @@ from Classes.Satellite import Satellite
 
 class Distributeur:
     """Classe chargée de :
-    distribuer les photos entre les satellites et des les associer dans un calendrier
+    distribuer les photos entre les satellites et les associer dans un calendrier
     """
 
     def __init__(self, nb_tours, nb_satellites, liste_satellites, liste_collections, globe):
@@ -15,6 +15,8 @@ class Distributeur:
         self.liste_satellites = liste_satellites
         self.liste_collections = liste_collections  # Liste de toutes les collections
         self.globe = globe
+        self.ratio_moyen = self.moyenne_ratio()
+        self.seuil_ratio = self.ratio_moyen * 15 / 100
 
     def algo_opti(self):
         """
@@ -44,59 +46,51 @@ class Distributeur:
         return nb_photos_prises
 
     def prediction(self, satellite, tour):
-        """Méthode qui la latitude et la longitude de la meilleure photo atteignable au tour suivant pour un satellite et un tour donnés
+        """Méthode qui renvoie  la latitude et la longitude de la meilleure photo atteignable au tour suivant pour un satellite et un tour donnés
         lat et long sont les indices de la zone dans laquelle se trouve le satellite"""
 
         # On crée un satellite intermédiaire
-        sat = Satellite(satellite.id, satellite.latitude, satellite.longitude, satellite.vitesse,
-                        satellite.vitesse_camera, satellite.max_deplacement_camera)
-        sat.range_deplacement_camera = satellite.range_deplacement_camera
-        sat.latitude_camera = satellite.latitude_camera
-        sat.longitude_camera = satellite.longitude_camera
+        sat = satellite.clone()
 
         # On simule un avancement d'un tour de ce satellite
         sat.tour_suivant()
 
-        #  Calcul de la Zone dans laquelle se trouve le satellite
-        lat = (sat.latitude + 324000) // self.globe.lat_zone
-        if sat.latitude == 324000:
-            lat -= 1
-
-        long = (sat.longitude + 648000) // self.globe.long_zone
-        if sat.longitude == 647999:
-            long -= 1
+        #  Calcul des indices de ce dernier dans liste_zones
+        lat, long = self.globe.calcul_indice(sat)
 
         photos_prenables = []
         choix = False
+
+        # On boucle sur toutes les photos qu'on peut prendre, donc celles de notre zone et de ses adjacentes
         photos_autour_zone = self.globe.photos_autour_zone(lat, long)
 
         for photo in photos_autour_zone:
             # On teste si dans l'intervalle de mouvement qu'on avait, il y a une photo
-            if (sat.latitude_camera - sat.range_deplacement_camera[0][0] <= photo.latitude <= sat.latitude_camera +
-                sat.range_deplacement_camera[0][1] and sat.longitude_camera - sat.range_deplacement_camera[1][0]
-                <= photo.longitude <= sat.longitude_camera + sat.range_deplacement_camera[1][1]):
-                for intervalle in photo.collection.liste_intervalles:
-                    if intervalle[0] <= tour + 1 <= intervalle[1]:
-                        # La photo est bien prenable :
-                        photos_prenables.append(photo)
-                        choix = True
+            if sat.peut_prendre(photo, tour):
+                # La photo est bien prenable :
+                if photo.collection.ratio_rentabilite > self.seuil_ratio:
+                    photos_prenables.append(photo)
+                    choix = True
 
         if choix:
             photo_choisie = sorted(photos_prenables, key=lambda k: [k.collection.ratio_rentabilite], reverse=True)[0]
             photo_choisie.prise_par_id = satellite.id
             photo_choisie.prise_tour = tour + 1
 
-            photo_lat = (photo_choisie.latitude + 324000) // self.globe.lat_zone
-            if photo_choisie.latitude == 324000:
-                photo_lat -= 1
-            photo_long = (photo_choisie.longitude + 648000) // self.globe.long_zone
-            if photo_choisie.longitude == 647999:
-                photo_long -= 1
+            # Calcul des indices de la photo choisie dans liste_zones
+            photo_indice_lat, photo_indice_long = self.globe.calcul_indice(photo_choisie)
 
-            self.globe.liste_zones[photo_lat][photo_long].photos_a_prendre.remove(photo_choisie)
-            self.globe.liste_zones[photo_lat][photo_long].photos_prises.append(photo_choisie)
+            self.globe.liste_zones[photo_indice_lat][photo_indice_long].photos_a_prendre.remove(photo_choisie)
+            self.globe.liste_zones[photo_indice_lat][photo_indice_long].photos_prises.append(photo_choisie)
 
             return photo_choisie.latitude, photo_choisie.longitude
 
         else:
             return None, None
+
+    def moyenne_ratio(self):
+        somme = 0
+        for collection in self.liste_collections:
+            somme += collection.ratio_rentabilite
+        somme /= len(self.liste_collections)
+        return somme

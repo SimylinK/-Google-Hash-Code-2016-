@@ -34,7 +34,7 @@ class Satellite:
 
     def tour_suivant(self, latitude_cam=None, longitude_cam=None):
         """ Calcule la position suivante du satellite
-        et la prochaine position de la caméra si besoin ( si les valeurs sont différentes de None)
+        et la prochaine position de la caméra si besoin (si les valeurs sont différentes de None)
         """
 
         # Déplacement du Satellite
@@ -205,6 +205,49 @@ class Satellite:
             self.range_deplacement_camera[1][1] = long_max
         else:
             self.range_deplacement_camera[1][1] += vitesse
+
+    def clone(self):
+        """Méthode qui retourne un clone du satellite"""
+        sat = Satellite(self.id, self.latitude, self.longitude, self.vitesse,
+                        self.vitesse_camera, self.max_deplacement_camera)
+        sat.range_deplacement_camera = self.range_deplacement_camera
+        sat.latitude_camera = self.latitude_camera
+        sat.longitude_camera = self.longitude_camera
+
+        return sat
+
+    def peut_prendre(self, photo, tour):
+        peut_prendre = False
+        if (self.latitude_camera - self.range_deplacement_camera[0][0] <= photo.latitude <= self.latitude_camera +
+            self.range_deplacement_camera[0][1] and self.longitude_camera - self.range_deplacement_camera[1][0]
+            <= photo.longitude <= self.longitude_camera + self.range_deplacement_camera[1][1]):
+            for intervalle in photo.collection.liste_intervalles:
+                if intervalle[0] <= tour + 1 <= intervalle[1]:
+                    peut_prendre = True
+        return peut_prendre
+
+    def tour_precedent(self):
+        """ Recule la position du satellite à sa position au tour précédent
+        Attention, cette méthode est faite uniquement pour l'interface graphique
+        """
+        # Déplacement du Satellite
+        lat = self.latitude - self.vitesse
+        long = self.longitude + 15
+        # Passage au-dessus du pôle nord
+        if lat > 324000:
+            lat = 648000 - lat
+            long -= 648000
+            self.vitesse = -self.vitesse
+        # Passage au-dessus du pôle sud
+        elif lat < -324000:
+            lat = -648000 - lat
+            long += -648000
+            self.vitesse = -self.vitesse
+        # long est compris entre -648000 et 647999
+        if long > 647999:
+            long = long - 1296000
+        self.latitude = lat
+        self.longitude = long
 
 
 # Tests des fonctions

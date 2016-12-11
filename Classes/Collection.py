@@ -41,7 +41,6 @@ class Collection:
         """
         self.liste_intervalles.append(intervalle)
 
-
 if __name__ == "__main__":
     nb_points = 192
     nb_photos = 1
