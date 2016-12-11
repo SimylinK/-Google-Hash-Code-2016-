@@ -57,15 +57,16 @@ class Distributeur:
             for liste_latitude in self.globe.liste_zones:
                 for liste_longitude in liste_latitude:
                     for photo in liste_longitude.photos_a_prendre:
-                        globe_clone.liste_zones[i_lat][i_long].photos_a_prendre[i_photo] = photo
+                        globe_clone.liste_zones[i_lat][i_long].photos_a_prendre[i_photo] = photo  # On remet le bon pointeur
+                        globe_clone.liste_zones[i_lat][i_long].photos_prises = []  # On efface les photos prises
                         i_photo += 1
                     i_long += 1
                     i_photo = 0  # L'indice du pointeur de photo revient à 0 quand on change de case
                 i_lat += 1
                 i_long = 0  # L'indice de longitude dans le tableau revient à 0 quand on change de latitude
+
             for tour in range(self.nb_tours):
                 for satellite in self.liste_satellites:
-
                     #  Pas de photo prise à plus de 85° Nord ou Sud = 36000 arcsecondes pour 10°
                     #  On se contente d'update sa camera et de le faire avancer
                     if satellite.latitude > 306000 or satellite.latitude < -306000:
@@ -89,6 +90,7 @@ class Distributeur:
                 for pire_photo in pire_collection.liste_photos:
                     indice_lat, indice_long = self.globe.calcul_indice(pire_photo)
                     globe_clone.liste_zones[indice_lat][indice_long].photos_a_prendre.remove(pire_photo)
+                    globe_clone.liste_zones[indice_lat][indice_long].photos_prises = []
                 self.globe = globe_clone  # Le globe est remplacé par celui sans les photos indésirables et on reboucle
                 self.liste_satellites = liste_satellite_clone
                 self.liste_collections = liste_collection_clone
