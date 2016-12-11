@@ -11,6 +11,9 @@ d'intérêt à photographier, planifier le travail de chaque satellite
 de sorte à maximiser le nombre d'images satellites réalisées dans
 un temps donné.
 
+**Execution**
+
+Au lancement du programme, il vous sera demandé de choisir un fichier d'input.
 
 L'équipe
 ===========
