@@ -13,13 +13,14 @@ class Graphique:
     def __init__(self, nb_tours, liste_satellites, globe, liste_photos_prises):
         self.fenetre = Tk()  # Tk() doit être fais avant "StringVar()"
 
-        self.nb_tours = nb_tours
+        self.tour_max = nb_tours
         self.liste_satellites = liste_satellites
         self.globe = globe
         self.liste_photos_prises = liste_photos_prises
 
         self.canvas = None
         self.liste_dessins = []
+        self.liste_dessins_photos = []
         self.tour = 0
         # compteur_tour va être associé à un label pour afficher les tours dynamiquement
         self.compteur_tour = StringVar()
@@ -41,33 +42,87 @@ class Graphique:
 
         self.dessiner_satellites()
 
-        Label(self.fenetre, text="Tour : ").pack(side=LEFT, padx=5, pady=5)
-        Label(self.fenetre, textvariable=self.compteur_tour).pack(side=LEFT, padx=5, pady=5)
-        Button(self.fenetre, text='Tour suivant', command=self.tour_suivant).pack(side=LEFT, padx=5, pady=5)
+        # Partie à gauche de la map
+        panel_principal = PanedWindow(self.fenetre, orient=VERTICAL)
+        panel_principal.pack(side=LEFT, expand=Y, fill=BOTH, pady=200, padx=2)
+
+        # Affichage du tour
+        panel_tour = PanedWindow(self.fenetre, orient=HORIZONTAL)
+        panel_tour.add(Label(self.fenetre, text="Tour : "))
+        panel_tour.add(Label(self.fenetre, textvariable=self.compteur_tour))
+        panel_principal.add(panel_tour)
+
+        # Affichage des boutons tour suivant et précédent
+        panel_principal.add(Button(self.fenetre, text='Tour suivant', command=self.tours_suivants))
+        panel_principal.add(Button(self.fenetre, text='Tour précédent', command=self.tours_precedents))
+
+
+        # Pour éviter d'étirer l'élément juste au-dessus
+        panel_principal.add(Label(self.fenetre, text=""))
+        panel_principal.pack()
 
         self.canvas.pack()
 
         self.fenetre.mainloop()
 
-    def tour_suivant(self):
+    def tours_suivants(self, nb_tours=1):
         """ Fais avancer un tour pour les satellites, et remets en place les dessins
         """
-        for i in range (0, 50): # TODO : pouvoir choisir ce nombre
+        if (self.tour < self.tour_max) : # self.tour_max est le dernier tour
+            if (self.tour + nb_tours > self.tour_max) : # self.tour_max ne doit pas être dépassé
+                nb_tours = self.tour_max - nb_tours
+                self.tour = self.tour_max
 
-            for satellite in self.liste_satellites:
-                satellite.tour_suivant()
+            for i in range (nb_tours):
+
+                for satellite in self.liste_satellites:
+                    satellite.tour_suivant()
+                self.effacer_dessins()
+                self.dessiner_satellites()
+                self.tour += 1
+                self.compteur_tour.set(str(self.tour))
+                # Boucle pour afficher les photos prises à ce tour
+                while ( self.index_liste_photos < len(self.liste_photos_prises)
+                        and self.liste_photos_prises[self.index_liste_photos][2] == self.tour):
+                    photo = self.liste_photos_prises[self.index_liste_photos]
+                    self.dessiner_croix(photo[0], photo[1])
+
+                    self.index_liste_photos += 1
+
+    def tours_precedents(self, nb_tours=1):
+        """ Fais revenir la carte a un tour précédent
+        :param nb_tours: nombre de tours à reculer
+        """
+        if (self.tour > 0): # le tour 0 est le tour minimum
+            if (self.tour > nb_tours):
+                self.tour = self.tour - nb_tours # Cas normal
+            else :
+                nb_tours = self.tour # nb_tour fais revenir avant le tour 0
+                self.tour = 0
+
+            self.compteur_tour.set(str(self.tour))
+            #On regarde combien de photo il faut enlever
+            nb_photos_enlever = 0
+            index = self.index_liste_photos - 1
+            while(index >= 0 and self.liste_photos_prises[index][2] > self.tour):
+                index -= 1
+                nb_photos_enlever += 1
+            self.index_liste_photos = index + 1
+
+            # On efface les photos en trop
+            for i in range(nb_photos_enlever):
+                croix1 = self.liste_dessins_photos.pop()
+                croix2 = self.liste_dessins_photos.pop()
+                self.canvas.delete(croix1)
+                self.canvas.delete(croix2)
+
+            # Les satelittes reculent de nb_tours
+            for i in range(nb_tours):
+                for satellite in self.liste_satellites:
+                    satellite.tour_precedent()
             self.effacer_dessins()
             self.dessiner_satellites()
-            self.tour += 1
-            self.compteur_tour.set(str(self.tour))
-            # Boucle pour afficher les photos prises à ce tour
-            while ( self.index_liste_photos < len(self.liste_photos_prises)
-                   and self.liste_photos_prises[self.index_liste_photos][2] == self.tour):
-                photo = self.liste_photos_prises[self.index_liste_photos]
-                self.dessiner_croix(photo[0], photo[1])
-                self.index_liste_photos += 1
 
-        # TODO : cas tour max atteint
 
     def dessiner_rond(self, latitude, longitude):
         """ Dessine un rond a une latitude et longitude
@@ -89,8 +144,11 @@ class Graphique:
         latitude_pixel = self.latitude_vers_pixel(latitude)
         longitude_pixel = self.longitude_vers_pixel(longitude)
 
-        self.canvas.create_line(longitude_pixel - 5, latitude_pixel - 5, longitude_pixel + 5, latitude_pixel + 5, width=5, fill="blue")
-        self.canvas.create_line(longitude_pixel - 5, latitude_pixel + 5, longitude_pixel + 5, latitude_pixel - 5, width=5, fill="blue")
+        croix1 = self.canvas.create_line(longitude_pixel - 5, latitude_pixel - 5, longitude_pixel + 5, latitude_pixel + 5, width=5, fill="blue")
+        croix2 = self.canvas.create_line(longitude_pixel - 5, latitude_pixel + 5, longitude_pixel + 5, latitude_pixel - 5, width=5, fill="blue")
+
+        self.liste_dessins_photos.append(croix1)
+        self.liste_dessins_photos.append(croix2)
 
     def latitude_vers_pixel(self, latitude):
         """ Transforme une latitude en sa position sur la map en pixel
@@ -101,7 +159,7 @@ class Graphique:
         latitude_pixel = ((latitude * 730) // 648000)  # sur une échelle de 0 a 765
         return 730 - latitude_pixel + 8  # La latitude est inversée, et la map commence a 8
 
-    def longitude_vers_pixel(self, longitude):
+    def longitude_vers_pixel(self, longitude): # TODO : des satellites dépasssent à gauche
         """ Transforme une longitude en sa position sur la map en pixel
         :param longitude: un entier dans [-648000;64799]
         :return: un entier dans [19;1474]

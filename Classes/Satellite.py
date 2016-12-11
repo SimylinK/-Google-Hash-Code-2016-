@@ -226,6 +226,29 @@ class Satellite:
                     peut_prendre = True
         return peut_prendre
 
+    def tour_precedent(self):
+        """ Recule la position du satellite à sa position au tour précédent
+        Attention, cette méthode est faite uniquement pour l'interface graphique
+        """
+        # Déplacement du Satellite
+        lat = self.latitude - self.vitesse
+        long = self.longitude + 15
+        # Passage au-dessus du pôle nord
+        if lat > 324000:
+            lat = 648000 - lat
+            long -= 648000
+            self.vitesse = -self.vitesse
+        # Passage au-dessus du pôle sud
+        elif lat < -324000:
+            lat = -648000 - lat
+            long += -648000
+            self.vitesse = -self.vitesse
+        # long est compris entre -648000 et 647999
+        if long > 647999:
+            long = long - 1296000
+        self.latitude = lat
+        self.longitude = long
+
 
 # Tests des fonctions
 if __name__ == "__main__":
