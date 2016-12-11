@@ -36,7 +36,7 @@ class Parseur:
         if chemin_input:
             self.chemin_input = self.REPERTOIRE + chemin_input
         else:
-            self.chemin_input = self.REPERTOIRE + '\\donneesTest\\forever_alone.in'
+            self.chemin_input = self.REPERTOIRE + '\\donneesTest\\weekend.in'
 
         if chemin_output:
             self.chemin_output = chemin_output
@@ -166,6 +166,22 @@ class Parseur:
         return Satellite(id, liste_arguments[0], liste_arguments[1], liste_arguments[2], liste_arguments[3],
                          liste_arguments[4])
 
+    def ligne_output_par_chaine(self, caracteres):
+        """"Transforme une ligne du fichier output en une liste de 4 éléments"""
+        liste_arguments = [1, 2, 3, 4]  # On doit donner 5 arguments à Satellite pour la création d'une instance
+        num_liste = 0  # ième argument de la liste
+        argument = ""
+        for j in range(len(caracteres)):
+            if caracteres[j] != " ":
+                argument += caracteres[j]
+            else:  # Ici, l'argument est ajouté à liste_arguments
+                liste_arguments[num_liste] = int(argument)  # On doit transformer chaque information en entier
+                num_liste += 1
+                argument = ""
+        liste_arguments[num_liste] = int(argument)  # On ajoute le dernier
+
+        return [liste_arguments[0], liste_arguments[1], liste_arguments[2], liste_arguments[3]]
+
     def creer_output(self, liste_zones, nb_photos_prises):
         fichier_output = open(self.chemin_output, "w")  # le "w" fait qu'on réécrit sur le fichier précedent
         fichier_output.write(str(nb_photos_prises) + "\n")
@@ -176,3 +192,23 @@ class Parseur:
                     fichier_output.write(str(photo.longitude) + " ")
                     fichier_output.write(str(photo.prise_tour) + " ")
                     fichier_output.write(str(photo.prise_par_id) + "\n")
+
+    def recup_output(self):
+        """Méthode chargée de : Récupérer les informations d'un fichier d'output et de les transformer en instances
+               de classes.
+        :return: une liste contenant toutes les photos prises
+        """
+        liste_photos = []
+
+        print("Lecture du fichier d'output")
+        fichier_output = open(self.chemin_output, 'r')
+        nb_photos_prises = int(fichier_output.readline().rstrip())  # rstrip est utilisé pour ne pas prendre "\n" en compte.
+
+        for i in range(0, nb_photos_prises):
+            chaine_photo = (fichier_output.readline().rstrip())
+            photo = self.ligne_output_par_chaine(chaine_photo) # Pas besoin de préciser Collection
+            liste_photos.append(photo)
+
+        fichier_output.close()
+
+        return liste_photos
