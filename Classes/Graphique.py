@@ -56,6 +56,27 @@ class Graphique:
         panel_principal.add(Button(self.fenetre, text='Tour suivant', command=self.tours_suivants))
         panel_principal.add(Button(self.fenetre, text='Tour précédent', command=self.tours_precedents))
 
+        # Trait
+        panel_principal.add(Canvas(self.fenetre, width=10, height=3, background='blue'))
+
+        # Affichage "avancer de"
+        panel_principal.add(Label(self.fenetre, text="Avancer de : "))
+        valeur_avancer = IntVar()
+        panel_principal.add(Spinbox(self.fenetre, textvariable=valeur_avancer, from_=0, to=self.tour_max-self.tour))
+        panel_principal.add(Button(self.fenetre, text='Avancer', command= lambda: self.tours_suivants(valeur_avancer.get())))
+
+        # Trait
+        panel_principal.add(Canvas(self.fenetre, width=10, height=3, background='blue'))
+
+        # Affichage "reculer de"
+        panel_principal.add(Label(self.fenetre, text="Reculer de : "))
+        valeur_reculer = IntVar()
+        panel_principal.add(Spinbox(self.fenetre, textvariable=valeur_reculer, from_=0, to=self.tour_max-self.tour))
+        panel_principal.add(Button(self.fenetre, text='Reculer', command= lambda: self.tours_precedents(valeur_reculer.get())))
+
+        # Trait
+        panel_principal.add(Canvas(self.fenetre, width=10, height=3, background='blue'))
+
         # Affichage de "Aller au tour : "
         panel_principal.add(Label(self.fenetre, text="Aller au tour : "))
         valeur_aller = IntVar()
