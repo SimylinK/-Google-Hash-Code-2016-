@@ -96,8 +96,7 @@ class Graphique:
         """
         if (self.tour < self.tour_max) : # self.tour_max est le dernier tour
             if (self.tour + nb_tours > self.tour_max) : # self.tour_max ne doit pas être dépassé
-                nb_tours = self.tour_max - nb_tours
-                self.tour = self.tour_max
+                nb_tours = self.tour_max - self.tour
 
             for i in range (nb_tours):
 
@@ -203,8 +202,8 @@ class Graphique:
         longitude += 648000
         longitude_pixel = ((longitude * 1455) // 1296000)  # sur une échelle de 0 a 12196000
 
-        if (longitude > 1337000):  # si on dépasse à droite
-            longitude_pixel -= 1500  # on revient tout à gauche de la map
+        if (longitude < 40500):  # si on dépasse à gauche
+            longitude_pixel = longitude_pixel + 1410  # on revient tout à droite de la map
         else:
             longitude_pixel -= 45  # la longitude zéro est décalé de 45
         return longitude_pixel + 19  # la map commence a 19
@@ -228,7 +227,7 @@ class Graphique:
 if __name__ == "__main__":
     # Création des satellite
     # Paris : 175872   8455
-    s1 = Satellite(0, 175872, 8455, 100, 10, 5000)
+    s1 = Satellite(0, 0, -640000, 100, 10, 5000)
     liste_satellites = []
     liste_satellites.append(s1)
 
