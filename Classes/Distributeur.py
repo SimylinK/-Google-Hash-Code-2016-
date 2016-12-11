@@ -37,6 +37,7 @@ class Distributeur:
         completion_partielle = True
         iteration = 1
         max_iterations = 3  # Nombre maximal de fois que l'algorithme entrera dans le while
+        collections_a_eliminer = 1  # Nombre de collections éliminées à chaque itération
         while completion_partielle:
             # Réinitialisation
             tour = 0
@@ -86,11 +87,11 @@ class Distributeur:
 
             #  On regarde si des collections sont complétées partiellement et si oui on élimine la pire, sinon on termine l'algorithme
             if len(self.collections_partielles) != 0 and iteration < max_iterations:
-                pire_collection = sorted(self.collections_partielles, key=lambda k: [k.ratio_rentabilite])[0]
-                for pire_photo in pire_collection.liste_photos:
-                    indice_lat, indice_long = self.globe.calcul_indice(pire_photo)
-                    globe_clone.liste_zones[indice_lat][indice_long].photos_a_prendre.remove(pire_photo)
-                    globe_clone.liste_zones[indice_lat][indice_long].photos_prises = []
+                pire_collections = sorted(self.collections_partielles, key=lambda k: [k.ratio_rentabilite])[:collections_a_eliminer]  # On selectionne le nombre de collections à éliminer
+                for pire_collection in pire_collections:
+                    for pire_photo in pire_collection.liste_photos:
+                        indice_lat, indice_long = self.globe.calcul_indice(pire_photo)
+                        globe_clone.liste_zones[indice_lat][indice_long].photos_a_prendre.remove(pire_photo)
                 self.globe = globe_clone  # Le globe est remplacé par celui sans les photos indésirables et on reboucle
                 self.liste_satellites = liste_satellite_clone
                 self.liste_collections = liste_collection_clone
