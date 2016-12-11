@@ -55,9 +55,12 @@ class Parseur:
             chemin = input("Chemin absolu du fichier output : ")
         return chemin
 
-    def recup(self):
-        """Méthode chargée de : Récupérer les informations du fichier d'input et de les transformer en instances
+    def initialisation(self):
+        """
+        Méthode chargée de :
+        Récupérer les informations du fichier d'input et de les transformer en instances
         de classes.
+        Créer le globe et la liste des zones.
         """
         print("Lecture du fichier d'input")
         fichier_input = open(self.chemin_input, 'r')
@@ -87,9 +90,10 @@ class Parseur:
             for j in range(collection.nb_photos):  # À chaque collection, on ajoute ses photos
                 chaine_photo = (fichier_input.readline().rstrip())
                 photo = self.photo_par_chaine(chaine_photo, collection)
-                #  On calcule l'indice de la photo dans liste_zones
-                lat, long = globe.calcul_indice(photo)
-                globe.liste_zones[lat][long].ajouter_photo(photo)
+                # On calcule les indices de la photo dans liste_zones
+                indice_lat, indice_long = globe.calcul_indice(photo)
+                # On ajoute cette photo à la zone correspondante
+                globe.liste_zones[indice_lat][indice_long].ajouter_photo(photo)
                 collection.ajouter_photo(photo)
             for k in range(collection.nb_intervalles):  # À chaque collection, on ajoute ses intervalles
                 chaine_intervalle = (fichier_input.readline().rstrip())
