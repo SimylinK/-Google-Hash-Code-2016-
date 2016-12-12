@@ -11,6 +11,7 @@
 """
 
 import os
+import time
 
 from Classes.Collection import Collection
 from Classes.Globe import Globe
@@ -43,6 +44,8 @@ class Parseur:
         else:
             self.chemin_output = self.REPERTOIRE + '\\fichier_output.out'
 
+        self.temps_exec = 0
+
     def demander_input(self):
         chemin = ' '
         while chemin == ' ':  # Vérification que le chemin n'est pas laissé vide
@@ -62,6 +65,7 @@ class Parseur:
         de classes.
         Créer le globe et la liste des zones.
         """
+        time.clock()
         print("Lecture du fichier d'input")
         fichier_input = open(self.chemin_input, 'r')
         nb_tours = int(fichier_input.readline().rstrip())  # rstrip est utilisé pour ne pas prendre "\n" en compte.
@@ -196,6 +200,8 @@ class Parseur:
                     fichier_output.write(str(photo.longitude) + " ")
                     fichier_output.write(str(photo.prise_tour) + " ")
                     fichier_output.write(str(photo.prise_par_id) + "\n")
+
+        self.temps_exec = time.clock()
 
     def recup_output(self):
         """Méthode chargée de : Récupérer les informations d'un fichier d'output et de les transformer en instances
