@@ -3,3 +3,27 @@
 - ajout d'un README.md
 - ajout d'un .githelp
 - ajout d'un .gitignore
+
+*v1.0*
+- Première version fonctionnelle
+
+*v1.5*
+- Augmentation de la range à chaque tour
+
+*v1.6*
+- Erreur hors champs résolu
+- Autres correctifs divers
+
+*v1.7*
+- Correctifs divers
+
+*v2.0*
+- Tout bugs corrigés
+
+*v2.015*
+- Ajout du seuil à 15%
+
+*v2.2*
+- Ajout de plusieurs iterations
+- Ajout d'un dernier tour
+- Ajout d'un ration moyen
