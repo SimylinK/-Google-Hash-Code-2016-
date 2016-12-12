@@ -113,7 +113,8 @@ class Distributeur:
         return nb_photos_prises
 
     def prediction(self, satellite, tour):
-        """Méthode qui renvoie  la latitude et la longitude de la meilleure photo atteignable au tour suivant pour un satellite et un tour donnés
+        """Méthode qui renvoie  la latitude et la longitude de la meilleure photo atteignable
+        au tour suivant pour un satellite et un tour donnés
         lat et long sont les indices de la zone dans laquelle se trouve le satellite"""
 
         # On crée un satellite intermédiaire
