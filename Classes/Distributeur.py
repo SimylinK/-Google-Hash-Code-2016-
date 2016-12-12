@@ -27,31 +27,40 @@ class Distributeur:
         """
         print("Lancement de la simulation")
 
-        # On retire les photos qui sont sous le seuil
+        # Paramètres
+        max_iterations = 3  # Nombre maximal de fois que l'algorithme entrera dans le while sans compter le dernier tour
+        collections_a_eliminer = 1  # Nombre de collections éliminées à chaque itération
+        petites_collections_a_ajouter = 5  # Nombre de petites collections à ajouter au dernier tour
+
+        # Initialisation
+        completion_partielle = True
+        dernier_tour = False
+        iteration = 1
+        nb_photos_prises = 0
+
+        # On retire les collections qui sont sous le seuil
         for collection in self.liste_collections:
             if collection.ratio_rentabilite < self.seuil_ratio:
                 for photo in collection.liste_photos:
                     indice_lat, indice_long = self.globe.calcul_indice(photo)
                     self.globe.liste_zones[indice_lat][indice_long].photos_a_prendre.remove(photo)
-        # Des collections à une ou deux photos qu'on rajoutera sur le dernier tour
-        self.meilleures_petites_collections = sorted(self.liste_collections, key=lambda k: [[k.nb_photos], [-k.ratio_rentabilite]])[:5]
-        # Ici, on exécute tant qu'il reste des collections prises partiellement
-        completion_partielle = True
-        dernier_tour = False
-        iteration = 1
-        max_iterations = 3   # Nombre maximal de fois que l'algorithme entrera dans le while
-        collections_a_eliminer = 1  # Nombre de collections éliminées à chaque itération
+
+        """On garde en réserve pour le dernier tour des collections avec un très faible nombre de photos,"""
+        self.meilleures_petites_collections = sorted(self.liste_collections, key=lambda k: [[k.nb_photos], [-k.ratio_rentabilite]])[:petites_collections_a_ajouter + 1]
+
+        """
+        On exécute tant qu'il reste des collections prises partiellement ou qu'on a pas atteint le maximum d'itérations
+        """
         while completion_partielle:
             # Réinitialisation
-            tour = 0
             nb_photos_prises = 0
             self.collections_partielles = []
             # Il faut réinitialiser les satellites, pour cela on les clone au tour 0
             liste_satellite_clone = copy.deepcopy(self.liste_satellites)
             if not dernier_tour:
-                print('Itération numéro ' + str(iteration) + " de l'algorithme")
+                print('    Itération numéro ' + str(iteration) + " de l'algorithme")
             else:
-                print("Dernier tour de l'algorithme")
+                print("  Dernier tour de l'algorithme")
 
             # Il faut réinitialiser les collections, on les clone au tour 0
             liste_collection_clone = copy.deepcopy(self.liste_collections)
@@ -64,8 +73,8 @@ class Distributeur:
             for liste_latitude in self.globe.liste_zones:
                 for liste_longitude in liste_latitude:
                     for photo in liste_longitude.photos_a_prendre:
-                        globe_clone.liste_zones[i_lat][i_long].photos_a_prendre[i_photo] = photo  # On remet le bon pointeur
-                        globe_clone.liste_zones[i_lat][i_long].photos_prises = []  # On efface les photos prises
+                        # On remet le bon pointeur dans cette case
+                        globe_clone.liste_zones[i_lat][i_long].photos_a_prendre[i_photo] = photo
                         i_photo += 1
                     i_long += 1
                     i_photo = 0  # L'indice du pointeur de photo revient à 0 quand on change de case
@@ -91,15 +100,18 @@ class Distributeur:
                             # Mise à jour de range_déplacement_camera
                             satellite.update_camera()
 
-            #  On regarde si des collections sont complétées partiellement et si oui on élimine la pire, sinon on termine l'algorithme
+            """
+            On regarde si des collections sont complétées partiellement et si oui on élimine la pire, sinon on termine l'algorithme
+            """
             if len(self.collections_partielles) != 0 and iteration < max_iterations and not dernier_tour:
-                pire_collections = sorted(self.collections_partielles, key=lambda k: [k.ratio_rentabilite])[:collections_a_eliminer]  # On selectionne le nombre de collections à éliminer
+                # On selectionne les collections à éliminer
+                pire_collections = sorted(self.collections_partielles, key=lambda k: [k.ratio_rentabilite])[:collections_a_eliminer + 1]
                 for pire_collection in pire_collections:
                     for pire_photo in pire_collection.liste_photos:
                         indice_lat, indice_long = self.globe.calcul_indice(pire_photo)
                         globe_clone.liste_zones[indice_lat][indice_long].photos_a_prendre.remove(pire_photo)
 
-                        # On remplace le globe et les listes actuels par les clones et on reboucle
+                # On remplace le globe et les listes actuels par les clones et on reboucle
                 self.globe = globe_clone
                 self.liste_satellites = liste_satellite_clone
                 self.liste_collections = liste_collection_clone
