@@ -8,7 +8,6 @@ from Classes.Interface import Interface
 from Classes.Parseur import Parseur
 from Classes.Distributeur import Distributeur
 from Classes.Graphique import Graphique
-<<<<<<< HEAD
 
 if __name__ == '__main__':
 
