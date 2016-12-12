@@ -10,7 +10,7 @@ class Graphique:
     Afficher l'éxecution des satellites sur une interface graphique
     """
 
-    def __init__(self, nb_tours, liste_satellites, globe, liste_photos_prises):
+    def __init__(self, nb_tours, liste_satellites, globe, liste_photos_prises, taille_zone):
         self.fenetre = Tk()  # Tk() doit être fait avant "StringVar()"
 
         self.tour_max = nb_tours
@@ -26,6 +26,7 @@ class Graphique:
         self.compteur_tour = StringVar()
         self.compteur_tour.set("0")
         self.index_liste_photos = 0
+        self.taille_zone = taille_zone
 
     def initialisation(self):
         """ Met en place l'affichage
@@ -220,6 +221,26 @@ class Graphique:
         """
         for satellite in self.liste_satellites:
             self.dessiner_rond(satellite.latitude, satellite.longitude)
+
+    def dessiner_cadrillage(self):
+        """Dessine le cadrillage, mais ne pas utiliser car c'est moche"""
+        pas_lat =  self.latitude_vers_pixel(324000-self.taille_zone)
+        pas_long = 2*pas_lat
+        for i in range(8, 738, pas_lat):
+            # On dessine une ligne de latitude
+            x0 = 19
+            y0 = i
+            x1 = 1474
+            y1 = i + pas_lat
+            self.canvas.create_line(x0,y0,x1,y1)
+
+        for j in range(19, 1474, pas_long):
+            x0 = j
+            y0 = 8
+            x1 = j + pas_long
+            y1 = 738
+            self.canvas.create_line(x0,y0,x1,y1)
+
 
 # TODO : afficher cadrillage globe (une checkbox ce serait cool)
 
