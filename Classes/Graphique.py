@@ -28,6 +28,7 @@ class Graphique:
         self.index_liste_photos = 0
         self.taille_zone = taille_zone
 
+
     def initialisation(self):
         """ Met en place l'affichage
         """
@@ -90,8 +91,9 @@ class Graphique:
 
         self.canvas.pack()
 
+        self.dessiner_photos()
+
         self.fenetre.mainloop()
-# TODO : ajouter icone chargement
     def tours_suivants(self, nb_tours=1):
         """ Fait avancer un tour pour les satellites, et remet en place les dessins
         """
@@ -99,7 +101,7 @@ class Graphique:
             if (self.tour + nb_tours > self.tour_max) : # self.tour_max ne doit pas être dépassé
                 nb_tours = self.tour_max - self.tour
 
-            for i in range (nb_tours):
+            for i in range(nb_tours):
 
                 for satellite in self.liste_satellites:
                     satellite.tour_suivant()
@@ -110,8 +112,7 @@ class Graphique:
                 while ( self.index_liste_photos < len(self.liste_photos_prises)
                         and self.liste_photos_prises[self.index_liste_photos][2] == self.tour):
                     photo = self.liste_photos_prises[self.index_liste_photos]
-                    self.dessiner_croix(photo[0], photo[1])
-
+                    self.dessiner_croix(photo[0], photo[1], "blue")
                     self.index_liste_photos += 1
                 self.compteur_tour.set(str(self.tour))
 
@@ -168,20 +169,22 @@ class Graphique:
         latitude_pixel = self.latitude_vers_pixel(latitude)
         longitude_pixel = self.longitude_vers_pixel(longitude)
 
-        rond = self.canvas.create_oval(longitude_pixel, latitude_pixel, (longitude_pixel + 5), (latitude_pixel + 5),
+        rond = self.canvas.create_oval(longitude_pixel, latitude_pixel, (longitude_pixel + 10), (latitude_pixel + 10),
                                        fill="red", width=2, outline="black")
         self.liste_dessins.append(rond)
 
-    def dessiner_croix(self, latitude, longitude):
+    def dessiner_croix(self, latitude, longitude, couleur):
         """ Dessinne une croix a une latitude et une longitude
         :param latitude: un entier dans [-324000;324000]
         :param longitude: un entier dans [-648000;647999]
+        :param couleur: une couleur normée : "blue","red"...
         """
         latitude_pixel = self.latitude_vers_pixel(latitude)
         longitude_pixel = self.longitude_vers_pixel(longitude)
 
-        croix1 = self.canvas.create_line(longitude_pixel - 5, latitude_pixel - 5, longitude_pixel + 5, latitude_pixel + 5, width=5, fill="blue")
-        croix2 = self.canvas.create_line(longitude_pixel - 5, latitude_pixel + 5, longitude_pixel + 5, latitude_pixel - 5, width=5, fill="blue")
+
+        croix1 = self.canvas.create_line(longitude_pixel - 5, latitude_pixel - 5, longitude_pixel + 5, latitude_pixel + 5, width=5, fill=couleur)
+        croix2 = self.canvas.create_line(longitude_pixel - 5, latitude_pixel + 5, longitude_pixel + 5, latitude_pixel - 5, width=5, fill=couleur)
 
         self.liste_dessins_photos.append(croix1)
         self.liste_dessins_photos.append(croix2)
@@ -195,7 +198,7 @@ class Graphique:
         latitude_pixel = ((latitude * 730) // 648000)  # sur une échelle de 0 a 765
         return 730 - latitude_pixel + 8  # La latitude est inversée, et la map commence a 8
 
-    def longitude_vers_pixel(self, longitude): # TODO : des satellites dépasssent à gauche
+    def longitude_vers_pixel(self, longitude):
         """ Transforme une longitude en sa position sur la map en pixel
         :param longitude: un entier dans [-648000;64799]
         :return: un entier dans [19;1474]
@@ -241,8 +244,11 @@ class Graphique:
             y1 = 738
             self.canvas.create_line(x0,y0,x1,y1)
 
+    def dessiner_photos(self):
+        for photo in self.liste_photos_prises:
+            self.dessiner_croix(photo[0], photo[1], "gray")
 
-# TODO : afficher cadrillage globe (une checkbox ce serait cool)
+
 
 
 if __name__ == "__main__":
