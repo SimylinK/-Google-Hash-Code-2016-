@@ -18,6 +18,8 @@ class Collection:
         self.liste_intervalles = []  # Liste des intervalles pour la collection
         self.liste_photos = []  # Liste d'instances de la classe Photo, qu'on initialise vide et remplit ensuite
         self.ratio_rentabilite = self.donner_ratio(nb_points, nb_photos)
+        self.complete = False  # Booléen qui indique si la collection est complétée
+
 
     def donner_ratio(self, nb_points, nb_photos):
         """
@@ -40,6 +42,12 @@ class Collection:
             Méthode ajoute un intervalle à la collection.
         """
         self.liste_intervalles.append(intervalle)
+
+    def update(self):
+        self.nb_photos -= 1
+        if self.nb_photos == 0:
+            self.complete = True
+        return self.complete
 
 if __name__ == "__main__":
     nb_points = 192

@@ -37,7 +37,7 @@ class Parseur:
         if chemin_input:
             self.chemin_input = self.REPERTOIRE + chemin_input
         else:
-            self.chemin_input = self.REPERTOIRE + '\\donneesTest\\weekend.in'
+            self.chemin_input = self.REPERTOIRE + '\\donneesTest\\forever_alone.in'
 
         if chemin_output:
             self.chemin_output = chemin_output
@@ -200,6 +200,11 @@ class Parseur:
                     fichier_output.write(str(photo.longitude) + " ")
                     fichier_output.write(str(photo.prise_tour) + " ")
                     fichier_output.write(str(photo.prise_par_id) + "\n")
+        temps_exec = time.clock()
+        if temps_exec <= 60:
+            print("Le temps d'exécution fut de " + str(temps_exec) + " secondes")
+        else:
+            print("Le temps d'exécution fut de " + str(temps_exec / 60) + " minutes")
 
         self.temps_exec = time.clock()
 
@@ -225,3 +230,4 @@ class Parseur:
         liste_photos.sort(key=lambda k: [k[2]])
 
         return liste_photos
+

@@ -8,6 +8,7 @@ from Classes.Interface import Interface
 from Classes.Parseur import Parseur
 from Classes.Distributeur import Distributeur
 from Classes.Graphique import Graphique
+<<<<<<< HEAD
 
 if __name__ == '__main__':
 
@@ -35,3 +36,4 @@ if __name__ == '__main__':
         liste_photos = parseur.recup_output()
         graphique = Graphique(nombre_tours, liste_satellites, None, liste_photos)
         graphique.initialisation()
+
