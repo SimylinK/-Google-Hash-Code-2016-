@@ -11,7 +11,7 @@ class Interface:
         self.adresse_photo = ""
 
     def creer_interface_lancement(self):
-        fen1 = Tk()
+        fen1 = Tk(className='#HashCode | Choix de la simulation')
         fen1.configure(bg='white')
         canvas = Canvas(fen1, width=600, height=300)
         photo = PhotoImage(file="docs/Logo_polyhash_code_signe.png")
@@ -51,7 +51,7 @@ class Interface:
             self.fichier_input = "constellation"
 
     def creer_interface_fin(self, temps_exec):
-        fen2 = Tk()
+        fen2 = Tk(className='#HashCode | Résultat de la simulation')
         fen2.configure(bg='white')
 
         temps_en_secondes = Label(fen2, text="La simulation de " + self.fichier_input + " a duré " + str(round(temps_exec, 2)) + " secondes.",

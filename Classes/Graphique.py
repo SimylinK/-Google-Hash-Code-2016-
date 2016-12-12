@@ -11,7 +11,7 @@ class Graphique:
     """
 
     def __init__(self, nb_tours, liste_satellites, globe, liste_photos_prises, taille_zone):
-        self.fenetre = Tk()  # Tk() doit être fait avant "StringVar()"
+        self.fenetre = Tk(className='#HashCode | Visualisation de la simulation')  # Tk() doit être fait avant "StringVar()"
 
         self.tour_max = nb_tours
         self.liste_satellites = liste_satellites
