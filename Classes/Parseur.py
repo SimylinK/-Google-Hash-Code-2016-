@@ -18,7 +18,6 @@ from Classes.Globe import Globe
 from Classes.Photo import Photo
 from Classes.Satellite import Satellite
 
-
 class Parseur:
     """Classe chargée de :
     transformer le fichier d'input en informations utilisables :
@@ -32,18 +31,9 @@ class Parseur:
     # Constantes :
     REPERTOIRE = os.getcwd()
 
-    def __init__(self, chemin_input=None, chemin_output=None):
-
-        if chemin_input:
-            self.chemin_input = self.REPERTOIRE + chemin_input
-        else:
-            self.chemin_input = self.REPERTOIRE + '\\donneesTest\\forever_alone.in'
-
-        if chemin_output:
-            self.chemin_output = chemin_output
-        else:
-            self.chemin_output = self.REPERTOIRE + '\\fichier_output.out'
-
+    def __init__(self, chemin_input=None):
+        self.chemin_output = self.REPERTOIRE + '/fichier_output.out'
+        self.chemin_input = self.REPERTOIRE + chemin_input
         self.temps_exec = 0
 
     def demander_input(self):
@@ -106,7 +96,7 @@ class Parseur:
             liste_collections.append(collection)
         fichier_input.close()
 
-        return nb_tours, nb_satellites, liste_satellites, liste_collections, globe
+        return nb_tours, liste_satellites, liste_collections, globe
 
     def photo_par_chaine(self, caracteres, collection):
         """Transforme une ligne du fichier input en une instance de la classe Photo"""

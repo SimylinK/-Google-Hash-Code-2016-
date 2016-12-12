@@ -8,7 +8,6 @@ class Interface:
     def __init__(self, adresse_photo = None):
         self.fichier_input = ""
         self.voir_simulation = False
-        self.parseur = ""
         self.adresse_photo = ""
 
     def creer_interface_lancement(self):
@@ -29,7 +28,6 @@ class Interface:
         overlap = Radiobutton(fen1, text="overlap", variable=retour, value=2, bd=3, bg='white')
         forever_alone = Radiobutton(fen1, text="forever_alone", variable=retour, value=3, bd=3, bg='white')
         constellation = Radiobutton(fen1, text="constellation", variable=retour, value=4, bd=3, bg='white')
-
 
         quitter = Button(fen1, text="Lancer le programme", command=fen1.quit, width=25, height=1)
 

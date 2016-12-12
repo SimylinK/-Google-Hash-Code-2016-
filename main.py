@@ -18,9 +18,9 @@ if __name__ == '__main__':
 
     #Execution du programme
 
-    parseur = Parseur('/donneesTest/' + interface_debut.fichier_input + '.in')
-    nombre_tours, nombre_satellites, liste_satellites, liste_collections, globe = parseur.initialisation()
-    distrib = Distributeur(nombre_tours, nombre_satellites, liste_satellites, liste_collections, globe)
+    parseur = Parseur(chemin_input = '/donneesTest/' + interface_debut.fichier_input + '.in')
+    nombre_tours, liste_satellites, liste_collections, globe = parseur.initialisation()
+    distrib = Distributeur(nombre_tours, liste_satellites, liste_collections, globe)
     nb_photos_prises = distrib.algo_opti()
     parseur.creer_output(globe.liste_zones, nb_photos_prises)
 
@@ -31,8 +31,8 @@ if __name__ == '__main__':
 
     if interface_debut.voir_simulation :
         parseur = Parseur('/donneesTest/' + interface_debut.fichier_input + '.in')
-        nombre_tours, nombre_satellites, liste_satellites, liste_collections, globe = parseur.initialisation()
+        nombre_tours, liste_satellites, liste_collections, globe = parseur.initialisation()
         liste_photos = parseur.recup_output()
-        graphique = Graphique(nombre_tours, liste_satellites, None, liste_photos)
+        graphique = Graphique(nombre_tours, liste_satellites, None, liste_photos, globe.lat_zone)
         graphique.initialisation()
 
