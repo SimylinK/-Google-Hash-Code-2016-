@@ -36,7 +36,7 @@ class Parseur:
         if chemin_input:
             self.chemin_input = self.REPERTOIRE + chemin_input
         else:
-            self.chemin_input = self.REPERTOIRE + '\\donneesTest\\weekend.in'
+            self.chemin_input = self.REPERTOIRE + '\\donneesTest\\forever_alone.in'
 
         if chemin_output:
             self.chemin_output = chemin_output
