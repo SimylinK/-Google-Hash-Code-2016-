@@ -103,7 +103,7 @@ class Parseur:
             liste_collections.append(collection)
         fichier_input.close()
 
-        return nb_tours, nb_satellites, liste_satellites, liste_collections, globe
+        return nb_tours, liste_satellites, liste_collections, globe
 
     def photo_par_chaine(self, caracteres, collection):
         """Transforme une ligne du fichier input en une instance de la classe Photo"""
