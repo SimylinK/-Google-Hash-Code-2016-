@@ -3,7 +3,7 @@
 
 from tkinter import *
 from Classes.Satellite import Satellite
-
+import time
 
 class Graphique:
     """Classe chargée de :
@@ -28,6 +28,7 @@ class Graphique:
         self.compteur_tour.set("0")
         self.index_liste_photos = 0
         self.taille_zone = taille_zone
+        self.reste_tours = True  # Signifie qu'il reste des tours et permet de lancer "Finir simulation"
 
 
     def initialisation(self):
@@ -88,6 +89,9 @@ class Graphique:
         panel_principal.add(Spinbox(self.fenetre, textvariable=valeur_aller, from_=0, to=self.tour_max))
         panel_principal.add(Button(self.fenetre, text='Exécuter', command=lambda: self.aller_tour(valeur_aller)))
 
+        # Affichage de "Finir la simulation"
+        panel_principal.add(Button(self.fenetre, text='Finir la simulation', command=lambda: self.avancer()))
+
         # Pour éviter d'étirer l'élément juste au-dessus
         panel_principal.add(Label(self.fenetre, text=""))
         panel_principal.pack()
@@ -119,7 +123,8 @@ class Graphique:
                     self.dessiner_croix(photo[0], photo[1], "blue")
                     self.index_liste_photos += 1
                 self.compteur_tour.set(str(self.tour))
-
+        else:
+            self.reste_tours = False
     def tours_precedents(self, nb_tours=1):
         """ Fait revenir la carte à un tour précédent
         :param nb_tours: nombre de tours à reculer
@@ -251,6 +256,17 @@ class Graphique:
     def dessiner_photos(self):
         for photo in self.liste_photos_prises:
             self.dessiner_croix(photo[0], photo[1], "gray")
+
+    def avancer(self):
+        """Méthode qui permet de faire avancer jusqu'à la fin de la simulation"""
+        if self.reste_tours:
+            self.tours_suivants(100)
+            self.fenetre.after(10, self.avancer)
+
+    def stopper(self):
+        """Arrête la simulation"""
+        self.reste_tours = False
+
 
 
 if __name__ == "__main__":
