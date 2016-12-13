@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
 from tkinter import *
 from Classes.Satellite import Satellite
 
@@ -10,13 +11,16 @@ class Graphique:
     Afficher l'éxecution des satellites sur une interface graphique
     """
 
+    # Constantes
+    REPERTOIRE = os.getcwd()
+
     def __init__(self, nb_tours, liste_satellites, globe, liste_photos_prises, taille_zone):
         """
-        :param nb_tours:
-        :param liste_satellites:
-        :param globe:
-        :param liste_photos_prises:
-        :param taille_zone:
+        :param nb_tours: le nombre de tours que la simulation va durer
+        :param liste_satellites: liste des instances de classe Satellite
+        :param globe: une instance de la classe Globe
+        :param liste_photos_prises: liste de listes qui contient des informations sur les photos ayant été prises
+        :param taille_zone: taille d'un côté d'une zone du globe
         """
         # Tk() doit être fait avant "StringVar()"
         self.fenetre = Tk(className='#HashCode | Visualisation de la simulation')
@@ -46,7 +50,7 @@ class Graphique:
 
         # Placement de la map monde
         self.canvas = Canvas(self.fenetre, width=1500, height=752)
-        photo = PhotoImage(file="docs/map_monde.png")
+        photo = PhotoImage(file= self.REPERTOIRE + "/docs/map_monde.png")
         # Taille de 1500 * 752 px
         # La map commence en x : 19 et y : 8
         # La map termine en x : 1474 et y : 738
