@@ -12,6 +12,7 @@
 
 import os
 import time
+
 from Classes.Collection import Collection
 from Classes.Globe import Globe
 from Classes.Photo import Photo
@@ -31,17 +32,10 @@ class Parseur:
     # Constantes :
     REPERTOIRE = os.getcwd()
 
-    def __init__(self, chemin_input=None, chemin_output=None):
-
-        if chemin_input:
-            self.chemin_input = self.REPERTOIRE + chemin_input
-        else:
-            self.chemin_input = self.REPERTOIRE + '\\donneesTest\\forever_alone.in'
-
-        if chemin_output:
-            self.chemin_output = chemin_output
-        else:
-            self.chemin_output = self.REPERTOIRE + '\\fichier_output.out'
+    def __init__(self, chemin_input=None):
+        self.chemin_output = self.REPERTOIRE + '/fichier_output.out'
+        self.chemin_input = self.REPERTOIRE + chemin_input
+        self.temps_exec = 0
 
     def demander_input(self):
         chemin = ' '
@@ -203,6 +197,8 @@ class Parseur:
         else:
             print("Le temps d'exécution fut de " + str(temps_exec / 60) + " minutes")
 
+        self.temps_exec = time.clock()
+
     def recup_output(self):
         """Méthode chargée de : Récupérer les informations d'un fichier d'output et de les transformer en instances
                de classes.
@@ -212,11 +208,13 @@ class Parseur:
 
         print("Lecture du fichier d'output")
         fichier_output = open(self.chemin_output, 'r')
-        nb_photos_prises = int(fichier_output.readline().rstrip())  # rstrip est utilisé pour ne pas prendre "\n" en compte.
+
+        # rstrip est utilisé pour ne pas prendre "\n" en compte.
+        nb_photos_prises = int(fichier_output.readline().rstrip())
 
         for i in range(0, nb_photos_prises):
             chaine_photo = (fichier_output.readline().rstrip())
-            photo = self.ligne_output_par_chaine(chaine_photo) # Pas besoin de préciser Collection
+            photo = self.ligne_output_par_chaine(chaine_photo)  # Pas besoin de préciser Collection
             liste_photos.append(photo)
 
         fichier_output.close()
@@ -225,4 +223,3 @@ class Parseur:
         liste_photos.sort(key=lambda k: [k[2]])
 
         return liste_photos
-
