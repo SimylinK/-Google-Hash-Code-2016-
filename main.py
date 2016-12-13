@@ -32,7 +32,6 @@ if __name__ == '__main__':
     # Creation interface après l'execution
 
     interface_debut.creer_interface_fin(parseur.temps_exec)
-    print(interface_debut.voir_simulation)
 
     if interface_debut.voir_simulation :
         parseur = Parseur('/donneesTest/' + interface_debut.fichier_input + '.in')
