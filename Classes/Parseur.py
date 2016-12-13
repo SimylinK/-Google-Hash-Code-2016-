@@ -21,12 +21,11 @@ from Classes.Satellite import Satellite
 
 class Parseur:
     """Classe chargée de :
-    transformer le fichier d'input en informations utilisables :
-        variables, instances de classes..
 
-    Demande à l'utilisateur les chemins des fichiers input et output.
-    Lorsque la simulation totale est terminée :
-        renvoie le chemin du fichier output.
+    Transformer le fichier d'input en informations utilisables :
+        variables, instances de classes.
+
+    Écrire le fichier output.
     """
 
     # Constantes :

@@ -6,7 +6,7 @@ import copy
 
 class Distributeur:
     """Classe chargée de :
-    distribuer les photos entre les satellites et les associer dans un calendrier
+    Décider de l'action à effectuer pour chaque tour pour chaque satellite
     """
 
     def __init__(self, nb_tours, liste_satellites, liste_collections, globe):
@@ -84,11 +84,12 @@ class Distributeur:
                         lat_choisie, long_choisie = self.prediction(satellite, tour)
                         satellite.tour_suivant(lat_choisie, long_choisie)
                         if lat_choisie:
+                            # Si on prend une photo, on remet la range camera au minimum
                             satellite.reset_camera()
                             nb_photos_prises += 1
 
                         else:
-                            # Mise à jour de range_déplacement_camera
+                            # On augmente la range de déplacement caméra
                             satellite.update_camera()
 
             """
@@ -113,11 +114,15 @@ class Distributeur:
         return nb_photos_prises
 
     def prediction(self, satellite, tour):
-        """Méthode qui renvoie  la latitude et la longitude de la meilleure photo atteignable
-        au tour suivant pour un satellite et un tour donnés
-        lat et long sont les indices de la zone dans laquelle se trouve le satellite"""
+        """
+        Méthode qui renvoie la latitude et la longitude de la meilleure photo atteignable au tour suivant pour un satellite et un tour donnés
+        """
 
-        # On crée un satellite intermédiaire
+        """
+        On clone le satellite
+        Comme cette méthode est appelée une fois par satellite par tour, on n'utilise pas le module copy qui est lourd
+        On préfère utiliser une méthode implémentée, le satellite n'ayant pas besoin d'un deepcopy
+        """
         sat = satellite.clone()
 
         # On simule un avancement d'un tour de ce satellite
@@ -140,7 +145,9 @@ class Distributeur:
                 choix = True
 
         if choix:
+            # On sélectionne la photo en prenant celle au meilleur ratio
             photo_choisie = sorted(photos_prenables, key=lambda k: [k.collection.ratio_rentabilite], reverse=True)[0]
+            # On met à jour les informations de cette photo
             photo_choisie.prise_par_id = satellite.id
             photo_choisie.prise_tour = tour + 1
             # Calcul des indices de la photo choisie dans liste_zones
@@ -162,6 +169,7 @@ class Distributeur:
             return None, None
 
     def moyenne_ratio(self):
+        """Calcule la moyenne du ratio des collections"""
         somme = 0
         for collection in self.liste_collections:
             somme += collection.ratio_rentabilite
