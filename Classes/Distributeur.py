@@ -20,7 +20,7 @@ class Distributeur:
         self.liste_satellites = liste_satellites
         self.liste_collections = liste_collections  # Liste de toutes les collections
         self.globe = globe
-        self.ratio_moyen = self.moyenne_ratio()  #  Ratio_rentabilite moyen des collections
+        self.ratio_moyen = self.moyenne_ratio()  # Ratio_rentabilite moyen des collections
         self.seuil_ratio = self.ratio_moyen * 15 / 100  # Valeur fixée arbitrairement à 15 pourcents
         self.collections_partielles = []  # Liste de collections prises partiellement
         self.meilleures_petites_collections = []
@@ -127,7 +127,6 @@ class Distributeur:
         :return: Si on choisit de prendre une photo : Latitude, longitude : deux entiers
                  Sinon : None, None
         """
-
 
         """
         On clone le satellite

@@ -5,6 +5,7 @@ import os
 from tkinter import *
 from Classes.Satellite import Satellite
 
+
 class Graphique:
     """
     Classe chargée de :
@@ -41,7 +42,6 @@ class Graphique:
         self.taille_zone = taille_zone
         self.reste_tours = True  # Signifie qu'il reste des tours et permet de lancer "Finir simulation"
 
-
     def initialisation(self):
         """
         Méthode chargée de :
@@ -50,7 +50,7 @@ class Graphique:
 
         # Placement de la map monde
         self.canvas = Canvas(self.fenetre, width=1500, height=752)
-        photo = PhotoImage(file= self.REPERTOIRE + "/docs/map_monde.png")
+        photo = PhotoImage(file=self.REPERTOIRE + "/docs/map_monde.png")
         # Taille de 1500 * 752 px
         # La map commence en x : 19 et y : 8
         # La map termine en x : 1474 et y : 738
@@ -140,6 +140,7 @@ class Graphique:
                 self.compteur_tour.set(str(self.tour))
         else:
             self.reste_tours = False
+
     def tours_precedents(self, nb_tours=1):
         """
         Méthode chargée de :

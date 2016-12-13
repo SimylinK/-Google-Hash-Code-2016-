@@ -12,6 +12,7 @@
 import os
 from tkinter import *
 
+
 class Interface:
     """
     Classe chargée de :
@@ -22,7 +23,6 @@ class Interface:
     # Constantes :
     REPERTOIRE = os.getcwd()
 
-
     def __init__(self):
         self.fichier_input = ""
         self.voir_simulation = False
@@ -32,20 +32,21 @@ class Interface:
         Méthode chargée de :
         Créer une interface utilisateur visant à choisir le fichier d'input.
         """
-        fen1 = Tk(className='#HashCode | Choix de la simulation') # Création de la fenêtre
-        fen1.configure(bg='white') # Configuration des paramètres de la fenêtre
-        canvas = Canvas(fen1, width=600, height=300) # Création du canvas
-        photo = PhotoImage(file= self.REPERTOIRE + "/docs/Logo_polyhash_code_signe.png") # Definition de la photo
+        fen1 = Tk(className='#HashCode | Choix de la simulation')  # Création de la fenêtre
+        fen1.configure(bg='white')  # Configuration des paramètres de la fenêtre
+        canvas = Canvas(fen1, width=600, height=300)  # Création du canvas
+        photo = PhotoImage(file=self.REPERTOIRE + "/docs/Logo_polyhash_code_signe.png")  # Definition de la photo
         canvas.create_image(50, 50, anchor=NW, image=photo)
         canvas.pack(side=TOP and RIGHT)
         canvas.configure(bg='white')
 
-        label = Label(fen1, text="Quel fichier utiliser pour la simulation ?", bg='white') # Affichage de texte de communication avec l'utilisateur
+        label = Label(fen1, text="Quel fichier utiliser pour la simulation ?",
+                      bg='white')  # Affichage de texte de communication avec l'utilisateur
 
         retour = IntVar()  # Crée une variable entière pour recevoir la valeur retour
         retour.set(3)  # Le bouton forever_alone est le choix par defaut (value=3)
 
-        #Création des boutons pour le choix du fichier d'input
+        # Création des boutons pour le choix du fichier d'input
         weekend = Radiobutton(fen1, text="weekend", variable=retour, value=1, bd=2, bg='white')
         overlap = Radiobutton(fen1, text="overlap", variable=retour, value=2, bd=3, bg='white')
         forever_alone = Radiobutton(fen1, text="forever_alone", variable=retour, value=3, bd=3, bg='white')
@@ -61,8 +62,8 @@ class Interface:
         constellation.pack()
         quitter.pack(padx=10, pady=10, side=RIGHT and BOTTOM)
 
-        fen1.mainloop() # Ouverture de la fenêtre
-        fen1.destroy() #Destruction de la fenêtre après fermeture pour ne pas qu'elle reste affichée
+        fen1.mainloop()  # Ouverture de la fenêtre
+        fen1.destroy()  # Destruction de la fenêtre après fermeture pour ne pas qu'elle reste affichée
 
         # Choix du fichier d'input en fonction de la valeur de retour
         if retour.get() == 1:
@@ -80,8 +81,8 @@ class Interface:
         Créer une interface utilisateur visant à choisir si lancer ou non l'interface graphique de la map monde.
         :param temps_exec: un flottant : le temps d'éxecution du programme principal
         """
-        fen2 = Tk(className='#HashCode | Résultat de la simulation') # Création de la fenêtre
-        fen2.configure(bg='white') # Configuration des paramètres de la fenêtre
+        fen2 = Tk(className='#HashCode | Résultat de la simulation')  # Création de la fenêtre
+        fen2.configure(bg='white')  # Configuration des paramètres de la fenêtre
 
         # Création des labels et boutons
         temps_en_secondes = Label(fen2, text="La simulation de " + self.fichier_input + " a duré " + str(
@@ -99,20 +100,22 @@ class Interface:
 
         # Le type d'affichage du temps dépend de la durée de la simulation
         if temps_exec <= 60:
-            temps_en_secondes.pack(padx=10, pady=10) # On affiche le temps en secondes si la simulation a duré moins de 1 minute
+            temps_en_secondes.pack(padx=10,
+                                   pady=10)  # On affiche le temps en secondes si la simulation a duré moins de 1 minute
         else:
-            temps_en_minutes.pack(padx=10, pady=10) # Sinon on l'affiche en minutes et secondes
+            temps_en_minutes.pack(padx=10, pady=10)  # Sinon on l'affiche en minutes et secondes
 
         # Affichage des labels et boutons
         suite.pack(padx=10, pady=5)
         voir_simulation.pack(padx=10, pady=5)
         quitter.pack(padx=10, pady=5)
 
-        fen2.mainloop() # Ouverture de la fenetre
-        fen2.destroy() #Destruction de la fenêtre après fermeture pour ne pas qu'elle reste affichée
+        fen2.mainloop()  # Ouverture de la fenetre
+        fen2.destroy()  # Destruction de la fenêtre après fermeture pour ne pas qu'elle reste affichée
 
-        if voir.get() == 1: # Si l'utilisateur a choisi de voir la simulation
-            self.voir_simulation = True # On donne à la variable voir_simulation la valeur True
+        if voir.get() == 1:  # Si l'utilisateur a choisi de voir la simulation
+            self.voir_simulation = True  # On donne à la variable voir_simulation la valeur True
+
 
 # Tests des fonctions
 if __name__ == "__main__":

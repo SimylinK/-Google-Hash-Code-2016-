@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
     interface_debut.creer_interface_fin(parseur.temps_exec)
 
-    if interface_debut.voir_simulation :
+    if interface_debut.voir_simulation:
         parseur = Parseur('/donneesTest/' + interface_debut.fichier_input + '.in')
         nombre_tours, liste_satellites, liste_collections, globe = parseur.initialisation()
         liste_photos = parseur.recup_output()
