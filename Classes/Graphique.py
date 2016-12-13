@@ -3,14 +3,21 @@
 
 from tkinter import *
 from Classes.Satellite import Satellite
-import time
 
 class Graphique:
-    """Classe chargée de :
+    """
+    Classe chargée de :
     Afficher l'éxecution des satellites sur une interface graphique
     """
 
     def __init__(self, nb_tours, liste_satellites, globe, liste_photos_prises, taille_zone):
+        """
+        :param nb_tours:
+        :param liste_satellites:
+        :param globe:
+        :param liste_photos_prises:
+        :param taille_zone:
+        """
         # Tk() doit être fait avant "StringVar()"
         self.fenetre = Tk(className='#HashCode | Visualisation de la simulation')
 
@@ -32,7 +39,9 @@ class Graphique:
 
 
     def initialisation(self):
-        """ Met en place l'affichage
+        """
+        Méthode chargée de :
+        Mettre en place l'affichage
         """
 
         # Placement de la map monde
@@ -103,7 +112,9 @@ class Graphique:
         self.fenetre.mainloop()
 
     def tours_suivants(self, nb_tours=1):
-        """ Fait avancer un tour pour les satellites, et remet en place les dessins
+        """
+        Méthode chargée de :
+        Faire avancer un tour pour les satellites, et remettre en place les dessins
         """
         if self.tour < self.tour_max:  # self.tour_max est le dernier tour
             if self.tour + nb_tours > self.tour_max:  # self.tour_max ne doit pas être dépassé
@@ -126,7 +137,9 @@ class Graphique:
         else:
             self.reste_tours = False
     def tours_precedents(self, nb_tours=1):
-        """ Fait revenir la carte à un tour précédent
+        """
+        Méthode chargée de :
+        Faire revenir la carte à un tour précédent
         :param nb_tours: nombre de tours à reculer
         """
         if self.tour > 0:  # le tour 0 est le tour minimum
@@ -160,7 +173,9 @@ class Graphique:
             self.dessiner_satellites()
 
     def aller_tour(self, tour):
-        """ Permet de faire avancer ou reculer jusqu'à un tour
+        """
+        Méthode chargée de :
+        Permettre de faire avancer ou reculer jusqu'à un tour
         :param tour: un entier dans [0, self.tour_max]
         """
         nb_tours = abs(tour.get() - self.tour)
@@ -170,7 +185,9 @@ class Graphique:
             self.tours_precedents(nb_tours)
 
     def dessiner_rond(self, latitude, longitude):
-        """ Dessine un rond a une latitude et longitude
+        """
+        Méthode chargée de :
+        Dessine un rond a une latitude et longitude
         :param latitude: un entier dans [-324000;324000]
         :param longitude: un entier dans [-648000;647999]
         """
@@ -182,7 +199,9 @@ class Graphique:
         self.liste_dessins.append(rond)
 
     def dessiner_croix(self, latitude, longitude, couleur):
-        """ Dessinne une croix a une latitude et une longitude
+        """
+        Méthode chargée de :
+        Dessine une croix a une latitude et une longitude
         :param latitude: un entier dans [-324000;324000]
         :param longitude: un entier dans [-648000;647999]
         :param couleur: une couleur normée : "blue","red"...
@@ -199,7 +218,9 @@ class Graphique:
         self.liste_dessins_photos.append(croix2)
 
     def latitude_vers_pixel(self, latitude):
-        """ Transforme une latitude en sa position sur la map en pixel
+        """
+        Méthode chargée de :
+        Transformer une latitude en sa position sur la map en pixel
         :param latitude: un entier dans [-324000;324000]
         :return: un entier dans [8;738]
         """
@@ -208,7 +229,9 @@ class Graphique:
         return 730 - latitude_pixel + 8  # La latitude est inversée, et la map commence a 8
 
     def longitude_vers_pixel(self, longitude):
-        """ Transforme une longitude en sa position sur la map en pixel
+        """
+        Méthode chargée de :
+        Transformer une longitude en sa position sur la map en pixel
         :param longitude: un entier dans [-648000;64799]
         :return: un entier dans [19;1474]
         """
@@ -222,20 +245,27 @@ class Graphique:
         return longitude_pixel + 19  # la map commence a 19
 
     def effacer_dessins(self):
-        """ Efface tous les dessins présents sur le canvas
+        """
+        Méthode chargée de :
+        Effacer tous les dessins présents sur le canvas
         """
         for dessin in self.liste_dessins:
             self.canvas.delete(dessin)
         self.liste_dessins = []
 
     def dessiner_satellites(self):
-        """ Dessine les satellites sur le canvas
+        """
+        Méthode chargée de :
+        Dessine les satellites sur le canvas
         """
         for satellite in self.liste_satellites:
             self.dessiner_rond(satellite.latitude, satellite.longitude)
 
     def dessiner_cadrillage(self):
-        """Dessine le cadrillage, mais ne pas utiliser car c'est moche"""
+        """
+        Méthode chargée de :
+        Dessine le cadrillage, mais ne pas utiliser car c'est moche
+        """
         pas_lat = self.latitude_vers_pixel(324000 - self.taille_zone)
         pas_long = 2 * pas_lat
         for i in range(8, 738, pas_lat):
@@ -258,17 +288,23 @@ class Graphique:
             self.dessiner_croix(photo[0], photo[1], "gray")
 
     def avancer(self):
-        """Méthode qui permet de faire avancer jusqu'à la fin de la simulation"""
+        """
+        Méthode chargée de :
+        Méthode qui permet de faire avancer jusqu'à la fin de la simulation
+        """
         if self.reste_tours:
             self.tours_suivants(100)
             self.fenetre.after(10, self.avancer)
 
     def stopper(self):
-        """Arrête la simulation"""
+        """
+        Méthode chargée de :
+        Arrête la simulation
+        """
         self.reste_tours = False
 
 
-
+# Tests divers
 if __name__ == "__main__":
     # Création des satellite
     # Paris : 175872   8455
