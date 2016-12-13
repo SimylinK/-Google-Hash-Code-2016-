@@ -18,14 +18,14 @@ from Classes.Globe import Globe
 from Classes.Photo import Photo
 from Classes.Satellite import Satellite
 
+
 class Parseur:
     """Classe chargée de :
-    transformer le fichier d'input en informations utilisables :
-        variables, instances de classes..
 
-    Demande à l'utilisateur les chemins des fichiers input et output.
-    Lorsque la simulation totale est terminée :
-        renvoie le chemin du fichier output.
+    Transformer le fichier d'input en informations utilisables :
+        variables, instances de classes.
+
+    Écrire le fichier output.
     """
 
     # Constantes :
@@ -207,11 +207,13 @@ class Parseur:
 
         print("Lecture du fichier d'output")
         fichier_output = open(self.chemin_output, 'r')
-        nb_photos_prises = int(fichier_output.readline().rstrip())  # rstrip est utilisé pour ne pas prendre "\n" en compte.
+
+        # rstrip est utilisé pour ne pas prendre "\n" en compte.
+        nb_photos_prises = int(fichier_output.readline().rstrip())
 
         for i in range(0, nb_photos_prises):
             chaine_photo = (fichier_output.readline().rstrip())
-            photo = self.ligne_output_par_chaine(chaine_photo) # Pas besoin de préciser Collection
+            photo = self.ligne_output_par_chaine(chaine_photo)  # Pas besoin de préciser Collection
             liste_photos.append(photo)
 
         fichier_output.close()
@@ -220,4 +222,3 @@ class Parseur:
         liste_photos.sort(key=lambda k: [k[2]])
 
         return liste_photos
-

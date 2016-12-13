@@ -26,7 +26,8 @@ class Satellite:
         self.orientation_vitesse_camera = vitesse // abs(vitesse)
         self.vitesse_camera = vitesse_camera
         self.max_deplacement_camera = max_deplacement_camera
-        #  range_deplacement représente de combien on peut bouger dans chaque direction par rapport à la caméra au tour t +1
+        #  range_deplacement représente de combien on peut bouger
+        #  dans chaque direction par rapport à la caméra au tour t +1
         self.range_deplacement_camera = [[self.vitesse_camera, self.vitesse_camera],
                                          [self.vitesse_camera, self.vitesse_camera]]
         self.passe_pole_nord = False
@@ -245,7 +246,7 @@ class Satellite:
             self.vitesse = -self.vitesse
         # long est compris entre -648000 et 647999
         if long > 647999:
-            long = long - 1296000
+            long -= 1296000
         self.latitude = lat
         self.longitude = long
 

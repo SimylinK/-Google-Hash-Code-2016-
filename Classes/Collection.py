@@ -20,7 +20,6 @@ class Collection:
         self.ratio_rentabilite = self.donner_ratio(nb_points, nb_photos)
         self.complete = False  # Booléen qui indique si la collection est complétée
 
-
     def donner_ratio(self, nb_points, nb_photos):
         """
             Méthode chargée de :
@@ -48,6 +47,7 @@ class Collection:
         if self.nb_photos == 0:
             self.complete = True
         return self.complete
+
 
 if __name__ == "__main__":
     nb_points = 192

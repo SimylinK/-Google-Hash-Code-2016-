@@ -2,16 +2,16 @@
 # -*- coding: utf-8 -*-
 
 from tkinter import *
-import time
+
 
 class Interface:
-    def __init__(self, adresse_photo = None):
+    def __init__(self, adresse_photo=""):
         self.fichier_input = ""
         self.voir_simulation = False
-        self.adresse_photo = ""
+        self.adresse_photo = adresse_photo
 
     def creer_interface_lancement(self):
-        fen1 = Tk()
+        fen1 = Tk(className='#HashCode | Choix de la simulation')
         fen1.configure(bg='white')
         canvas = Canvas(fen1, width=600, height=300)
         photo = PhotoImage(file="docs/Logo_polyhash_code_signe.png")
@@ -51,10 +51,11 @@ class Interface:
             self.fichier_input = "constellation"
 
     def creer_interface_fin(self, temps_exec):
-        fen2 = Tk()
+        fen2 = Tk(className='#HashCode | Résultat de la simulation')
         fen2.configure(bg='white')
 
-        temps_en_secondes = Label(fen2, text="La simulation de " + self.fichier_input + " a duré " + str(round(temps_exec, 2)) + " secondes.",
+        temps_en_secondes = Label(fen2, text="La simulation de " + self.fichier_input + " a duré " + str(
+            round(temps_exec, 2)) + " secondes.",
                                   bg='white')
         temps_en_minutes = Label(fen2, text="La simulation a duré " + str(temps_exec // 60) + " minutes et " + str(
             round(temps_exec % 60, 2)) + " secondes.", bg='white')
@@ -84,6 +85,7 @@ class Interface:
         print(voir.get())
 
         return voir.get()
+
 
 # Tests des fonctions
 if __name__ == "__main__":
