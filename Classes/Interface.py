@@ -66,7 +66,7 @@ class Interface:
         voir = IntVar()  # creation de variable-retour
         voir.set(1)
         voir_simulation = Checkbutton(fen2, variable=voir,
-                                      text="Je veux voir le résultat de la simulation graphique", bg='white')
+                                      text="Je veux voir la simulation graphique", bg='white')
 
         if temps_exec <= 60:
             temps_en_secondes.pack(padx=10, pady=10)
@@ -78,14 +78,10 @@ class Interface:
         quitter.pack(padx=10, pady=5)
 
         fen2.mainloop()
-        fen2.destroy()
+        #fen2.destroy()
 
         if voir.get() == 1:
             self.voir_simulation = True
-
-        print(voir.get())
-
-        return voir.get()
 
 # Tests des fonctions
 if __name__ == "__main__":

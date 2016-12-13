@@ -65,7 +65,6 @@ class Parseur:
         de classes.
         Créer le globe et la liste des zones.
         """
-        time.clock()
         print("Lecture du fichier d'input")
         fichier_input = open(self.chemin_input, 'r')
         nb_tours = int(fichier_input.readline().rstrip())  # rstrip est utilisé pour ne pas prendre "\n" en compte.
@@ -205,8 +204,6 @@ class Parseur:
             print("Le temps d'exécution fut de " + str(temps_exec) + " secondes")
         else:
             print("Le temps d'exécution fut de " + str(temps_exec / 60) + " minutes")
-
-        self.temps_exec = time.clock()
 
     def recup_output(self):
         """Méthode chargée de : Récupérer les informations d'un fichier d'output et de les transformer en instances

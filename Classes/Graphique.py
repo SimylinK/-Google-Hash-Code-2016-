@@ -4,7 +4,6 @@
 from tkinter import *
 from Classes.Satellite import Satellite
 
-
 class Graphique:
     """Classe chargée de :
     Afficher l'éxecution des satellites sur une interface graphique
