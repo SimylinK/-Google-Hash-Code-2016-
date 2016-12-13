@@ -12,11 +12,11 @@ class Graphique:
 
     def __init__(self, nb_tours, liste_satellites, globe, liste_photos_prises, taille_zone):
         """
-        :param nb_tours:
-        :param liste_satellites:
-        :param globe:
-        :param liste_photos_prises:
-        :param taille_zone:
+        :param nb_tours: le nombre de tours que la simulation va durer
+        :param liste_satellites: liste des instances de classe Satellite
+        :param globe: une instance de la classe Globe
+        :param liste_photos_prises: liste de listes qui contient des informations sur les photos ayant été prises
+        :param taille_zone: taille d'un côté d'une zone du globe
         """
         # Tk() doit être fait avant "StringVar()"
         self.fenetre = Tk(className='#HashCode | Visualisation de la simulation')
