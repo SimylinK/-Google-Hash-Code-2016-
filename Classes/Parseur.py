@@ -21,7 +21,6 @@ from Classes.Globe import Globe
 from Classes.Photo import Photo
 from Classes.Satellite import Satellite
 
-
 class Parseur:
     """
     Classe chargée de :
@@ -29,12 +28,12 @@ class Parseur:
     Écrire le fichier output.
     """
 
+
     # Constantes :
     REPERTOIRE = os.getcwd()
-
     def __init__(self, chemin_input=None):
         """
-        :param chemin_input:
+        :param chemin_input: donne le chemin du fichier d'input
         """
         self.chemin_output = self.REPERTOIRE + '/fichier_output.out'
         self.chemin_input = self.REPERTOIRE + chemin_input
