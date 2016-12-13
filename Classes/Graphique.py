@@ -186,9 +186,9 @@ class Graphique:
         longitude_pixel = self.longitude_vers_pixel(longitude)
 
         croix1 = self.canvas.create_line(longitude_pixel - 5, latitude_pixel - 5, longitude_pixel + 5,
-                                         latitude_pixel + 5, width=5, fill="blue")
+                                         latitude_pixel + 5, width=5, fill=couleur)
         croix2 = self.canvas.create_line(longitude_pixel - 5, latitude_pixel + 5, longitude_pixel + 5,
-                                         latitude_pixel - 5, width=5, fill="blue")
+                                         latitude_pixel - 5, width=5, fill=couleur)
 
         self.liste_dessins_photos.append(croix1)
         self.liste_dessins_photos.append(croix2)
