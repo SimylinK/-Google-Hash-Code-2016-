@@ -4,12 +4,17 @@
 
 class Photo:
     """
-        Classe composée de :
-        La latitude et la longitude de chaque photo.
-        La collection à laquelle elle appartient
+    Classe composée de :
+    La latitude et la longitude de chaque photo.
+    La collection à laquelle elle appartient
     """
 
     def __init__(self, latitude, longitude, collection):
+        """
+        :param latitude: entier : la latitude de la photo
+        :param longitude: entier : la longitude de la photo
+        :param collection: Instance de la classe Collection
+        """
         self.latitude = latitude
         self.longitude = longitude
         self.collection = collection

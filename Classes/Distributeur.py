@@ -10,11 +10,17 @@ class Distributeur:
     """
 
     def __init__(self, nb_tours, liste_satellites, liste_collections, globe):
+        """
+        :param nb_tours: Le nombre d etours que va durer la simulation
+        :param liste_satellites: La liste des instances de la classe Satellite
+        :param liste_collections: La liste des instances de la classe Collection
+        :param globe: Une instance de la classe Globe
+        """
         self.nb_tours = nb_tours
         self.liste_satellites = liste_satellites
         self.liste_collections = liste_collections  # Liste de toutes les collections
         self.globe = globe
-        self.ratio_moyen = self.moyenne_ratio()
+        self.ratio_moyen = self.moyenne_ratio()  #  Ratio_rentabilite moyen des collections
         self.seuil_ratio = self.ratio_moyen * 15 / 100  # Valeur fixée arbitrairement à 15 pourcents
         self.collections_partielles = []  # Liste de collections prises partiellement
         self.meilleures_petites_collections = []
@@ -116,7 +122,12 @@ class Distributeur:
     def prediction(self, satellite, tour):
         """
         Méthode qui renvoie la latitude et la longitude de la meilleure photo atteignable au tour suivant pour un satellite et un tour donnés
+        :param satellite: Une instance de classe Satellite
+        :param tour: Un entier
+        :return: Si on choisit de prendre une photo : Latitude, longitude : deux entiers
+                 Sinon : None, None
         """
+
 
         """
         On clone le satellite
@@ -169,9 +180,12 @@ class Distributeur:
             return None, None
 
     def moyenne_ratio(self):
-        """Calcule la moyenne du ratio des collections"""
-        somme = 0
+        """
+        Méthode qui calcule la moyenne du ratio des collections
+        :return: moyenne: un flottant
+        """
+        moyenne = 0
         for collection in self.liste_collections:
-            somme += collection.ratio_rentabilite
-        somme /= len(self.liste_collections)
-        return somme
+            moyenne += collection.ratio_rentabilite
+        moyenne /= len(self.liste_collections)
+        return moyenne

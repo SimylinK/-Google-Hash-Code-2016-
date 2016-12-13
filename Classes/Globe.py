@@ -6,24 +6,29 @@ import math
 
 
 class Globe:
+    """Classe chargée de partitionner le globe et de stocker chaque partition (zone) dans une liste de liste : liste_zones."""
     def __init__(self, cote_zone):
+        """
+        :param cote_zone: Le côté des zones.
+        """
         self.lat_zone = cote_zone
         self.long_zone = cote_zone
-        self.taille_lat = 648000
-        self.taille_long = 1295999
-        self.nb_zones_lat = math.ceil(self.taille_lat / self.lat_zone)
-        self.nb_zones_long = math.ceil(self.taille_long / self.long_zone)
+        self.taille_lat = 648000  # Taille totale de la Terre en latitude
+        self.taille_long = 1295999  # Taille totale de la Terre en longitude
+        self.nb_zones_lat = math.ceil(self.taille_lat / self.lat_zone)  # Nombre de zones dans chaque "ligne".
+        self.nb_zones_long = math.ceil(self.taille_long / self.long_zone)   # Nombre de zones dans chaque "colonne".
         self.liste_zones = self.creation_zones()
 
     def creation_zones(self):
         """Méthode chargée de créer les différentes zones du globe"""
-        # IDEE : lat(objet) + 324000 // lat_zone = indice dans la liste
+        # IDEE réutilisée par la suite: (lat(objet) + 324000)// lat_zone = indice en latitude dans liste_zones
         print("Création des zones")
         reste_lat = self.taille_lat % self.lat_zone
         reste_long = self.taille_long % self.long_zone
 
         liste_zones = []  # Liste de listes de zones. Tous les éléments d'une sous-liste possèdent la même latitude
 
+        #  On crée les zones de taille cote_zone
         for i in range(-324000, 324000 - reste_lat, self.lat_zone):
             liste_longitude = []
             for j in range(-648000, 647999 - reste_long, self.long_zone):
@@ -58,8 +63,12 @@ class Globe:
         return liste_zones
 
     def calcul_indice(self, objet):
-        """Méthode qui calcule les indices d'un objet dans liste_zones en fonction de ses coordonnées
         """
+        Méthode qui calcule les indices d'un objet dans liste_zones en fonction de ses coordonnées
+        :param objet: Une instance de classe possédant une latitude et une longitude
+        :return: indice_lat, indice_long : deux entiers
+        """
+
         indice_lat = (objet.latitude + 324000) // self.lat_zone
         if objet.latitude == 324000:
             indice_lat -= 1
@@ -69,7 +78,12 @@ class Globe:
         return indice_lat, indice_long
 
     def photos_autour_zone(self, indice_lat, indice_long):
-        """Méthode qui renvoie la liste des photos autour d'une zone d'indices [indice_lat][indice_long]"""
+        """
+        Méthode qui renvoie la liste des photos comprises dans une zone et ses adjacentes (les 8 autour).
+        :param indice_lat: indice en latitude de la zone
+        :param indice_long: indice en longitude de la zone
+        :return: liste_photos: Une liste d'instances de la classe photo.
+        """
         liste_photos = list(self.liste_zones[indice_lat][indice_long].photos_a_prendre)
         # indices maximaux de liste_zones
         max_lat = self.nb_zones_lat - 1

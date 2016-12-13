@@ -7,7 +7,10 @@
         import Photo : classe Photo
         import Collection : classe Collection
         import Satellite : classe Satellite
-        import ZoneGlobe : classe ZoneGlobe.
+        import ZoneGlobe : classe ZoneGlobe
+    - à aider à la simulation :
+        import os : Permet d'obtenir le répertoire de travail actuel de l'utilisateur
+        import time : Permet de calculer le temps de simulation
 """
 
 import os
@@ -20,11 +23,9 @@ from Classes.Satellite import Satellite
 
 
 class Parseur:
-    """Classe chargée de :
-
-    Transformer le fichier d'input en informations utilisables :
-        variables, instances de classes.
-
+    """
+    Classe chargée de :
+    Transformer le fichier d'input en informations utilisables : variables et instances de classes.
     Écrire le fichier output.
     """
 
@@ -32,21 +33,12 @@ class Parseur:
     REPERTOIRE = os.getcwd()
 
     def __init__(self, chemin_input=None):
+        """
+        :param chemin_input:
+        """
         self.chemin_output = self.REPERTOIRE + '/fichier_output.out'
         self.chemin_input = self.REPERTOIRE + chemin_input
         self.temps_exec = 0
-
-    def demander_input(self):
-        chemin = ' '
-        while chemin == ' ':  # Vérification que le chemin n'est pas laissé vide
-            chemin = input("Chemin absolu du fichier input : ")
-        return chemin
-
-    def demander_output(self):
-        chemin = ' '
-        while chemin == ' ':  # Vérification que le chemin n'est pas laissé vide
-            chemin = input("Chemin absolu du fichier output : ")
-        return chemin
 
     def initialisation(self):
         """
@@ -115,7 +107,11 @@ class Parseur:
         return Photo(liste_arguments[0], liste_arguments[1], collection)
 
     def collection_par_chaine(self, caracteres):
-        """Transforme une ligne du fichier input en une instance de la classe Collection"""
+        """
+        Transforme une ligne du fichier input en une instance de la classe Collection
+        :param caracteres: une chaine de caractères
+        :return: Une instance de la classe Collection
+        """
         liste_arguments = [1, 2, 3]
         num_liste = 0
         argument = ""
@@ -131,7 +127,11 @@ class Parseur:
         return Collection(liste_arguments[0], liste_arguments[1], liste_arguments[2])
 
     def intervalle_par_chaine(self, caracteres):
-        """Transforme une ligne du fichier input en un intervalle"""
+        """
+        Transforme une ligne du fichier input en un intervalle
+        :param caracteres: une chaine de caractères
+        :return: intervalle : liste de deux entiers
+        """
         liste_arguments = [1, 2]
         num_liste = 0
         argument = ""
@@ -147,7 +147,11 @@ class Parseur:
         return [liste_arguments[0], liste_arguments[1]]
 
     def satellite_par_chaine(self, id, caracteres):
-        """"Transforme une ligne du fichier input en une instance de la classe Satellite"""
+        """"
+        Transforme une ligne du fichier input en une instance de la classe Satellite
+        :param caracteres: une chaine de caractères
+        :return: Une instance de la classe Satellite
+        """
         liste_arguments = [1, 2, 3, 4, 5,
                            ]  # On doit donner 5 arguments à Satellite pour la création d'une instance
         num_liste = 0  # ième argument de la liste
@@ -165,7 +169,10 @@ class Parseur:
                          liste_arguments[4])
 
     def ligne_output_par_chaine(self, caracteres):
-        """"Transforme une ligne du fichier output en une liste de 4 éléments"""
+        """"
+        Transforme une ligne du fichier output en une liste de 4 éléments
+        :param caracteres: une chaine de caractères
+        :return: liste de 4 arguments stockant des informations sur les photos"""
         liste_arguments = [1, 2, 3, 4]  # On doit donner 5 arguments à Satellite pour la création d'une instance
         num_liste = 0  # ième argument de la liste
         argument = ""
@@ -181,6 +188,11 @@ class Parseur:
         return [liste_arguments[0], liste_arguments[1], liste_arguments[2], liste_arguments[3]]
 
     def creer_output(self, liste_zones, nb_photos_prises):
+        """
+        Méthode chargée de créer le fichier output et d'afficher le temps d'exécution
+        :param liste_zones: liste de listes : zones du globe
+        :param nb_photos_prises: entier
+        """
         fichier_output = open(self.chemin_output, "w")  # le "w" fait qu'on réécrit sur le fichier précedent
         fichier_output.write(str(nb_photos_prises) + "\n")
         for liste in liste_zones:
@@ -199,8 +211,9 @@ class Parseur:
         self.temps_exec = time.clock()
 
     def recup_output(self):
-        """Méthode chargée de : Récupérer les informations d'un fichier d'output et de les transformer en instances
-               de classes.
+        """
+        Méthode chargée de : Récupérer les informations d'un fichier d'output et de les transformer en instances
+        de classes.
         :return: une liste contenant toutes les photos prises triées par le tour
         """
         liste_photos = []
@@ -213,7 +226,7 @@ class Parseur:
 
         for i in range(0, nb_photos_prises):
             chaine_photo = (fichier_output.readline().rstrip())
-            photo = self.ligne_output_par_chaine(chaine_photo)  # Pas besoin de préciser Collection
+            photo = self.ligne_output_par_chaine(chaine_photo)  # Pas besoin de préciser la Collection
             liste_photos.append(photo)
 
         fichier_output.close()

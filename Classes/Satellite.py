@@ -3,7 +3,8 @@
 
 
 class Satellite:
-    """Classe chargée de :
+    """
+    Classe chargée de :
     Représenter un satellite
     """
 
@@ -26,16 +27,18 @@ class Satellite:
         self.orientation_vitesse_camera = vitesse // abs(vitesse)
         self.vitesse_camera = vitesse_camera
         self.max_deplacement_camera = max_deplacement_camera
-        #  range_deplacement représente de combien on peut bouger
-        #  dans chaque direction par rapport à la caméra au tour t +1
+        """range_deplacement représente de combien on peut bouger dans chaque direction par rapport à la caméra au tour t +1"""
         self.range_deplacement_camera = [[self.vitesse_camera, self.vitesse_camera],
                                          [self.vitesse_camera, self.vitesse_camera]]
         self.passe_pole_nord = False
         self.passe_pole_sud = False
 
     def tour_suivant(self, latitude_cam=None, longitude_cam=None):
-        """ Calcule la position suivante du satellite
+        """
+        Méthode qui calcule la position suivante du satellite
         et la prochaine position de la caméra si besoin (si les valeurs sont différentes de None)
+        :param latitude_cam: optionnel : la latitude à laquelle on veut orienter la caméra
+        :param longitude_cam: optionnel : la longitude à laquelle on veut orienter la caméra
         """
 
         # Déplacement du Satellite
@@ -84,6 +87,8 @@ class Satellite:
             self.latitude_camera = lat_cam
             self.longitude_camera = long_cam
 
+        """On attend que la photo et le satellite aient passé le pôle Nord d'assez pour
+        ne pas avoir à faire de séparation des cas."""
         if self.passe_pole_nord and lat + self.max_deplacement_camera < 324000:
             # Les deux sont du même côté de la planète, on peut faire un calcul de latitude simpliste
             dist_lat = lat - self.latitude_camera
@@ -91,21 +96,26 @@ class Satellite:
             self.passe_pole_nord = False
 
         if self.passe_pole_sud and lat - self.max_deplacement_camera > -324000:
+            # Les deux sont du même côté de la planète, on peut faire un calcul de latitude simpliste
             dist_lat = lat - self.latitude_camera
             self.latitude_camera = lat + dist_lat
             self.passe_pole_sud = False
 
     def distance_latitude(self, latitude):
-        """Calcule l'écart entre le satellite et un point par rapport au satellite
-        si positif, la latitude du satellite est supérieure à celle du point
-        si négatif, la latitude du satellite est inférieure à celle du point
-        :return: latitude, nombre entier"""
+        """
+        Méthode qui calcule l'écart entre le satellite et un point par rapport au satellite
+        :param: latitude : la latitude du point
+        :return: latitude : nombre entier
+        """
         # Pas besoin de tester les pôles car il n'y a pas de photo à plus de 85° N ou S.
         return self.latitude - latitude
 
     def distance_longitude(self, longitude):
-        """Calcule l'écart entre le satellite et un point par rapport au satellite
-            :return: longitude, nombre entier"""
+        """
+        Méthode qui calcule l'écart entre le satellite et un point par rapport au satellite
+        :param: longitude : la longitude du point
+        :return: longitude : nombre entier
+        """
         satellite = self.longitude
 
         if satellite >= 0:
@@ -151,14 +161,20 @@ class Satellite:
         return dist_long
 
     def distance_latitude_absolue(self, latitude):
-        """Calcule la distance en arcsecondes entre la latitude satellite et une latitude
-        :return: latitude, entier positif """
+        """
+        Méthode qui calcule la distance en arcsecondes entre la latitude satellite et celle d'un objet
+        :param: latitude : la latitude de l'objet
+        :return: latitude : entier positif
+        """
         # Pas besoin de tester les pôles car il n'y a pas de photo à plus de 85° N ou S.
         return abs(self.latitude - latitude)
 
     def distance_longitude_absolue(self, longitude):
-        """Calcule la distance en arcsecondes entre la longitude satellite et une longitude
-                :return: entier positif égal à cette distance"""
+        """
+        Méthode qui calcule la distance en arcsecondes entre la longitude satellite et celle d'un objet
+        :param: longitude : la longitude de l'objet
+        :return: longitude : entier positif
+        """
 
         if abs(longitude - self.longitude) > self.max_deplacement_camera:
             """ Dans ce cas on passe par -648000 et 647999 en longitude """
@@ -172,13 +188,17 @@ class Satellite:
         return dist_long
 
     def reset_camera(self):
-        """Méthode qui réinitialise range_deplacement_camera, à utiliser quand on prend une photo à un tour t"""
+        """
+        Méthode qui réinitialise range_deplacement_camera, à utiliser quand on prend une photo à un tour t
+        """
         self.range_deplacement_camera = [[0, 0],
                                          [0, 0]]
         self.update_camera()
 
     def update_camera(self):
-        """Méthode qui met à jour range_deplacement_camera, à utiliser quand on ne prend pas de photo à un tour t"""
+        """
+        Méthode qui met à jour range_deplacement_camera, à utiliser quand on ne prend pas de photo pendant un tour
+        """
         max = self.max_deplacement_camera
         vitesse = self.vitesse_camera
         # Maximums de déplacement en fonction de la caméra
@@ -187,6 +207,7 @@ class Satellite:
         long_min = max - self.distance_longitude(self.longitude_camera)
         long_max = max + self.distance_longitude(self.longitude_camera)
 
+        # Si range_déplacement caméra dépasse le maximum de déplacement dans une direction : on lui attribue ce maximum
         if self.range_deplacement_camera[0][0] + vitesse > lat_min:
             self.range_deplacement_camera[0][0] = lat_min
         else:
@@ -208,7 +229,10 @@ class Satellite:
             self.range_deplacement_camera[1][1] += vitesse
 
     def clone(self):
-        """Méthode qui retourne un clone du satellite"""
+        """
+        Méthode qui retourne un clone du satellite
+        :return sat : une instance de la classe Satellite
+        """
         sat = Satellite(self.id, self.latitude, self.longitude, self.vitesse,
                         self.vitesse_camera, self.max_deplacement_camera)
         sat.range_deplacement_camera = self.range_deplacement_camera
@@ -218,6 +242,12 @@ class Satellite:
         return sat
 
     def peut_prendre(self, photo, tour):
+        """
+        Méthode qui détermine si une photo est prenable à un tour pour ce satellite
+        :param: photo : une instance de la classe Photo
+        :param: tour : un entier positif
+        :return peut_prendre : un booléen
+        """
         peut_prendre = False
         if (self.latitude_camera - self.range_deplacement_camera[0][0] <= photo.latitude <= self.latitude_camera +
             self.range_deplacement_camera[0][1] and self.longitude_camera - self.range_deplacement_camera[1][0]
@@ -228,8 +258,9 @@ class Satellite:
         return peut_prendre
 
     def tour_precedent(self):
-        """ Recule la position du satellite à sa position au tour précédent
-        Attention, cette méthode est faite uniquement pour l'interface graphique
+        """
+        Méthode qui recule la position du satellite à sa position au tour précédent
+        À n'utiliser que pour l'interface graphique
         """
         # Déplacement du Satellite
         lat = self.latitude - self.vitesse
