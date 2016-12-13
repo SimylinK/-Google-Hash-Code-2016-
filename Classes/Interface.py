@@ -5,8 +5,11 @@
     Imports servant à :
     - à utiliser le module graphique tkinter :
         import tkinter
+    - à pour donner le chemin de n'importe quel fichier des dossiers :
+        import os
 """
 
+import os
 from tkinter import *
 
 class Interface:
@@ -15,6 +18,11 @@ class Interface:
     Créer une interface utilisateur visant à choisir le fichier d'input.
     Créer une interface utilisateur visant à choisir si lancer ou non l'interface graphique de la map monde.
     """
+
+    # Constantes :
+    REPERTOIRE = os.getcwd()
+
+
     def __init__(self):
         self.fichier_input = ""
         self.voir_simulation = False
@@ -27,7 +35,7 @@ class Interface:
         fen1 = Tk(className='#HashCode | Choix de la simulation') # Création de la fenêtre
         fen1.configure(bg='white') # Configuration des paramètres de la fenêtre
         canvas = Canvas(fen1, width=600, height=300) # Création du canvas
-        photo = PhotoImage(file="docs/Logo_polyhash_code_signe.png") # Definition de la photo
+        photo = PhotoImage(file= self.REPERTOIRE + "/docs/Logo_polyhash_code_signe.png") # Definition de la photo
         canvas.create_image(50, 50, anchor=NW, image=photo)
         canvas.pack(side=TOP and RIGHT)
         canvas.configure(bg='white')
