@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
 from tkinter import *
 from Classes.Satellite import Satellite
 
@@ -9,6 +10,9 @@ class Graphique:
     Classe chargée de :
     Afficher l'éxecution des satellites sur une interface graphique
     """
+
+    # Constantes
+    REPERTOIRE = os.getcwd()
 
     def __init__(self, nb_tours, liste_satellites, globe, liste_photos_prises, taille_zone):
         """
@@ -46,7 +50,7 @@ class Graphique:
 
         # Placement de la map monde
         self.canvas = Canvas(self.fenetre, width=1500, height=752)
-        photo = PhotoImage(file="docs/map_monde.png")
+        photo = PhotoImage(file= self.REPERTOIRE + "/docs/map_monde.png")
         # Taille de 1500 * 752 px
         # La map commence en x : 19 et y : 8
         # La map termine en x : 1474 et y : 738
